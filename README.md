@@ -1,13 +1,3 @@
-# Google Student Training in Engineering Program
+# LearnBase - STEP 2020
 
-This repo contains the projects you'll work on for the first half of STEP.
-This work is based on the [Google Software Product Sprint](https://g.co/softwareproductsprint) program.
-
-To get started:
-
-- Login to [Google Cloud Shell](https://ssh.cloud.google.com/cloudshell/editor)
-- Clone this repo: `cd; git clone https://github.com/googleinterns/step.git`
-- Open the GitHub setup walkthrough: `teachme ~/step/walkthroughs/week-1-setup/github-setup-walkthrough.md`
-  - If the tutorial panel does not open or display the walkthrough contents, try refreshing the page.
-
-Then follow the on-screen instructions to set up your repo.
+LearnBase is a web app that is designed to help people learn various, user-chosen topics quickly and efficiently by making information more accessible and easily digestible. This is a Microlearning application that sends you one page per day about something you want to learn. LearnBase is created for students, casual learners, or those who are interested in learning something new but don’t have much free time in their busy schedules. 
