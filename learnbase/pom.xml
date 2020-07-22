@@ -35,6 +35,7 @@
         <version>2.2.0</version>
         <configuration>
           <!-- TODO: set project ID. -->
+          <port>5000</port>
           <deploy.projectId>YOUR_PROJECT_ID_HERE</deploy.projectId>
           <deploy.version>1</deploy.version>
         </configuration>
