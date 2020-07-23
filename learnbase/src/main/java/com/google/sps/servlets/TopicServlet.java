@@ -20,6 +20,7 @@ public class TopicServlet extends HttpServlet{
         System.out.println("In Get request");
         System.out.println(request.getUserPrincipal());
         System.out.println(request.getUserPrincipal().getName());
+        System.out.println(request.getUserPrincipal().getUserId());
         response.getWriter().println(request.getUserPrincipal().getName());
     }
 
