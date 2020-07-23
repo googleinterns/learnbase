@@ -12,6 +12,6 @@ fucntion pageChanger() {
   if (navBar.className === "topnav") { 
     navBar.classname += " responsive";
   } else {
-    x.className = "topnav";
+    navBar.className = "topnav";
   }
 }
