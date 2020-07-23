@@ -22,7 +22,7 @@ public class TopicServlet extends HttpServlet{
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        userService = UserServiceFactory.getUserService(); 
+        UserService userService = UserServiceFactory.getUserService(); 
 
         System.out.println(request.getUserPrincipal());
     }
