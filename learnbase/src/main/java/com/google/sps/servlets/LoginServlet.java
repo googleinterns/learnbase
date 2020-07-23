@@ -27,7 +27,7 @@ public class LoginServlet extends HttpServlet {
       return;
     }
 
-    String nickname = getUserNickName(userService.getCurrentUser().getUserId());
+    String nickname = getUserNickname(userService.getCurrentUser().getUserId());
     if(nickname == null) {
       response.sendRedirect("/nickname");
       return;
@@ -43,7 +43,7 @@ public class LoginServlet extends HttpServlet {
   }
 
   private String getUserNickname(String id) {
-    DatastoreService datastore = DataServiceFactory.getDatastoreService();
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = 
 	    new Query("UserInfo")
 	    .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));

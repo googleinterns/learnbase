@@ -43,7 +43,7 @@ public class NicknameServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
     if(!userService.isUserLoggedIn()) {
-      response.SendRedirect("/nickname");
+      response.sendRedirect("/nickname");
       return;
     }
 
@@ -52,18 +52,18 @@ public class NicknameServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity entity = new Entity("UserInfo", id);
-    entity.setPropery("id", id);
+    entity.setProperty("id", id);
     entity.setProperty("nickname", nickname);
     datastore.put(entity);
 
-    response.sendRedirect("/home");
+    response.sendRedirect("/index.html");
   }
 
   private String getUserNickname(String id) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = 
       new Query("UserInfo")
-       .setFilter(new Query.FilterPredicate("id", Query.FilterOperator,EQUAL, id));
+       .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
     if (entity == null) {
