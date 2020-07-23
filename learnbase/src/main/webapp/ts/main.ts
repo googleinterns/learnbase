@@ -7,10 +7,10 @@ window.onload = function userLogin() : void {
   });
 } 
 
-fucntion pageChanger() {
-  const navBar = document.getElementById("myTopnav");
+function pageChanger() {
+  const navBar = document.getElementById("myTopnav") as HTMLDivElement;
   if (navBar.className === "topnav") { 
-    navBar.classname += " responsive";
+    navBar.className += " responsive";
   } else {
     navBar.className = "topnav";
   }
