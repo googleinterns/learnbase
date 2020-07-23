@@ -1,5 +1,6 @@
 package com.google.sps.servlets;
 
+import com.google.appengine.api.users;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
@@ -17,10 +18,11 @@ public class TopicServlet extends HttpServlet{
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
         UserService userService = UserServiceFactory.getUserService(); 
+        User user = userService.getCurrentUser();
         System.out.println("In Get request");
         System.out.println(request.getUserPrincipal());
         System.out.println(request.getUserPrincipal().getName());
-        System.out.println(request.getUserPrincipal().getUserId());
+        System.out.println(user.getUserId());
         response.getWriter().println(request.getUserPrincipal().getName());
     }
 
