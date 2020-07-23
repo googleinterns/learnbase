@@ -16,15 +16,14 @@ public class TopicServlet extends HttpServlet{
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
-
+        UserService userService = UserServiceFactory.getUserService(); 
+        System.out.println(request.getUserPrincipal());
         
     }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        UserService userService = UserServiceFactory.getUserService(); 
-
-        System.out.println(request.getUserPrincipal());
+       
     }
 
 }
