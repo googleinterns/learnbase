@@ -19,16 +19,41 @@ public class TopicServlet extends HttpServlet{
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
         UserService userService = UserServiceFactory.getUserService(); 
         User user = userService.getCurrentUser();
-        System.out.println("In Get request");
-        System.out.println(request.getUserPrincipal());
-        System.out.println(request.getUserPrincipal().getName());
-        System.out.println(user.getUserId());
-        response.getWriter().println(request.getUserPrincipal().getName());
+        String userId = user.getUserId(); 
+        Query query = 
+        new Query("UserInfo")
+        .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+        Entity entity = results.asSingleEntity(); 
+        String topics = entity.getProperty("topics"); 
+
+        response.getWriter().println(topics);
     }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-       
+        UserService userService = UserServiceFactory.getUserService(); 
+        User user = userService.getCurrentUser();
+        String userId = user.getUserId(); 
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query query = 
+        new Query("UserInfo")
+        .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+        Entity entity = results.asSingleEntity(); 
+        if (entity == null){
+            return ""; 
+        }
+
+        topic = request.getParameter("topic");
+        String topics = entity.getProperty("topics"); 
+        if (topics == ""){
+            entity.setProperty("topics", topic);
+        }  else {
+            topics += ",";
+            topics += topic;
+            entity.setProperty("topics", topic);
+        }
+        datastore.put(entity); 
+        response.sendRedirect("/search.html");
     }
 
 }

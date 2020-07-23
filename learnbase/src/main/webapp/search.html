@@ -10,7 +10,7 @@
     <script type="module" src="js/search.js"></script>
 </head>
 
-<body>
+<body id="body">
     <div class="topnav" id="myTopnav">
       <a href="index.html">Login</a>
       <a class="active" href="search.html">Search</a>
@@ -31,9 +31,9 @@
                     a word or phrase detailing a subject in which you are interested in learning about.
                 </p>
                 <div class="searchContainer">
-                    <form>
-                        <input type="text" placeholder="Search..">
-                        <button id="searchButton">Submit</button>    
+                    <form action="POST" method="/topic">
+                        <input type="text" name="topic" placeholder="Search..">
+                        <button type="submit" id="searchButton">Submit</button>    
                     </form>
                 </div>
             </div> 
