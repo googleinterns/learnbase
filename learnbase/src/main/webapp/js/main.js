@@ -6,3 +6,12 @@ window.onload = function userLogin() {
         loginSection.innerHTML = pageContent;
     });
 };
+function pageChanger() {
+    const navBar = document.getElementById("myTopnav");
+    if (navBar.className === "topnav") {
+        navBar.className += " responsive";
+    }
+    else {
+        navBar.className = "topnav";
+    }
+}
