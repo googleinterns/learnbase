@@ -21,6 +21,10 @@
     padding: 20px;
     text-align: center;
 }
+.spaceAbove{
+  min-height: 20px;
+}
+
 .mainInfo{
     width:65%;
 } 
