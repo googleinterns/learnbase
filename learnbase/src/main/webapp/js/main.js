@@ -7,6 +7,7 @@ window.onload = function userLogin() {
         loginSection.innerHTML = pageContent;
     });
 };
+<<<<<<< HEAD
 function topicManager() {
     fetch('/topics').then(response => response.text()).then((topics) => {
         console.log(topics);
@@ -19,5 +20,14 @@ function pageChanger() {
     }
     else {
         x.className = "topnav";
+=======
+function pageChanger() {
+    const navBar = document.getElementById("myTopnav");
+    if (navBar.className === "topnav") {
+        navBar.className += " responsive";
+    }
+    else {
+        navBar.className = "topnav";
+>>>>>>> 36fa1ca4371738dac7d953e9293730c4af7264e0
     }
 }

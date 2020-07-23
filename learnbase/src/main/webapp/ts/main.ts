@@ -18,10 +18,10 @@ function topicManager(){
 }
 
 function pageChanger() {
-  const navBar = document.getElementById("myTopnav");
+  const navBar = document.getElementById("myTopnav") as HTMLDivElement;
   if (navBar.className === "topnav") { 
-    navBar.classname += " responsive";
+    navBar.className += " responsive";
   } else {
-    x.className = "topnav";
+    navBar.className = "topnav";
   }
 }
