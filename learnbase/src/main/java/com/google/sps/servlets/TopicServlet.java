@@ -19,6 +19,7 @@ public class TopicServlet extends HttpServlet{
         UserService userService = UserServiceFactory.getUserService(); 
         System.out.println("In Get request");
         System.out.println(request.getUserPrincipal());
+        System.out.println(request.getUserPrincipal().getName());
         response.getWriter().println(request.getUserPrincipal().getName());
     }
 
