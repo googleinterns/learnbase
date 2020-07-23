@@ -1,8 +1,5 @@
 console.log("tester");
 
-document.getElementById("searchButton").addEventListener("click", topicManager)
-
-
 
 window.onload = function userLogin() : void {
   fetch('/userlogin').then(response => response.text()).then((pageContent) => {
@@ -11,11 +8,6 @@ window.onload = function userLogin() : void {
   });
 } 
 
-function topicManager(){
-  fetch('/topics').then(response => response.text()).then((topics) => {
-    console.log(topics)
-  });
-}
 
 function pageChanger() {
   const navBar = document.getElementById("myTopnav") as HTMLDivElement;
