@@ -3,9 +3,6 @@
     flex-direction: row;
     justify-content: space-around;
     height: auto;
-    background-color: #1C5425;
-    border-radius: 40px;
-    box-shadow: 5px 10px;
 }
 
 .mainInfo, .selectedSubjects{
