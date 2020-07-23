@@ -17,8 +17,9 @@ public class TopicServlet extends HttpServlet{
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
         UserService userService = UserServiceFactory.getUserService(); 
+        System.out.println("In Get request");
         System.out.println(request.getUserPrincipal());
-        
+        response.getWriter().println(request.getUserPrincipal().getName())
     }
 
     @Override
