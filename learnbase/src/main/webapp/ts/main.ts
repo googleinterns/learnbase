@@ -5,4 +5,13 @@ window.onload = function userLogin() : void {
     const loginSection = document.getElementById('user-page-content') as HTMLDivElement;
     loginSection.innerHTML = pageContent;
   });
+} 
+
+fucntion pageChanger() {
+  const navBar = document.getElementById("myTopnav");
+  if (navBar.className === "topnav") { 
+    navBar.classname += " responsive";
+  } else {
+    x.className = "topnav";
+  }
 }
