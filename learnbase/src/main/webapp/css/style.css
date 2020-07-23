@@ -2,7 +2,10 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    height: 50%;
+    height: auto;
+    background-color: #1C5425;
+    border-radius: 40px;
+    box-shadow: 5px 10px;
 }
 
 .mainInfo, .selectedSubjects{
@@ -30,4 +33,9 @@
   border-radius: 35px;
   padding: 20px;
   text-align: center; 
+}
+
+*::before,
+*::after {
+  box-sizing: border-box;
 }
