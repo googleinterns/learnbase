@@ -21,10 +21,10 @@ public class TopicServlet extends HttpServlet{
     }
 
     @Override
-    public void doPost(HttpServletRequest, HttpServletResponse response) throws IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         userService = UserServiceFactory.getUserService(); 
 
-        System.out.println(request.getUserPrincipal())
+        System.out.println(request.getUserPrincipal());
     }
 
 }
