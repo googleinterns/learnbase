@@ -2,7 +2,10 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    height: 50%;
+    height: auto;
+    background-color: #1C5425;
+    border-radius: 40px;
+    box-shadow: 5px 10px;
 }
 
 .mainInfo, .selectedSubjects{
@@ -17,4 +20,22 @@
 }
 .mainInfo{
     width:65%;
+} 
+
+.loginArea {
+  justify-content: space-around;
+  height: 50%;
+  background-color: #186E27;
+  background-color: rgba(24, 110, 39, 0.4);
+  color: #003509;
+  font-weight: bold;
+  border: 3px solid #5D9667;
+  border-radius: 35px;
+  padding: 20px;
+  text-align: center; 
+}
+
+*::before,
+*::after {
+  box-sizing: border-box;
 }
