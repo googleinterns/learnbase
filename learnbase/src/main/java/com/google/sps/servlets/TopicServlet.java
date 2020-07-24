@@ -11,6 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.*;
 import java.io.PrintWriter;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import java.net.URLEncoder;
+import java.net.URLDecoder;
 import java.io.*; 
 import java.util.*; 
 
@@ -67,6 +73,7 @@ public class TopicServlet extends HttpServlet{
         }
 
         String topic = request.getParameter("topic");
+	getSearch(topic);
         String topics = (String) entity.getProperty("topics"); 
 
         if (topics.equals("")){
@@ -79,5 +86,24 @@ public class TopicServlet extends HttpServlet{
         datastore.put(entity); 
         response.sendRedirect("/search.html");
     }
+
+  private String getSearch(String topic) throws IOException {
+    String google = "https://www.google.com/search";
+    int num = 5;
+    String searchURL = google + "?q=" + topic + "&num=" + num;
+    System.out.println(searchURL);
+
+    Document doc  = Jsoup.connect(searchURL).userAgent("Chrome").get();
+    Elements results = doc.select("a[href]:has(span)").select("a[href]:not(:has(div))");
+
+    for (Element result : results) {
+	String linkHref = result.attr("href");
+	String linkText = result.text();
+	if (linkHref.contains("https")) {
+          System.out.println(linkHref.substring(7, linkHref.indexOf("&"))); 
+	} 
+    }
+    return ""; 
+  }
 
 }
