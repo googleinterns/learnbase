@@ -19,7 +19,7 @@ function topicManager(topics) {
             deleteTopic(topic);
         });
         var deleteCell = newRow.insertCell();
-        deleteCell.innerHTML = deleteButtonElement.outerHTML;
+        deleteCell.appendChild(deleteButtonElement);
     });
 }
 function deleteTopic(topic) {
