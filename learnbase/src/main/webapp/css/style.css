@@ -3,11 +3,17 @@
     flex-direction: row;
     justify-content: space-around;
     height: auto;
-    background-color: #186E27;
-    background-color: rgba(24, 110, 39, 0.4);
-    border-radius: 35px;
-    box-shadow: 5px 10px;
-    border: 3px solid #5D9667;
+}
+
+#mainContent{
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  background-color: #186E27;
+  background-color: rgba(24, 110, 39, 0.4);
+  border-radius: 35px;
+  box-shadow: 5px 10px;
+  border: 3px solid #5D9667;
 }
 
 .mainInfo, .selectedSubjects{
@@ -20,6 +26,10 @@
     padding: 20px;
     text-align: center;
 }
+.spaceAbove{
+  min-height: 20px;
+}
+
 .mainInfo{
     width:65%;
 } 
