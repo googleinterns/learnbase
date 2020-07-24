@@ -32,7 +32,17 @@ public class TopicServlet extends HttpServlet{
         String topics = (String) entity.getProperty("topics"); 
         System.out.println(topics);
         while(topics.substring(0,1).equals(",")){
+            try{
             topics = topics.substring(1);
+                
+            } catch (Exception e){
+                topics = "";
+                entity.setProperty("topics", topics);
+                datastore.put(entity); 
+
+                response.getWriter().println("{}");
+            }
+
         }
         String [] listedTopics = topics.split(",");
         System.out.println(Arrays.toString(listedTopics));
