@@ -28,19 +28,19 @@ public class PythonServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    PyObject x;
-    PythonInterpreter pyInterp = new PythonInterpreter();
-    pyInterp.exec("x = 10 + 10");
-    x = pyInterp.get("x");
-    response.setContentType("text/html;");
-    response.getWriter().println(x); 
-
+    // PyObject x;
     // PythonInterpreter pyInterp = new PythonInterpreter();
-    // pyInterp.execfile("test.py");
-    // PyObject x = pyInterp.get("x");
-    // System.out.println(x);
-
+    // pyInterp.exec("x = 10 + 10");
+    // x = pyInterp.get("x");
     // response.setContentType("text/html;");
+    // response.getWriter().println(x); 
+
+    PythonInterpreter pyInterp = new PythonInterpreter();
+    pyInterp.execfile("py/test.py");
+    PyObject x = pyInterp.get("x");
+    System.out.println(x);
+
+    response.setContentType("text/html;");
 
   }
 }
