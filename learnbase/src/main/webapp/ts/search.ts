@@ -13,7 +13,7 @@ window.onload = function getTopics() : void {
 
 function topicManager(topics) {
   var table = document.getElementById('subjectTable') as HTMLTableElement;
-  topics.array.forEach(topic => {
+  topics.forEach((topic: string) => {
     var newRow = table.insertRow();
     var cell = newRow.insertCell(); 
     cell.innerHTML = topic;

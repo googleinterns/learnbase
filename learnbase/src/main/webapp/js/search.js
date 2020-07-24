@@ -9,7 +9,7 @@ window.onload = function getTopics() {
 };
 function topicManager(topics) {
     var table = document.getElementById('subjectTable');
-    topics.array.forEach(topic => {
+    topics.forEach((topic) => {
         var newRow = table.insertRow();
         var cell = newRow.insertCell();
         cell.innerHTML = topic;
