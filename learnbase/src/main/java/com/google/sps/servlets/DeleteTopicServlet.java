@@ -39,12 +39,14 @@ public class DeleteTopicServlet extends HttpServlet{
         for (int i = 0; i < listedTopics.length; i++){
           if (!listedTopics[i].equals(removedTopic)){
             editedTopics += listedTopics[i]; 
-          }
-          if(i+1 < listedTopics.length){
-            editedTopics+=",";
+            if (i+1 < listedTopics.length){
+              editedTopics+=",";
+            }
           }
         }
-
+        if (editedTopics.substring(editedTopics.length()-1).equals(",")){
+          editedTopics = editedTopics.substring(0, editedTopics.length()-1);
+        }
         entity.setProperty("topics", editedTopics);
         datastore.put(entity); 
         response.sendRedirect("/search.html");
