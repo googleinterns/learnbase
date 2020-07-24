@@ -31,7 +31,7 @@ public class TopicServlet extends HttpServlet{
         Entity entity = results.asSingleEntity(); 
         String topics = (String) entity.getProperty("topics"); 
         System.out.println(topics);
-        while(topics.substring(0,1).equals(,)){
+        while(topics.substring(0,1).equals(",")){
             topics = topics.substring(1);
         }
         String [] listedTopics = topics.split(",");
