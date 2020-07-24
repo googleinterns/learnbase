@@ -17,14 +17,17 @@ public class TopicServlet extends HttpServlet{
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
+
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         UserService userService = UserServiceFactory.getUserService(); 
         User user = userService.getCurrentUser();
         String userId = user.getUserId(); 
         Query query = 
         new Query("UserInfo")
         .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+        PreparedQuery results = datastore.prepare(query); 
         Entity entity = results.asSingleEntity(); 
-        String topics = entity.getProperty("topics"); 
+        String topics = (String) entity.getProperty("topics"); 
 
         response.getWriter().println(topics);
     }
@@ -38,13 +41,14 @@ public class TopicServlet extends HttpServlet{
         Query query = 
         new Query("UserInfo")
         .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+        PreparedQuery results = datastore.prepare(query); 
         Entity entity = results.asSingleEntity(); 
         if (entity == null){
-            return ""; 
+            response.sendRedirect("/search.html");
         }
 
-        topic = request.getParameter("topic");
-        String topics = entity.getProperty("topics"); 
+        String topic = request.getParameter("topic");
+        String topics = (String) entity.getProperty("topics"); 
         if (topics == ""){
             entity.setProperty("topics", topic);
         }  else {
