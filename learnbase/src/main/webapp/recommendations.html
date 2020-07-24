@@ -8,18 +8,20 @@
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script> 
   <script type="module" src="js/main.js"></script>
-</head>
+</head> 
 
 <body>
-  <div class="topnav" id="myTopnav">
-    <a class="active" href="index.html">Login</a>
+   <div class="topnav" id="myTopnav">
+    <a  href="index.html">Login</a>
     <a href="search.html">Search</a>
-    <a href="recommendations.html">Recommendations</a>
+    <a class="active" href="recommendations.html">Recommendations</a>
     <a href="javascript:void(0);" class="icon" onclick="pageChanger()">
 	    <i class="fa fa-bars"></i>
     </a> 
+  </div> 
+  <div class="loginArea">
+    <h1> Here are recommended topics for you! </h1> 
   </div>
-  <div class="loginArea" id="user-page-content"></div>
 </body>
 
 </html>
