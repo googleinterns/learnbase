@@ -17,6 +17,8 @@ public class TopicServlet extends HttpServlet{
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
+
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         UserService userService = UserServiceFactory.getUserService(); 
         User user = userService.getCurrentUser();
         String userId = user.getUserId(); 
