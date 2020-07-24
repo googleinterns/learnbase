@@ -23,6 +23,7 @@ public class TopicServlet extends HttpServlet{
         Query query = 
         new Query("UserInfo")
         .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+        PreparedQuery results = datastore.prepare(query); 
         Entity entity = results.asSingleEntity(); 
         String topics = entity.getProperty("topics"); 
 
