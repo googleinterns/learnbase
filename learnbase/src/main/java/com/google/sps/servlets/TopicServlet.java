@@ -27,7 +27,7 @@ public class TopicServlet extends HttpServlet{
         .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
         PreparedQuery results = datastore.prepare(query); 
         Entity entity = results.asSingleEntity(); 
-        String topics = entity.getProperty("topics"); 
+        String topics = (String) entity.getProperty("topics"); 
 
         response.getWriter().println(topics);
     }
@@ -48,7 +48,7 @@ public class TopicServlet extends HttpServlet{
         }
 
         topic = request.getParameter("topic");
-        String topics = entity.getProperty("topics"); 
+        String topics = (String) entity.getProperty("topics"); 
         if (topics == ""){
             entity.setProperty("topics", topic);
         }  else {
