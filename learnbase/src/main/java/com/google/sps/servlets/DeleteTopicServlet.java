@@ -12,26 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.*;
 import java.io.PrintWriter;
 
-@WebServlet("/topics")
-public class TopicServlet extends HttpServlet{
+@WebServlet("/deleteTopic")
+public class DeleteTopicServlet extends HttpServlet{
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
 
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        UserService userService = UserServiceFactory.getUserService(); 
-        User user = userService.getCurrentUser();
-        String userId = user.getUserId(); 
-        Query query = 
-        new Query("UserInfo")
-        .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
-        PreparedQuery results = datastore.prepare(query); 
-        Entity entity = results.asSingleEntity(); 
-        String topics = (String) entity.getProperty("topics"); 
-        String [] listedTopics = topics.split(",");
-        Gson gson = new Gson(); 
-        String returnTopics = gson.toJson(listedTopics);
-        response.getWriter().println(returnTopics);
     }
 
     @Override
@@ -45,20 +31,21 @@ public class TopicServlet extends HttpServlet{
         .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
         PreparedQuery results = datastore.prepare(query); 
         Entity entity = results.asSingleEntity(); 
-        if (entity == null){
-            response.sendRedirect("/search.html");
-        }
-
-        String topic = request.getParameter("topic");
         String topics = (String) entity.getProperty("topics"); 
+        String [] listedTopics = topics.split(",");
 
-        if (topics.equals("")){
-            entity.setProperty("topics", topic);
-        }  else {
-            topics += ",";
-            topics += topic;
-            entity.setProperty("topics", topics);
+        String removedTopic = request.getParameter("topic");
+        String editedTopics = "";
+        for (i = 0; i < listedTopics.length; i++){
+          if (!listedTopics[i].equals(removedTopic)){
+            editedTopics += listedTopics[i]; 
+          }
+          if(i+1 < listedTopics.length){
+            editedTopics+=",";
+          }
         }
+
+        entity.setProperty("topics", editedTopics)
         datastore.put(entity); 
         response.sendRedirect("/search.html");
     }

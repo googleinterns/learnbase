@@ -13,5 +13,17 @@ function topicManager(topics) {
         var newRow = table.insertRow();
         var cell = newRow.insertCell();
         cell.innerHTML = topic;
+        const deleteButtonElement = document.createElement('button');
+        deleteButtonElement.innerText = 'Delete';
+        deleteButtonElement.addEventListener('click', () => {
+            deleteTopic(topic);
+        });
+        var deleteCell = newRow.insertCell();
+        deleteCell.innerHTML = deleteButtonElement.outerHTML;
     });
+}
+function deleteTopic(topic) {
+    const params = new URLSearchParams();
+    params.append("topic", topic);
+    fetch('/deleteTopic', { method: 'POST', body: params });
 }
