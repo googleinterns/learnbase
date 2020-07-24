@@ -44,7 +44,7 @@ public class TopicServlet extends HttpServlet{
         PreparedQuery results = datastore.prepare(query); 
         Entity entity = results.asSingleEntity(); 
         if (entity == null){
-            return ""; 
+            response.sendRedirect("/search.html");
         }
 
         topic = request.getParameter("topic");
