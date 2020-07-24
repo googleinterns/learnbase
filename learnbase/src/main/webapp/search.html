@@ -7,9 +7,10 @@
     <title>LearnBase</title>
     <link rel="stylesheet" href="css/style.css">
     <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/search.js"></script>
 </head>
 
-<body>
+<body id="body">
     <div class="topnav" id="myTopnav">
       <a href="index.html">Login</a>
       <a class="active" href="search.html">Search</a>
@@ -18,38 +19,38 @@
         <i class="fa fa-bars"></i>
       </a>
     </div>
-    <div class="searchSpace">
-        <div class="mainInfo">
-
-            <h1> Search </h1>
-            <p>Welcome to the LearnBase search page. In the search bar below, please insert
-                a word or phrase detailing a subject in which you are interested in learning about.
-            </p>
-            <div class="searchContainer">
-                <form action="">
-                    <input type="text" placeholder="Search..">
-                    <button type="submit">Submit</button>    
-                </form>
-            </div>
-        </div> 
-        <div class="selectedSubjects">
-            <table style="width:100%">
-                <tr>
-                  <th>Selected Topics</th>
-                </tr>
-                <tr>
-                  <td>Selected Topics will go here</td>
-                </tr>
-                <tr>
-                  <td></td>
-                </tr>
-              </table>
+    <div id="mainContent">
+        <div class="spaceAbove">
+   
         </div>
-    </div>
+        <div class="searchSpace">
+            <div class="mainInfo">
 
 
-    <div class="suggestSpace">
+                <h1> Search </h1>
+                <p>Welcome to the learnBase search page. In the search bar below, please insert
+                    a word or phrase detailing a subject in which you are interested in learning about.
+                </p>
+                <div class="searchContainer">
+                    <form action="POST" method="/topic">
+                        <input type="text" name="topic" placeholder="Search..">
+                        <button type="submit" id="searchButton">Submit</button>    
+                    </form>
+                </div>
+            </div> 
+            <div class="selectedSubjects" id="subjectTable">
+                <table style="width:100%">
+                    <tr>
+                    <th>Selected Topics</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="suggestSpace">
         
+        </div>
+
     </div>
 </body>
 
