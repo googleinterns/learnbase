@@ -11,9 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.*;
 import java.io.PrintWriter;
+import java.io.*; 
+import java.util.*; 
 
 @WebServlet("/topics")
-
 public class TopicServlet extends HttpServlet{
 
     @Override
@@ -29,7 +30,22 @@ public class TopicServlet extends HttpServlet{
         PreparedQuery results = datastore.prepare(query); 
         Entity entity = results.asSingleEntity(); 
         String topics = (String) entity.getProperty("topics"); 
+        System.out.println(topics);
+        while(topics.substring(0,1).equals(",")){
+            try{
+            topics = topics.substring(1);
+                
+            } catch (Exception e){
+                topics = "";
+                entity.setProperty("topics", topics);
+                datastore.put(entity); 
+
+                response.getWriter().println("{}");
+            }
+
+        }
         String [] listedTopics = topics.split(",");
+        System.out.println(Arrays.toString(listedTopics));
         Gson gson = new Gson(); 
         String returnTopics = gson.toJson(listedTopics);
         response.getWriter().println(returnTopics);
