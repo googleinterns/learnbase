@@ -1,5 +1,6 @@
 package com.google.sps.servlets;
 
+import com.google.gson.Gson;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -28,8 +29,10 @@ public class TopicServlet extends HttpServlet{
         PreparedQuery results = datastore.prepare(query); 
         Entity entity = results.asSingleEntity(); 
         String topics = (String) entity.getProperty("topics"); 
-
-        response.getWriter().println(topics);
+        String [] listedTopics = topics.split(",");
+        Gson gson = new Gson(); 
+        String returnTopics = gson.toJson(listedTopics);
+        response.getWriter().println(returnTopics);
     }
 
     @Override
@@ -55,7 +58,7 @@ public class TopicServlet extends HttpServlet{
         }  else {
             topics += ",";
             topics += topic;
-            entity.setProperty("topics", topic);
+            entity.setProperty("topics", topics);
         }
         datastore.put(entity); 
         response.sendRedirect("/search.html");
