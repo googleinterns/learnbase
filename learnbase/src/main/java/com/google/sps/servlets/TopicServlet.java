@@ -55,7 +55,7 @@ public class TopicServlet extends HttpServlet{
         }  else {
             topics += ",";
             topics += topic;
-            entity.setProperty("topics", topic);
+            entity.setProperty("topics", topics);
         }
         datastore.put(entity); 
         response.sendRedirect("/search.html");
