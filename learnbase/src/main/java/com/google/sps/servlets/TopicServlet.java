@@ -47,7 +47,7 @@ public class TopicServlet extends HttpServlet{
             response.sendRedirect("/search.html");
         }
 
-        topic = request.getParameter("topic");
+        String topic = request.getParameter("topic");
         String topics = (String) entity.getProperty("topics"); 
         if (topics == ""){
             entity.setProperty("topics", topic);
