@@ -33,5 +33,6 @@ function deleteTopic(topic){
   const params = new URLSearchParams(); 
   params.append("topic", topic)
   fetch('/deleteTopic', {method: 'POST', body: params});
+  location.reload();
 }
 
