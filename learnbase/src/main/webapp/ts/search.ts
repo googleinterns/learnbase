@@ -6,19 +6,16 @@
 window.onload = function getTopics() : void {
   fetch('/topics').then(response => response.json()).then((response) =>{
     console.log(response);
-    var topics = JSON.parse(response); 
-    console.log(topics);
-    var table = document.getElementById("subjectTable");
-
-    console.log("get topics");
+    topicManager(response);
   })  
 }
 
-/*
-function topicManager() {
-    fetch('/topics').then(response => response.text()).then((topics) => {
-        console.log(topics);
-        console.log("topic manager");
-    });
+
+function topicManager(topics) {
+  var table = document.getElementById('subjectTable') as HTMLTableElement;
+  topics.array.forEach(topic => {
+    var newRow = table.insertRow();
+    var cell = newRow.insertCell(); 
+    cell.innerHTML = topic;
+  });
 }
-*/
