@@ -49,7 +49,8 @@ public class TopicServlet extends HttpServlet{
 
         String topic = request.getParameter("topic");
         String topics = (String) entity.getProperty("topics"); 
-        if (topics == ""){
+
+        if (topics.equals("")){
             entity.setProperty("topics", topic);
         }  else {
             topics += ",";
