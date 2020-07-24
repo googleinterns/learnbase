@@ -28,8 +28,10 @@ public class TopicServlet extends HttpServlet{
         PreparedQuery results = datastore.prepare(query); 
         Entity entity = results.asSingleEntity(); 
         String topics = (String) entity.getProperty("topics"); 
-
-        response.getWriter().println(topics);
+        String [] listedTopics = topics.split(",");
+        Gson gson = new Gson(); 
+        String returnTopics = gson.toJson(listedTopics);
+        response.getWriter().println(returnTopics);
     }
 
     @Override
