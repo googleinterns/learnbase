@@ -15,3 +15,4 @@ function pageChanger() {
     navBar.className = "topnav";
   }
 }
+
