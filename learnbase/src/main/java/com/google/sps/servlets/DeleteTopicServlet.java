@@ -36,7 +36,7 @@ public class DeleteTopicServlet extends HttpServlet{
 
         String removedTopic = request.getParameter("topic");
         String editedTopics = "";
-        for (i = 0; i < listedTopics.length; i++){
+        for (int i = 0; i < listedTopics.length; i++){
           if (!listedTopics[i].equals(removedTopic)){
             editedTopics += listedTopics[i]; 
           }
