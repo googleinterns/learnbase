@@ -1,6 +1,10 @@
-from model import get_words2vecs
-from utils import *
+import sys
+sys.path[0] = "py"
+
+from model_functions import *
 
 # Get word2vec model
 vocab, vectors, words2vecs = get_words2vecs("py/model/word_embedding.bin")
-print(cosine_distance(words2vecs['writing'], words2vecs['author']))
+closest_words = closest(words2vecs, vocab, vectors, "quantum_physics") 
+print(closest_words)
+

@@ -1,9 +1,9 @@
-import itertools
 import struct
 from utils import *
 
 def get_words2vecs(url):
-  """Gets the word2vec data from the word_embedding.bin model.
+  """
+  Gets the word2vec data from the word_embedding.bin model.
 
   Converts this data from bytestrings to words corresponding
   to their word vectors.
@@ -40,3 +40,13 @@ def get_words2vecs(url):
       words2vecs[vocab[i]] = vectors[i]
       
   return vocab, vectors, words2vecs
+
+def closest(words2vecs, vocab, vectors, word, n=10):
+  distances = []
+  for i, other in enumerate(vocab):
+    if word != other:
+      distances.append(distance(words2vecs, word, other))
+  
+  distances.sort(key=lambda x: x[2], reverse=True)
+  return distances[0:n]
+

@@ -14,11 +14,15 @@
 
 package com.google.sps.servlets;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.python.util.PythonInterpreter;
 import org.python.core.*;
 
@@ -30,17 +34,21 @@ public class PythonServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // PyObject x;
     // PythonInterpreter pyInterp = new PythonInterpreter();
+    // pyInterp.exec("import itertools");
     // pyInterp.exec("x = 10 + 10");
     // x = pyInterp.get("x");
     // response.setContentType("text/html;");
     // response.getWriter().println(x); 
 
     PythonInterpreter pyInterp = new PythonInterpreter();
-    pyInterp.execfile("py/test.py");
-    PyObject x = pyInterp.get("x");
-    System.out.println(x);
+    pyInterp.execfile("py/main.py");
+    
+    PyObject words2vecs = pyInterp.get("words2vecs");
+    Map map = new HashMap();
+
 
     response.setContentType("text/html;");
+    response.getWriter().println("Word2vec: " + words2vecs); 
 
   }
 }
