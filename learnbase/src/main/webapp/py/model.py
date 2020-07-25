@@ -2,8 +2,20 @@ import itertools
 import struct
 from utils import *
 
-# Gets words2vec model created from Word2Vec python module
 def get_words2vecs(url):
+  """Gets the word2vec data from the word_embedding.bin model.
+
+  Converts this data from bytestrings to words corresponding
+  to their word vectors.
+
+  Args:
+    url: The path to the data that's downloaded.
+
+  Returns:
+    vocab: A list of all of the words in the vocabulary.
+    vectors: A list of all of the word embeddings.
+    words2vecs: A dictionary that maps each word to its corresponding embedding.
+  """
   words2vecs = {}
   with open(url, "rb") as file:
     header = file.readline()
