@@ -11,7 +11,7 @@ window.onload = function getTopics() : void {
 }
 
 
-function topicManager(topics) {
+function topicManager(topics) : void {
   var table = document.getElementById('subjectTable') as HTMLTableElement;
   topics.forEach((topic: string) => {
     var newRow = table.insertRow();
@@ -29,7 +29,7 @@ function topicManager(topics) {
 
 }
 
-function deleteTopic(topic){
+function deleteTopic(topic) : void {
   const params = new URLSearchParams(); 
   params.append("topic", topic)
   fetch('/deleteTopic', {method: 'POST', body: params});
