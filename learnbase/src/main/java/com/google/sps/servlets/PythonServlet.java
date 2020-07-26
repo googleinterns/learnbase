@@ -14,9 +14,12 @@
 
 package com.google.sps.servlets;
 
+import com.google.gson.Gson;
+
 import java.util.Map;
 import java.util.HashMap;
 
+import java.io.FileReader;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -30,25 +33,27 @@ import org.python.core.*;
 @WebServlet("/python")
 public class PythonServlet extends HttpServlet {
 
+  Map word_info;
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // PyObject x;
-    // PythonInterpreter pyInterp = new PythonInterpreter();
-    // pyInterp.exec("import itertools");
-    // pyInterp.exec("x = 10 + 10");
-    // x = pyInterp.get("x");
-    // response.setContentType("text/html;");
-    // response.getWriter().println(x); 
-
-    PythonInterpreter pyInterp = new PythonInterpreter();
-    pyInterp.execfile("py/main.py");
+    Gson gson = new Gson();
+    word_info = gson.fromJson(new FileReader("py/json/word_cache.json"), Map.class);
+    String topic = "science"; // TODO: get from user
     
-    PyObject words2vecs = pyInterp.get("words2vecs");
-    Map map = new HashMap();
+    if (!word_info.containsKey(topic)) {
+      System.out.println("topic");
+      PythonInterpreter pyInterp = new PythonInterpreter();
 
+      pyInterp.exec("import sys; sys.argv = ['py/main.py', '" + topic + "']");
+      pyInterp.execfile("py/main.py");
+      
+    }
+    
+    word_info = gson.fromJson(new FileReader("py/json/word_cache.json"), Map.class);
+    System.out.println(word_info.get(topic));
 
     response.setContentType("text/html;");
-    response.getWriter().println("Word2vec: " + words2vecs); 
 
   }
 }
