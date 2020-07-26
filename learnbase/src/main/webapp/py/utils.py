@@ -1,5 +1,3 @@
-import itertools
-
 def normalize(vec):
   """
   Normalize vector.

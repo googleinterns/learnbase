@@ -43,10 +43,37 @@ def get_words2vecs(url):
 
 def closest(words2vecs, vocab, vectors, word, n=10):
   distances = []
-  for i, other in enumerate(vocab):
+  for other in vocab:
     if word != other:
       distances.append(distance(words2vecs, word, other))
   
-  distances.sort(key=lambda x: x[2], reverse=True)
+  distances = _merge_sort(distances)
+  distances.reverse()
+
   return distances[0:n]
 
+def _merge_sort(values): 
+  
+  if len(values)>1: 
+    m = len(values)//2
+    left = values[:m] 
+    right = values[m:] 
+    left = _merge_sort(left) 
+    right = _merge_sort(right) 
+
+    values = [] 
+
+    while len(left) > 0 and len(right) > 0: 
+      if left[0][2] < right[0][2]: 
+        values.append(left[0]) 
+        left.pop(0) 
+      else: 
+        values.append(right[0]) 
+        right.pop(0) 
+
+    for i in left: 
+      values.append(i) 
+    for i in right: 
+      values.append(i) 
+                
+  return values 
