@@ -42,7 +42,19 @@ def get_words2vecs(url):
       
   return vocab, vectors, words2vecs
 
-def closest(words2vecs, vocab, vectors, word, n=10):
+def closest(words2vecs, vocab, word, n=10):
+  """
+  Gets `n` words that are closest to `word`
+
+  Args:
+    words2vecs: A dictionary mapping words to their corresponding word vectors.
+    vocab: A list of words in vocabulary.
+    word: A string of the word we're querying for.
+    n: (optional) Number of words we return. Default value is 10.
+
+  Returns:
+    List of n words that are closest to the word we're querying for.
+  """
   distances = []
   for other in vocab:
     if word != other:
@@ -54,7 +66,6 @@ def closest(words2vecs, vocab, vectors, word, n=10):
   return distances[0:n]
 
 def _merge_sort(values): 
-  
   if len(values)>1: 
     m = len(values)//2
     left = values[:m] 

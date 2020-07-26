@@ -15,9 +15,11 @@
 package com.google.sps.servlets;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.ArrayList;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -30,32 +32,34 @@ import org.python.util.PythonInterpreter;
 import org.python.core.*;
 
 /** Servlet that returns HTML that contains the page view count. */
-@WebServlet("/python")
+@WebServlet("/recommend-topics")
 public class PythonServlet extends HttpServlet {
 
-  Map word_info;
+  Map wordInfo;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
-    response.setContentType("text/html;");
-   
+       
     Gson gson = new Gson();
-    word_info = gson.fromJson(new FileReader("py/json/word_cache.json"), Map.class);
-    String topic = "science"; // TODO: get from user
+    wordInfo = gson.fromJson(new FileReader("py/json/word_cache.json"), 
+        new TypeToken<HashMap<String, ArrayList<String>>>() {}.getType());
+    String topic = request.getParameter("topic").replace(" ", "_");
     
-    if (!word_info.containsKey(topic)) {
-      System.out.println(topic);
-      System.out.println(word_info);
-      PythonInterpreter pyInterp = new PythonInterpreter();
-
-      pyInterp.exec("import sys; sys.argv = ['py/main.py', '" + topic + "']");
-      pyInterp.execfile("py/main.py");
+    if (!wordInfo.containsKey(topic)) {
+      querySimilarWords(topic);
+      wordInfo = gson.fromJson(new FileReader("py/json/word_cache.json"),
+        new TypeToken<HashMap<String, ArrayList<String>>>() {}.getType());
     }
-    
-    word_info = gson.fromJson(new FileReader("py/json/word_cache.json"), Map.class);
-    System.out.println(word_info.get(topic));
 
+    String json = gson.toJson(wordInfo.get(topic));
+    response.setContentType("application/json;");
+    response.getWriter().println(json);
+  }
 
+  private void querySimilarWords(String topic) {
+    PythonInterpreter pyInterp = new PythonInterpreter();
+
+    pyInterp.exec("import sys; sys.argv = ['py/main.py', '" + topic + "']");
+    pyInterp.execfile("py/main.py");
   }
 }

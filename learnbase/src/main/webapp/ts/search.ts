@@ -10,6 +10,18 @@ window.onload = function getTopics() : void {
   })  
 }
 
+window.onchange = async function getSimilarTopics() : Promise<void> {
+  const topic : string = (document.getElementById('topic') as HTMLInputElement).value;
+  console.log(`topic: ${topic}`);
+
+  console.log(performance.now());
+  const response = await fetch(`/recommend-topics?topic=${topic}`);
+  const similarTopics = await response.json();
+  console.log(performance.now());
+
+  console.log(similarTopics);
+  return similarTopics;
+}
 
 function topicManager(topics) : void {
   var table = document.getElementById('subjectTable') as HTMLTableElement;

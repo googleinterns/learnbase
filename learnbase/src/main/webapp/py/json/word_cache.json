@@ -1,1 +1,26 @@
-{"math": ["computer_science", "mit_press", "computer_graphics", "software_engineering", "lecture_notes", "algorithms", "springer_verlag", "computer_programming", "astrophysics", "computational_chemistry"]}
+{
+  "math": [
+    "computer_science",
+    "mit_press",
+    "computer_graphics",
+    "software_engineering",
+    "lecture_notes",
+    "algorithms",
+    "springer_verlag",
+    "computer_programming",
+    "astrophysics",
+    "computational_chemistry"
+  ],
+  "computer_science": [
+    "electrical_engineering",
+    "mathematics",
+    "artificial_intelligence",
+    "mathematical",
+    "linguistics",
+    "mathematical_logic",
+    "biology",
+    "physics",
+    "math",
+    "computer_vision"
+  ]
+}
