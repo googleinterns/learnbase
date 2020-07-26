@@ -37,23 +37,25 @@ public class PythonServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    
+    response.setContentType("text/html;");
+   
     Gson gson = new Gson();
     word_info = gson.fromJson(new FileReader("py/json/word_cache.json"), Map.class);
     String topic = "science"; // TODO: get from user
     
     if (!word_info.containsKey(topic)) {
-      System.out.println("topic");
+      System.out.println(topic);
+      System.out.println(word_info);
       PythonInterpreter pyInterp = new PythonInterpreter();
 
       pyInterp.exec("import sys; sys.argv = ['py/main.py', '" + topic + "']");
       pyInterp.execfile("py/main.py");
-      
     }
     
     word_info = gson.fromJson(new FileReader("py/json/word_cache.json"), Map.class);
     System.out.println(word_info.get(topic));
 
-    response.setContentType("text/html;");
 
   }
 }

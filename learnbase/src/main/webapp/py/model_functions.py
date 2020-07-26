@@ -33,8 +33,9 @@ def get_words2vecs(url):
           break
         word += char
 
-      vocab[i] = word.decode("utf-8").strip('\n')
-      vector = struct.unpack("100f", file.read(400))
+      vocab[i] = word.decode("utf-8")
+      vector = struct.unpack("<100f", file.read(binary_len))
+      file.read(1)
       
       vectors[i] = normalize(vector)
       words2vecs[vocab[i]] = vectors[i]

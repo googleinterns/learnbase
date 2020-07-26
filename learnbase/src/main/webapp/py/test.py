@@ -10,7 +10,7 @@ class TestUtils(unittest.TestCase):
 
   def test_distance(self):
     sampleDict = {"a": [1], "b":[2], "c": [3]}
-    self.assertEqual(distance(sampleDict, "a", "b"), [('a', 'b', 2)])
+    self.assertEqual(distance(sampleDict, "a", "b"), ('a', 'b', 2))
 
   def test_cosine_dist_1(self):
     self.assertEqual(cosine_distance([3,4], [2,1]), 10)

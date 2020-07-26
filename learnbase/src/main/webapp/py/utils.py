@@ -9,7 +9,7 @@ def normalize(vec):
     A normalized list.
   """
   magnitude = __dot(vec, vec)**0.5
-  return [float(i)/magnitude for i in vec]
+  return [i/magnitude for i in vec]
 
 def distance(word2vecDict, word1, word2):
   """
