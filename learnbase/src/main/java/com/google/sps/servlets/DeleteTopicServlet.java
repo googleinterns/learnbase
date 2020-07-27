@@ -44,6 +44,7 @@ public class DeleteTopicServlet extends HttpServlet{
               editedTopics+=",";
               System.out.println(editedTopics);
             }
+            break;
           }
         }
         if (editedTopics.substring(editedTopics.length()-1).equals(",")){
