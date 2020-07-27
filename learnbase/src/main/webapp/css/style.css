@@ -5,6 +5,15 @@
     height: auto;
 }
 
+#currentTime{
+  display:block;
+}
+
+#selectTime{
+  display:none;
+}
+
+
 #mainContent{
   display: flex;
   flex-direction: column;
