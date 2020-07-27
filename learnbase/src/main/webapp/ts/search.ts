@@ -35,7 +35,7 @@ function topicManager(topics: string[]) : void {
 
 }
 
-function deleteTopic(topic) : void {
+function deleteTopic(topic: string) : void {
   const params = new URLSearchParams(); 
   params.append("topic", topic)
   fetch('/deleteTopic', {method: 'POST', body: params});
