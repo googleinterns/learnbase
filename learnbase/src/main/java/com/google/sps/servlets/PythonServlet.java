@@ -14,33 +14,51 @@
 
 package com.google.sps.servlets;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
+
+import java.io.FileReader;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.python.util.PythonInterpreter;
 import org.python.core.*;
 
 /** Servlet that returns HTML that contains the page view count. */
-@WebServlet("/python")
+@WebServlet("/recommend-topics")
 public class PythonServlet extends HttpServlet {
+
+  Map wordInfo;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // PyObject x;
-    // PythonInterpreter pyInterp = new PythonInterpreter();
-    // pyInterp.exec("x = 10 + 10");
-    // x = pyInterp.get("x");
-    // response.setContentType("text/html;");
-    // response.getWriter().println(x); 
+    Gson gson = new Gson();
+    wordInfo = gson.fromJson(new FileReader("py/json/word_cache.json"), 
+        new TypeToken<HashMap<String, ArrayList<String>>>() {}.getType());
+    String topic = request.getParameter("topic").replace(" ", "_");
+    
+    if (!wordInfo.containsKey(topic)) {
+      querySimilarWords(topic);
+      wordInfo = gson.fromJson(new FileReader("py/json/word_cache.json"),
+        new TypeToken<HashMap<String, ArrayList<String>>>() {}.getType());
+    }
 
+    String json = gson.toJson(wordInfo.get(topic));
+    response.setContentType("application/json;");
+    response.getWriter().println(json);
+  }
+
+  private void querySimilarWords(String topic) {
     PythonInterpreter pyInterp = new PythonInterpreter();
-    pyInterp.execfile("py/test.py");
-    PyObject x = pyInterp.get("x");
-    System.out.println(x);
 
-    response.setContentType("text/html;");
-
+    pyInterp.exec("import sys; sys.argv = ['py/main.py', '" + topic + "']");
+    pyInterp.execfile("py/main.py");
   }
 }

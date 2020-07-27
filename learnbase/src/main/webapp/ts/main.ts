@@ -13,7 +13,7 @@ window.onload = function userLogin() : void {
 } 
 
 
-function pageChanger() {
+function pageChanger() : void {
   const navBar = document.getElementById("myTopnav") as HTMLDivElement;
   if (navBar.className === "topnav") { 
     navBar.className += " responsive";
