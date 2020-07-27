@@ -47,8 +47,11 @@ public class DeleteTopicServlet extends HttpServlet{
             break;
           }
         }
-        while(editedTopics.length() > 0 || editedTopics.substring(editedTopics.length()-1).equals(",")){
+        while (editedTopics.length() > 1 || editedTopics.substring(editedTopics.length()-1).equals(",")){
           editedTopics = editedTopics.substring(0, editedTopics.length()-1);
+        }
+        if (editedTopics.length() == 1 && editedTopics.equals(",")){
+          editedTopics = "";
         }
         entity.setProperty("topics", editedTopics);
         datastore.put(entity); 
