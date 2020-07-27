@@ -8,8 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-//document.getElementById("searchButton").addEventListener("click", topicManager);
+document.getElementById("timeChange").addEventListener("click", timeChange);
 //document.getElementById("body").addEventListener("load", getTopics);
+function timeChange() {
+    document.getElementById("selectTime").style.display = "block";
+    document.getElementById("currentTime").style.direction = "none";
+}
 window.onload = function getTopics() {
     fetch('/topics').then(response => response.json()).then((response) => {
         console.log(response);

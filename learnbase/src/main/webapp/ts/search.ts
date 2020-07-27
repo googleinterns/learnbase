@@ -1,7 +1,13 @@
 "use strict";
 
-//document.getElementById("searchButton").addEventListener("click", topicManager);
+document.getElementById("timeChange").addEventListener("click", timeChange);
 //document.getElementById("body").addEventListener("load", getTopics);
+
+function timeChange(){
+  document.getElementById("selectTime").style.display = "block"; 
+  document.getElementById("currentTime").style.direction = "none";
+}
+
 
 window.onload = function getTopics() : void {
   fetch('/topics').then(response => response.json()).then((response) =>{

@@ -36,6 +36,18 @@
                         <button type="submit" id="searchButton">Submit</button>    
                     </form>
                 </div>
+                
+                <form id="currentTime">
+                    <p>Your currently selected time is: </p>
+                    <p id="timeDisplay"></p>
+                    <button id="timeChange">Change Time</button>
+                </form>
+
+                <form id = "selectTime" action="/action_page.php">
+                    <label for="appt">Select a time to recieve daily emails:</label>
+                    <input type="time" id="appt" name="appt">
+                    <input type="submit">
+                </form>
             </div> 
             <div class="selectedSubjects">
                 <table id="subjectTable" style="width:100%">
