@@ -39,14 +39,23 @@ public class TopicServlet extends HttpServlet{
         System.out.println(topics);
         while(topics.substring(0,1).equals(",")){
             try{
-            topics = topics.substring(1);
-                
+                if (topics.length() > 1){
+                    topics = topics.substring(1);
+                }
+                else{
+                    topics = "";
+                    entity.setProperty("topics", topics);
+                    datastore.put(entity); 
+                    response.getWriter().println("{}");
+                    return;
+                }
             } catch (Exception e){
                 topics = "";
                 entity.setProperty("topics", topics);
                 datastore.put(entity); 
 
                 response.getWriter().println("{}");
+                return;
             }
 
         }
