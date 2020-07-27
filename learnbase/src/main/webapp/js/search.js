@@ -18,6 +18,7 @@ window.onload = function getTopics() {
     fetch('/topics').then(response => response.json()).then((response) => {
         console.log(response);
         topicManager(response);
+        getSimilarTopics(response[response.length - 1]);
     });
 };
 function topicManager(topics) {
@@ -42,13 +43,12 @@ function deleteTopic(topic) {
     location.reload();
 }
 // TODO: Change functionality so that it loads on submit
-window.onchange = function getSimilarTopics() {
+function getSimilarTopics(topic) {
     return __awaiter(this, void 0, void 0, function* () {
-        const topic = document.getElementById('topic').value;
         console.log(`topic: ${topic}`);
         const response = yield fetch(`/recommend-topics?topic=${topic}`);
         const similarTopics = yield response.json();
         console.log(similarTopics);
         return similarTopics;
     });
-};
+}

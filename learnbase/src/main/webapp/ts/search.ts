@@ -13,10 +13,11 @@ window.onload = function getTopics() : void {
   fetch('/topics').then(response => response.json()).then((response) =>{
     console.log(response);
     topicManager(response);
+    getSimilarTopics(response[response.length - 1]);
   })  
 }
 
-function topicManager(topics) : void {
+function topicManager(topics: string[]) : void {
   var table = document.getElementById('subjectTable') as HTMLTableElement;
   topics.forEach((topic: string) => {
     var newRow = table.insertRow();
@@ -42,8 +43,7 @@ function deleteTopic(topic) : void {
 }
 
 // TODO: Change functionality so that it loads on submit
-window.onchange = async function getSimilarTopics() : Promise<void> {
-  const topic : string = (document.getElementById('topic') as HTMLInputElement).value;
+async function getSimilarTopics(topic: string) : Promise<void> {
   console.log(`topic: ${topic}`);
 
   const response = await fetch(`/recommend-topics?topic=${topic}`);
