@@ -16,8 +16,7 @@ window.onload = function getTopics() : void {
   })  
 }
 
-
-function topicManager(topics) {
+function topicManager(topics) : void {
   var table = document.getElementById('subjectTable') as HTMLTableElement;
   topics.forEach((topic: string) => {
     var newRow = table.insertRow();
@@ -35,10 +34,21 @@ function topicManager(topics) {
 
 }
 
-function deleteTopic(topic){
+function deleteTopic(topic) : void {
   const params = new URLSearchParams(); 
   params.append("topic", topic)
   fetch('/deleteTopic', {method: 'POST', body: params});
   location.reload();
 }
 
+// TODO: Change functionality so that it loads on submit
+window.onchange = async function getSimilarTopics() : Promise<void> {
+  const topic : string = (document.getElementById('topic') as HTMLInputElement).value;
+  console.log(`topic: ${topic}`);
+
+  const response = await fetch(`/recommend-topics?topic=${topic}`);
+  const similarTopics = await response.json();
+
+  console.log(similarTopics);
+  return similarTopics;
+}
