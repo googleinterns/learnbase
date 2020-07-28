@@ -35,8 +35,8 @@ public class SchedulerServlet extends HttpServlet{
       String time = (String) entity.getProperty("time");
       entity.setProperty("time", time);
       datastore.put(entity); 
+      response.getWriter().println("Completed");
   }
 
-  response.getWriter().println("Completed");
 
 }
