@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.*;
 import java.io.PrintWriter;
+import java.io.*; 
+import java.util.*; 
 
 @WebServlet("/deleteTopic")
 public class DeleteTopicServlet extends HttpServlet{
@@ -33,18 +35,24 @@ public class DeleteTopicServlet extends HttpServlet{
         Entity entity = results.asSingleEntity(); 
         String topics = (String) entity.getProperty("topics"); 
         String [] listedTopics = topics.split(",");
-
+        //System.out.println("Listed topics from datastore: " +Arrays.toString(listedTopics));
+        
         String removedTopic = request.getParameter("topic");
+        //System.out.println("Topic to be removed:" + removedTopic);
+
         String editedTopics = "";
-        System.out.println("Edited Topics:");
+        //System.out.println("Edited Topics:");
         for (int i = 0; i < listedTopics.length; i++){
+          //System.out.println("Removed  topic: " + removedTopic);
+          //System.out.println("Listedtopic[i]: " + listedTopics[i]);
           if (!listedTopics[i].equals(removedTopic)){
             editedTopics += listedTopics[i]; 
             if (i+1 < listedTopics.length){
               editedTopics+=",";
-              System.out.println(editedTopics);
+              //System.out.println(editedTopics);
             }
-            break;
+          } else {
+            removedTopic="";
           }
         }
         while (editedTopics.length() > 1 && editedTopics.substring(editedTopics.length()-1).equals(",")){
