@@ -61,7 +61,7 @@ async function getRecommendedTopics(response: string)  {
 
   }
   
-  let currIndex : number = 0;
+  var currIndex : number = 0;
   for (let i = 0; i < 10; i++) {
     if (i < 4) {
       recommendations.push(topicInfoList[0][1][i]);
@@ -73,6 +73,7 @@ async function getRecommendedTopics(response: string)  {
         recsPerTopic[currIndex] -= 1
       }
       
+      // TODO: Eliminate duplicates
       let rand : number = (currIndex === 0) ? Math.floor(Math.random()* 6) + 4 : Math.floor(Math.random() * 10);
       let nextTopic : string = topicInfoList[currIndex][1][rand];
       
@@ -81,6 +82,12 @@ async function getRecommendedTopics(response: string)  {
   }
 
   console.log("Recommendations: " + recommendations);
+}
+
+function getRandomNumbersNoRepetition(min: number, max: number) : number[] {
+  var numbers : number[];
+  
+  return numbers;
 }
 
 function topicManager(topics: string[]) : void {

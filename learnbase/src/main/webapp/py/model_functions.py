@@ -23,7 +23,7 @@ def get_words2vecs(url):
 
     vocab = [None]*vocab_size
     vectors = [[None for _ in range(vector_size)] for _ in range(vocab_size)]
-    binary_len = 400
+    binary_len = 200
 
     for i in range(vocab_size):
       word = b""
@@ -34,7 +34,7 @@ def get_words2vecs(url):
         word += char
 
       vocab[i] = word.decode("utf-8")
-      vector = struct.unpack("<100f", file.read(binary_len))
+      vector = struct.unpack("<50f", file.read(binary_len))
       file.read(1)
       
       vectors[i] = normalize(vector)

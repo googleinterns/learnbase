@@ -54,7 +54,7 @@ function getRecommendedTopics(response) {
             }
             console.log(rand);
         }
-        let currIndex = 0;
+        var currIndex = 0;
         for (let i = 0; i < 10; i++) {
             if (i < 4) {
                 recommendations.push(topicInfoList[0][1][i]);
@@ -66,6 +66,7 @@ function getRecommendedTopics(response) {
                 else {
                     recsPerTopic[currIndex] -= 1;
                 }
+                // TODO: Eliminate duplicates
                 let rand = (currIndex === 0) ? Math.floor(Math.random() * 6) + 4 : Math.floor(Math.random() * 10);
                 let nextTopic = topicInfoList[currIndex][1][rand];
                 recommendations.push(nextTopic);
@@ -73,6 +74,10 @@ function getRecommendedTopics(response) {
         }
         console.log("Recommendations: " + recommendations);
     });
+}
+function getRandomNumbersNoRepetition(min, max) {
+    var numbers;
+    return numbers;
 }
 function topicManager(topics) {
     var table = document.getElementById('subjectTable');
