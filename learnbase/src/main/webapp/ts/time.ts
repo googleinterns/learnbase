@@ -1,11 +1,11 @@
 "use strict";
 
 document.getElementById("timeChange").addEventListener("click", timeChangeReveal);
-document.getElementById("selectTime").addEventListener("click", timeChange);
+document.getElementById("submitButton").addEventListener("click", timeChange);
 
 
 window.onload = function getTime() : void {
-  fetch('/schedyler').then(response => response.json()).then((response) =>{
+  fetch('/scheduler').then(response => response.json()).then((response) =>{
     console.log(response);
     document.getElementById("timeDisplay").innerHTML = response; 
   })  
