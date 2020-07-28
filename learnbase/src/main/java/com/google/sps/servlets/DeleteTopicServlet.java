@@ -35,21 +35,21 @@ public class DeleteTopicServlet extends HttpServlet{
         Entity entity = results.asSingleEntity(); 
         String topics = (String) entity.getProperty("topics"); 
         String [] listedTopics = topics.split(",");
-        System.out.println("Listed topics from datastore: " +Arrays.toString(listedTopics));
+        //System.out.println("Listed topics from datastore: " +Arrays.toString(listedTopics));
         
         String removedTopic = request.getParameter("topic");
-        System.out.println("Topic to be removed:" + removedTopic);
+        //System.out.println("Topic to be removed:" + removedTopic);
 
         String editedTopics = "";
-        System.out.println("Edited Topics:");
+        //System.out.println("Edited Topics:");
         for (int i = 0; i < listedTopics.length; i++){
-          System.out.println("Removed  topic: " + removedTopic);
-          System.out.println("Listedtopic[i]: " + listedTopics[i]);
+          //System.out.println("Removed  topic: " + removedTopic);
+          //System.out.println("Listedtopic[i]: " + listedTopics[i]);
           if (!listedTopics[i].equals(removedTopic)){
             editedTopics += listedTopics[i]; 
             if (i+1 < listedTopics.length){
               editedTopics+=",";
-              System.out.println(editedTopics);
+              //System.out.println(editedTopics);
             }
           } else {
             removedTopic="";
