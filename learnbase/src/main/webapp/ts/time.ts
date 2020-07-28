@@ -10,10 +10,9 @@ function timeChangeReveal(){
 
 function timeChange(){
   var timeContainer = document.getElementById("appt") as HTMLInputElement;
-  var time = timeContainer.value;
-  const params = new URLSearchParams(); 
-  params.append("time", time)
-  fetch('/scheduler', {method: 'GET', body: params}).then(response => response.text()).then((response) =>{
+  var time = timeContainer.value; 
+  var url = "/scheduler?time=" + time; 
+  fetch(url).then(response => response.text()).then((response) =>{
     console.log(response);
   });
 }

@@ -8,7 +8,8 @@ function timeChangeReveal() {
 function timeChange() {
     var timeContainer = document.getElementById("appt");
     var time = timeContainer.value;
-    const params = new URLSearchParams();
-    params.append("time", time);
-    fetch('/scheduler', { method: 'GET', body: params });
+    var url = "/scheduler?time=" + time;
+    fetch(url).then(response => response.text()).then((response) => {
+        console.log(response);
+    });
 }
