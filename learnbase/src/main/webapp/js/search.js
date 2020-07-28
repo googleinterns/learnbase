@@ -16,6 +16,10 @@ window.onload = function getTopics() {
         topicManager(response);
         getSimilarTopics(response[response.length - 1]);
     });
+    fetch('/scheduler').then(response => response.json()).then((response) => {
+        console.log(response);
+        document.getElementById("timeDisplay").innerHTML = response;
+    });
 };
 function topicManager(topics) {
     var table = document.getElementById('subjectTable');
