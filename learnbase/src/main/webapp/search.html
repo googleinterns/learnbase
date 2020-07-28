@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/search.js"></script>
+    <script type="module" src="js/time.js"></script>
 </head>
 
 <body id="body">
@@ -40,10 +41,10 @@
                 <form id="currentTime">
                     <p>Your currently selected time is: </p>
                     <p id="timeDisplay"></p>
-                    <button id="timeChange">Change Time</button>
+                    <button id="timeChange" type="button">Change Time</button>
                 </form>
 
-                <form id = "selectTime" action="/action_page.php">
+                <form id = "selectTime">
                     <label for="appt">Select a time to recieve daily emails:</label>
                     <input type="time" id="appt" name="appt">
                     <input type="submit">

@@ -55,6 +55,7 @@ public class NicknameServlet extends HttpServlet {
     entity.setProperty("id", id);
     entity.setProperty("nickname", nickname);
     entity.setProperty("topics", "");
+    entity.setProperty("time", "");
     datastore.put(entity);
 
     response.sendRedirect("/index.html");

@@ -1,14 +1,5 @@
 "use strict";
 
-document.getElementById("timeChange").addEventListener("click", timeChange);
-//document.getElementById("body").addEventListener("load", getTopics);
-
-function timeChange(){
-  document.getElementById("selectTime").style.display = "block"; 
-  document.getElementById("currentTime").style.direction = "none";
-}
-
-
 window.onload = function getTopics() : void {
   fetch('/topics').then(response => response.json()).then((response) =>{
     console.log(response);
@@ -19,19 +10,37 @@ window.onload = function getTopics() : void {
 
 function topicManager(topics: string[]) : void {
   var table = document.getElementById('subjectTable') as HTMLTableElement;
-  topics.forEach((topic: string) => {
+  var i = 0 ; 
+  var size = topics.length;
+  // topics.forEach((topic: string) => {
+  //   var newRow = table.insertRow();
+  //   var cell = newRow.insertCell(); 
+  //   cell.innerHTML = topic;
+
+  //   const deleteButtonElement = document.createElement('button');
+  //   deleteButtonElement.innerText = 'Delete';
+  //   deleteButtonElement.addEventListener('click', () =>{
+  //     deleteTopic(topic);
+  //   });
+  //   var deleteCell = newRow.insertCell();
+  //   deleteCell.appendChild(deleteButtonElement);
+    
+  // });
+  for (i = 0; i < topics.length-1; i++){
     var newRow = table.insertRow();
     var cell = newRow.insertCell(); 
-    cell.innerHTML = topic;
+    cell.innerHTML = topics[i];
 
     const deleteButtonElement = document.createElement('button');
     deleteButtonElement.innerText = 'Delete';
     deleteButtonElement.addEventListener('click', () =>{
-      deleteTopic(topic);
+      deleteTopic(topics[i]);
     });
     var deleteCell = newRow.insertCell();
     deleteCell.appendChild(deleteButtonElement);
-  });
+  } 
+  var time = topics[topics.length-1];
+  document.getElementById("timeDisplay").innerHTML = time;
 
 }
 
