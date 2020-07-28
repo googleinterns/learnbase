@@ -33,6 +33,7 @@ public class SchedulerServlet extends HttpServlet{
       PreparedQuery results = datastore.prepare(query); 
       Entity entity = results.asSingleEntity();     
       String time = (String) entity.getProperty("time");
+      System.out.println("Time recorded: " + time);
       entity.setProperty("time", time);
       datastore.put(entity); 
       response.getWriter().println("Completed");
