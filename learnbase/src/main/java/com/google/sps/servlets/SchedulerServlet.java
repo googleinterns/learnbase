@@ -37,4 +37,6 @@ public class SchedulerServlet extends HttpServlet{
       datastore.put(entity); 
   }
 
+  response.getWriter().println("Completed");
+
 }

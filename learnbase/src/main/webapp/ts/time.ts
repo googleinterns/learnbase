@@ -13,7 +13,9 @@ function timeChange(){
   var time = timeContainer.value;
   const params = new URLSearchParams(); 
   params.append("time", time)
-  fetch('/scheduler', {method: 'GET', body: params});
+  fetch('/scheduler', {method: 'GET', body: params}).then(response => response.text()).then((response) =>{
+    console.log(response);
+  });
 }
 
 
