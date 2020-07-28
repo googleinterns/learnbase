@@ -3,6 +3,15 @@
 document.getElementById("timeChange").addEventListener("click", timeChangeReveal);
 document.getElementById("selectTime").addEventListener("click", timeChange);
 
+
+window.onload = function getTime() : void {
+  fetch('/schedyler').then(response => response.json()).then((response) =>{
+    console.log(response);
+    document.getElementById("timeDisplay").innerHTML = response; 
+  })  
+}
+
+
 function timeChangeReveal(){
   document.getElementById("selectTime").style.display = "block"; 
   document.getElementById("currentTime").style.direction = "none";
@@ -16,7 +25,11 @@ function timeChange(){
   console.log(url);
   fetch(url).then(response => response.text()).then((response) =>{
     console.log(response);
+    document.getElementById("timeDisplay").innerHTML = response; 
+    document.getElementById("selectTime").style.display = "none"; 
+    document.getElementById("currentTime").style.direction = "block";
   });
+
 }
 
 

@@ -32,11 +32,17 @@ public class SchedulerServlet extends HttpServlet{
       .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
       PreparedQuery results = datastore.prepare(query); 
       Entity entity = results.asSingleEntity();     
-      String time = (String) entity.getProperty("time");
+      String recordedTime = (String) entity.getProperty("time");
       System.out.println("Time recorded: " + time);
-      entity.setProperty("time", time);
+      String newTime = "";
+      try{
+          newTime = request.getParameter("time");
+      } catch (Exception e){
+        newTime = recordedTime; 
+      }
+      entity.setProperty("time", newTime);
       datastore.put(entity); 
-      response.getWriter().println("Completed");
+      response.getWriter().println(newTime);
   }
 
 
