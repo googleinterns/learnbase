@@ -47,7 +47,7 @@ public class DeleteTopicServlet extends HttpServlet{
               editedTopics+=",";
               System.out.println(editedTopics);
             }
-            removedTopic=""
+            removedTopic="";
           }
         }
         while (editedTopics.length() > 1 && editedTopics.substring(editedTopics.length()-1).equals(",")){
