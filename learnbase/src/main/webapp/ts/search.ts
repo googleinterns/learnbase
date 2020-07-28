@@ -52,3 +52,4 @@ async function getSimilarTopics(topic: string) : Promise<void> {
   console.log(similarTopics);
   return similarTopics;
 }
+
