@@ -9,9 +9,11 @@ function timeChangeReveal(){
 }
 
 function timeChange(){
+  console.log("Button clicked");
   var timeContainer = document.getElementById("appt") as HTMLInputElement;
   var time = timeContainer.value; 
   var url = "/scheduler?time=" + time; 
+  console.log(url);
   fetch(url).then(response => response.text()).then((response) =>{
     console.log(response);
   });
