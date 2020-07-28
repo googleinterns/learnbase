@@ -36,7 +36,7 @@ public class SchedulerServlet extends HttpServlet{
       System.out.println("Time recorded: " + recordedTime);
       String newTime = "";
       try{
-          newTime = request.getParameter("time");
+        newTime = request.getParameter("time");
       } catch (Exception e){
         newTime = recordedTime; 
       }
