@@ -90,17 +90,15 @@ public class TopicServlet extends HttpServlet{
 
         String currentUrl = (String) entity.getProperty("currentUrl");
         String topic = request.getParameter("topic");
-	getSearch(topic);
+	    getSearch(topic);
         String topics = (String) entity.getProperty("topics"); 
-<<<<<<< HEAD
 
-=======
-	ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
+	    ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
         
         if(currentUrl == null) { 
           currentUrl = "0";
-	}
->>>>>>> ff8b141766191f897571cb9704556f5ad869731c
+	    }
+
         if (topics.equals("")){
             entity.setProperty("topics", topic);
         }  else {
@@ -108,9 +106,10 @@ public class TopicServlet extends HttpServlet{
             topics += topic;
             entity.setProperty("topics", topics);
         }
-<<<<<<< HEAD
         datastore.put(entity); 
-=======
+
+        } 
+
 	if(urls == null) {
           urls = new ArrayList<>();
         }
@@ -122,7 +121,7 @@ public class TopicServlet extends HttpServlet{
 	entity.setProperty("currentUrl", currentUrl);
 	entity.setProperty("urls", urls);
 	datastore.put(entity);
->>>>>>> ff8b141766191f897571cb9704556f5ad869731c
+
         response.sendRedirect("/search.html");
     }
 
