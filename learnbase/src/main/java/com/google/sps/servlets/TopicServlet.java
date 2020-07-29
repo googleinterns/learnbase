@@ -64,9 +64,6 @@ public class TopicServlet extends HttpServlet{
             }
 
         }
-        
-        //topics += "," + (String) entity.getProperty("time"); 
-
         String [] listedTopics = topics.split(",");
         System.out.println(Arrays.toString(listedTopics));
         Gson gson = new Gson(); 
@@ -90,23 +87,30 @@ public class TopicServlet extends HttpServlet{
             response.sendRedirect("/search.html");
         }
 
+        String currentUrl = (String) entity.getProperty("currentUrl");
         String topic = request.getParameter("topic");
         String topics = (String) entity.getProperty("topics"); 
 	ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
-
+        
+        if(currentUrl == null) { 
+          currentUrl = "0";
+	}
         if (topics.equals("")){
             entity.setProperty("topics", topic);
         }  else {
             topics += ",";
             topics += topic;
             entity.setProperty("topics", topics);
-        }
-	if(urls.isEmpty()) {
+        } 
+	if(urls == null) {
           urls = new ArrayList<>();
         }
 	String[] values = topics.split(",");
         urls = getSearch(topic, urls);
 	System.out.println(urls);
+	getInfo(urls, currentUrl);
+	currentUrl =  Integer.toString(Integer.parseInt(currentUrl)+1); 
+	entity.setProperty("currentUrl", currentUrl);
 	entity.setProperty("urls", urls);
 	datastore.put(entity);
         response.sendRedirect("/search.html");
@@ -116,6 +120,7 @@ public class TopicServlet extends HttpServlet{
     String google = "https://www.google.com/search";
     int num = 5;
     String searchURL = google + "?q=" + topic + "&num=" + num;
+    System.out.println(searchURL);
 
     Document doc  = Jsoup.connect(searchURL).userAgent("Chrome").get();
     Elements results = doc.select("a[href]:has(span)").select("a[href]:not(:has(div))");
@@ -124,10 +129,22 @@ public class TopicServlet extends HttpServlet{
 	String linkHref = result.attr("href");
 	String linkText = result.text();
 	if (linkHref.contains("https")) {
-          urls.add(linkHref.substring(7, linkHref.indexOf("&"))); 
+	  urls.add(linkHref.substring(7, linkHref.indexOf("&")));
 	} 
     }
-    return urls;
+    return urls; 
+  }
+
+  private void getInfo(ArrayList<String> urls, String currentUrl) throws IOException {
+    int currentUrlNum = Integer.parseInt(currentUrl);
+    String url = urls.get(currentUrlNum);
+
+    Document doc = Jsoup.connect(url).get();
+    Elements results = doc.select("p");
+
+    for(Element result : results) {
+      System.out.println(result);
+    }
   }
 
 }
