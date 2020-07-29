@@ -17,7 +17,7 @@ window.onload = function getTopics() {
         getRecommendedTopics(response);
     });
     console.log("First fetch complete");
-    fetch('/scheduler').then(response => response.json()).then((response) => {
+    fetch('/scheduler').then(response => response.text()).then((response) => {
         console.log(response);
         document.getElementById("timeDisplay").innerHTML = response;
     });
