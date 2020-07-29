@@ -125,3 +125,4 @@ async function getSimilarTopics(topic: string) : Promise<string[]> {
   return similarTopics;
 }
 
+
