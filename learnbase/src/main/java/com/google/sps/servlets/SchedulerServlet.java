@@ -35,15 +35,16 @@ public class SchedulerServlet extends HttpServlet{
       String recordedTime = (String) entity.getProperty("time");
       System.out.println("Time recorded: " + recordedTime);
       String newTime = "";
-      try{
-        newTime = request.getParameter("time");
+      newTime = request.getParameter("time");
+      if (newTime != null && !newTime.isEmpty()){
+
+      }
         entity.setProperty("time", newTime);
         datastore.put(entity); 
-        System.out.println("try");
-      } catch (Exception e){
+
         newTime = recordedTime; 
         System.out.println("catch");
-      }
+    
       
       response.getWriter().println(newTime);
       System.out.println("Printed " + newTime);
