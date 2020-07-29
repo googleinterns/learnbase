@@ -37,11 +37,12 @@ public class SchedulerServlet extends HttpServlet{
       String newTime = "";
       try{
         newTime = request.getParameter("time");
+        entity.setProperty("time", newTime);
+        datastore.put(entity); 
       } catch (Exception e){
         newTime = recordedTime; 
       }
-      entity.setProperty("time", newTime);
-      datastore.put(entity); 
+      
       response.getWriter().println(newTime);
   }
 
