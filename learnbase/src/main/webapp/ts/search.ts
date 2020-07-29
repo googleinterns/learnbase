@@ -90,6 +90,10 @@ async function getRecommendedTopics(response: string)  {
 
 function getRandomNumbersNoRepetition(min: number, max: number) : number[] {
   var numbers : number[];
+  for (let i = min; i < max; i++) {
+    numbers.push(i);
+  }
+
   
   return numbers;
 }
