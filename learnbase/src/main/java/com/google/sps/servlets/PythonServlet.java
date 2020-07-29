@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import org.python.util.*;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -56,23 +58,19 @@ public class PythonServlet extends HttpServlet {
   }
 
   private void querySimilarWords(String topic) {
-    Process process;
-    try {
-      process = Runtime.getRuntime().exec(new String[]{"python", "py/main.py", topic});
-      mProcess = process;
-    } catch(Exception e) {
-      System.out.println("Exception Raised" + e.toString());
-    }
-    InputStream stdout = mProcess.getInputStream();
-    BufferedReader reader = new BufferedReader(new InputStreamReader(stdout,StandardCharsets.UTF_8));
-    String line;
-    try{
-      while((line = reader.readLine()) != null){
-        System.out.println("stdout: "+ line);
-      }
-    } catch(IOException e){
-      System.out.println("Exception in reading output"+ e.toString());
-    }
+  
+    Properties props = new Properties();
+    props.put("python.home", "WEB-INF");
+    props.put("python.console.encoding", "UTF-8");
+    props.put("python.security.respectJavaAccessibility", "false");
+    props.put("python.import.site", "false");
+
+    Properties preprops = System.getProperties();
+    PythonInterpreter.initialize(preprops, props, new String[0]);
+    PythonInterpreter pyInterp = new PythonInterpreter();
+
+    pyInterp.exec("import sys;import json;sys.argv = ['py/main.py', '"+ topic +"']");
+    pyInterp.execfile("py/main.py");
 
   }
 }

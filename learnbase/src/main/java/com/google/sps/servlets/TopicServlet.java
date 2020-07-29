@@ -64,9 +64,6 @@ public class TopicServlet extends HttpServlet{
             }
 
         }
-        
-        //topics += "," + (String) entity.getProperty("time"); 
-
         String [] listedTopics = topics.split(",");
         System.out.println(Arrays.toString(listedTopics));
         Gson gson = new Gson(); 
@@ -92,6 +89,7 @@ public class TopicServlet extends HttpServlet{
 
         String currentUrl = (String) entity.getProperty("currentUrl");
         String topic = request.getParameter("topic");
+	getSearch(topic);
         String topics = (String) entity.getProperty("topics"); 
 	ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
         
@@ -104,7 +102,7 @@ public class TopicServlet extends HttpServlet{
             topics += ",";
             topics += topic;
             entity.setProperty("topics", topics);
-        }
+        } 
 	if(urls == null) {
           urls = new ArrayList<>();
         }
@@ -119,10 +117,11 @@ public class TopicServlet extends HttpServlet{
         response.sendRedirect("/search.html");
     }
 
-  private ArrayList<String> getSearch(String topic, ArrayList<String> urls) throws IOException {
+  private String getSearch(String topic) throws IOException {
     String google = "https://www.google.com/search";
     int num = 5;
     String searchURL = google + "?q=" + topic + "&num=" + num;
+    System.out.println(searchURL);
 
     Document doc  = Jsoup.connect(searchURL).userAgent("Chrome").get();
     Elements results = doc.select("a[href]:has(span)").select("a[href]:not(:has(div))");
@@ -131,10 +130,10 @@ public class TopicServlet extends HttpServlet{
 	String linkHref = result.attr("href");
 	String linkText = result.text();
 	if (linkHref.contains("https")) {
-          urls.add(linkHref.substring(7, linkHref.indexOf("&"))); 
+          System.out.println(linkHref.substring(7, linkHref.indexOf("&"))); 
 	} 
     }
-    return urls;
+    return ""; 
   }
 
   private void getInfo(ArrayList<String> urls, String currentUrl) throws IOException {

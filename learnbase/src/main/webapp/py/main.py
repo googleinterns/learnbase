@@ -3,7 +3,6 @@ import sys
 sys.path[0] = "py"
 topic = sys.argv[1].replace(" ", "_")
 
-import json
 from model_functions import *
 
 word_cache = None
