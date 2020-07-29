@@ -90,10 +90,14 @@ public class TopicServlet extends HttpServlet{
             response.sendRedirect("/search.html");
         }
 
+        String currentUrl = (String) entity.getProperty("currentUrl");
         String topic = request.getParameter("topic");
         String topics = (String) entity.getProperty("topics"); 
 	ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
-
+        
+        if(currentUrl == null) { 
+          currentUrl = "0";
+	}
         if (topics.equals("")){
             entity.setProperty("topics", topic);
         }  else {
@@ -107,7 +111,9 @@ public class TopicServlet extends HttpServlet{
 	String[] values = topics.split(",");
         urls = getSearch(topic, urls);
 	System.out.println(urls);
-	getInfo(urls);
+	getInfo(urls, currentUrl);
+	currentUrl =  Integer.toString(Integer.parseInt(currentUrl)+1); 
+	entity.setProperty("currentUrl", currentUrl);
 	entity.setProperty("urls", urls);
 	datastore.put(entity);
         response.sendRedirect("/search.html");
@@ -131,8 +137,9 @@ public class TopicServlet extends HttpServlet{
     return urls;
   }
 
-  private void getInfo(ArrayList<String> urls) throws IOException {
-    String url = urls.get(1);
+  private void getInfo(ArrayList<String> urls, String currentUrl) throws IOException {
+    int currentUrlNum = Integer.parseInt(currentUrl);
+    String url = urls.get(currentUrlNum);
 
     Document doc = Jsoup.connect(url).get();
     Elements results = doc.select("p");
