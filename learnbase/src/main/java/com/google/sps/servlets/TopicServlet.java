@@ -79,9 +79,7 @@ public class TopicServlet extends HttpServlet{
         User user = userService.getCurrentUser();
         String userId = user.getUserId(); 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Query query = 
-        new Query("UserInfo")
-        .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+        Query query = new Query("UserInfo").setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
         PreparedQuery results = datastore.prepare(query); 
         Entity entity = results.asSingleEntity(); 
         if (entity == null){
@@ -107,19 +105,17 @@ public class TopicServlet extends HttpServlet{
         }
         datastore.put(entity); 
 
-        } 
-
-	if(urls == null) {
+        if(urls == null) {
           urls = new ArrayList<>();
         }
-	String[] values = topics.split(",");
+    	String[] values = topics.split(",");
         urls = getSearch(topic, urls);
-	System.out.println(urls);
-	getInfo(urls, currentUrl);
-	currentUrl =  Integer.toString(Integer.parseInt(currentUrl)+1); 
-	entity.setProperty("currentUrl", currentUrl);
-	entity.setProperty("urls", urls);
-	datastore.put(entity);
+        System.out.println(urls);
+        getInfo(urls, currentUrl);
+        currentUrl =  Integer.toString(Integer.parseInt(currentUrl)+1); 
+        entity.setProperty("currentUrl", currentUrl);
+        entity.setProperty("urls", urls);
+        datastore.put(entity);
 
         response.sendRedirect("/search.html");
     }
@@ -134,11 +130,11 @@ public class TopicServlet extends HttpServlet{
     Elements results = doc.select("a[href]:has(span)").select("a[href]:not(:has(div))");
 
     for (Element result : results) {
-	String linkHref = result.attr("href");
-	String linkText = result.text();
-	if (linkHref.contains("https")) {
-	  urls.add(linkHref.substring(7, linkHref.indexOf("&")));
-	} 
+        String linkHref = result.attr("href");
+        String linkText = result.text();
+        if (linkHref.contains("https")) {
+        urls.add(linkHref.substring(7, linkHref.indexOf("&")));
+        } 
     }
     return urls; 
   }
