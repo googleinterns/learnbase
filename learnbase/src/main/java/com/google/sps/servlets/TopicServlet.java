@@ -98,12 +98,13 @@ public class TopicServlet extends HttpServlet{
             topics += topic;
             entity.setProperty("topics", topics);
         }
-	if(urls.isEmpty()) {
+	if(urls == null) {
           urls = new ArrayList<>();
         }
 	String[] values = topics.split(",");
         urls = getSearch(topic, urls);
 	System.out.println(urls);
+	getInfo(urls);
 	entity.setProperty("urls", urls);
 	datastore.put(entity);
         response.sendRedirect("/search.html");
@@ -125,6 +126,17 @@ public class TopicServlet extends HttpServlet{
 	} 
     }
     return urls;
+  }
+
+  private void getInfo(ArrayList<String> urls) throws IOException {
+    String url = urls.get(1);
+
+    Document doc = Jsoup.connect(url).get();
+    Elements results = doc.select("p");
+
+    for(Element result : results) {
+      System.out.println(result);
+    }
   }
 
 }
