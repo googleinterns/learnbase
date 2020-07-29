@@ -8,18 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-document.getElementById("timeChange").addEventListener("click", timeChange);
-//document.getElementById("body").addEventListener("load", getTopics);
-function timeChange() {
-    document.getElementById("selectTime").style.display = "block";
-    document.getElementById("currentTime").style.direction = "none";
-}
+document.getElementById("timeChange").addEventListener("click", timeChangeReveal);
+document.getElementById("submitButton").addEventListener("click", timeChange);
 window.onload = function getTopics() {
     fetch('/topics').then(response => response.json()).then((response) => {
         console.log(response);
         topicManager(response);
         getRecommendedTopics(response);
     });
+    console.log("First fetch complete");
+    fetch('/scheduler').then(response => response.text()).then((response) => {
+        console.log(response);
+        document.getElementById("timeDisplay").innerHTML = response;
+    });
+    console.log("second fetch complete");
 };
 function getRecommendedTopics(response) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -81,6 +83,8 @@ function getRandomNumbersNoRepetition(min, max) {
 }
 function topicManager(topics) {
     var table = document.getElementById('subjectTable');
+    var i = 0;
+    var size = topics.length;
     topics.forEach((topic) => {
         var newRow = table.insertRow();
         var cell = newRow.insertCell();
@@ -93,6 +97,20 @@ function topicManager(topics) {
         var deleteCell = newRow.insertCell();
         deleteCell.appendChild(deleteButtonElement);
     });
+    //   for (i = 0; i < topics.length-1; i++){
+    //     var newRow = table.insertRow();
+    //     var cell = newRow.insertCell(); 
+    //     cell.innerHTML = topics[i];
+    //     const deleteButtonElement = document.createElement('button');
+    //     deleteButtonElement.innerText = 'Delete';
+    //     deleteButtonElement.addEventListener('click', () =>{
+    //       deleteTopic(topics[i]);
+    //     });
+    //     var deleteCell = newRow.insertCell();
+    //     deleteCell.appendChild(deleteButtonElement);
+    //   } 
+    //   var time = topics[topics.length-1];
+    //   document.getElementById("timeDisplay").innerHTML = time;
 }
 function deleteTopic(topic) {
     const params = new URLSearchParams();
@@ -107,5 +125,22 @@ function getSimilarTopics(topic) {
         const response = yield fetch(`/recommend-topics?topic=${topic}`);
         const similarTopics = yield response.json();
         return similarTopics;
+    });
+}
+function timeChangeReveal() {
+    document.getElementById("selectTime").style.display = "block";
+    document.getElementById("currentTime").style.direction = "none";
+}
+function timeChange() {
+    console.log("Button clicked");
+    var timeContainer = document.getElementById("appt");
+    var time = timeContainer.value;
+    var url = "/scheduler?time=" + time;
+    console.log(url);
+    fetch(url).then(response => response.text()).then((response) => {
+        console.log(response);
+        document.getElementById("timeDisplay").innerHTML = response;
+        document.getElementById("selectTime").style.display = "none";
+        document.getElementById("currentTime").style.direction = "block";
     });
 }

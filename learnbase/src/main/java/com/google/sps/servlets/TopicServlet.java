@@ -64,6 +64,9 @@ public class TopicServlet extends HttpServlet{
             }
 
         }
+        
+        //topics += "," + (String) entity.getProperty("time"); 
+
         String [] listedTopics = topics.split(",");
         System.out.println(Arrays.toString(listedTopics));
         Gson gson = new Gson(); 

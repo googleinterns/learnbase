@@ -66,7 +66,7 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
         <configuration>
-          <port>5000</port>
+          <port>5001</port>
           <deploy.projectId>learnbase-step-2020</deploy.projectId>
           <deploy.version>1</deploy.version>
         </configuration>
