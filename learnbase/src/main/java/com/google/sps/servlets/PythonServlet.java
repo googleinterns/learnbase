@@ -20,22 +20,22 @@ import com.google.gson.reflect.TypeToken;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Properties;
 
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.python.util.PythonInterpreter;
-import org.python.core.*;
+import java.nio.charset.StandardCharsets;
 
 /** Servlet that returns HTML that contains the page view count. */
 @WebServlet("/recommend-topics")
 public class PythonServlet extends HttpServlet {
 
   Map wordInfo;
+  Process mProcess;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -56,9 +56,23 @@ public class PythonServlet extends HttpServlet {
   }
 
   private void querySimilarWords(String topic) {
-    PythonInterpreter pyInterp = new PythonInterpreter();
+    Process process;
+    try {
+      process = Runtime.getRuntime().exec(new String[]{"python", "py/main.py", topic});
+      mProcess = process;
+    } catch(Exception e) {
+      System.out.println("Exception Raised" + e.toString());
+    }
+    InputStream stdout = mProcess.getInputStream();
+    BufferedReader reader = new BufferedReader(new InputStreamReader(stdout,StandardCharsets.UTF_8));
+    String line;
+    try{
+      while((line = reader.readLine()) != null){
+        System.out.println("stdout: "+ line);
+      }
+    } catch(IOException e){
+      System.out.println("Exception in reading output"+ e.toString());
+    }
 
-    pyInterp.exec("import sys; sys.argv = ['py/main.py', '" + topic + "']");
-    pyInterp.execfile("py/main.py");
   }
 }
