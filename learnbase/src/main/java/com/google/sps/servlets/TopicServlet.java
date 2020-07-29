@@ -25,6 +25,8 @@ public class TopicServlet extends HttpServlet{
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        
+        response.setContentType("application/json;");
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         UserService userService = UserServiceFactory.getUserService(); 
@@ -68,7 +70,6 @@ public class TopicServlet extends HttpServlet{
         System.out.println(Arrays.toString(listedTopics));
         Gson gson = new Gson(); 
         String returnTopics = gson.toJson(listedTopics);
-        response.setContentType("application/json;");
         response.getWriter().println(returnTopics);
     }
 
