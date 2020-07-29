@@ -64,14 +64,11 @@ public class TopicServlet extends HttpServlet{
             }
 
         }
-        
-        //topics += "," + (String) entity.getProperty("time"); 
-
         String [] listedTopics = topics.split(",");
         System.out.println(Arrays.toString(listedTopics));
         Gson gson = new Gson(); 
         String returnTopics = gson.toJson(listedTopics);
-
+        response.setContentType("application/json;");
         response.getWriter().println(returnTopics);
     }
 
@@ -91,8 +88,8 @@ public class TopicServlet extends HttpServlet{
         }
 
         String topic = request.getParameter("topic");
+	getSearch(topic);
         String topics = (String) entity.getProperty("topics"); 
-	ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
 
         if (topics.equals("")){
             entity.setProperty("topics", topic);
@@ -101,21 +98,15 @@ public class TopicServlet extends HttpServlet{
             topics += topic;
             entity.setProperty("topics", topics);
         }
-	if(urls.isEmpty()) {
-          urls = new ArrayList<>();
-        }
-	String[] values = topics.split(",");
-        urls = getSearch(topic, urls);
-	System.out.println(urls);
-	entity.setProperty("urls", urls);
-	datastore.put(entity);
+        datastore.put(entity); 
         response.sendRedirect("/search.html");
     }
 
-  private ArrayList<String> getSearch(String topic, ArrayList<String> urls) throws IOException {
+  private String getSearch(String topic) throws IOException {
     String google = "https://www.google.com/search";
     int num = 5;
     String searchURL = google + "?q=" + topic + "&num=" + num;
+    System.out.println(searchURL);
 
     Document doc  = Jsoup.connect(searchURL).userAgent("Chrome").get();
     Elements results = doc.select("a[href]:has(span)").select("a[href]:not(:has(div))");
@@ -124,10 +115,10 @@ public class TopicServlet extends HttpServlet{
 	String linkHref = result.attr("href");
 	String linkText = result.text();
 	if (linkHref.contains("https")) {
-          urls.add(linkHref.substring(7, linkHref.indexOf("&"))); 
+          System.out.println(linkHref.substring(7, linkHref.indexOf("&"))); 
 	} 
     }
-    return urls;
+    return ""; 
   }
 
 }
