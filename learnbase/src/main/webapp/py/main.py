@@ -4,6 +4,7 @@ sys.path[0] = "py"
 topic = sys.argv[1].replace(" ", "_")
 
 from model_functions import *
+import json
 
 word_cache = None
 word_exists = False
