@@ -68,6 +68,7 @@ public class TopicServlet extends HttpServlet{
         System.out.println(Arrays.toString(listedTopics));
         Gson gson = new Gson(); 
         String returnTopics = gson.toJson(listedTopics);
+        response.setContentType("application/json;");
         response.getWriter().println(returnTopics);
     }
 
