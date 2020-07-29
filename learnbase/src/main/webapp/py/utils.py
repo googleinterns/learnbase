@@ -32,8 +32,8 @@ def cosine_distance(vec1, vec2):
   Get cosine distance between two vectors
 
   Args:
-    vec1: A list of 100 numbers
-    vec2: A list of 100 numbers
+    vec1: A list of 50 numbers
+    vec2: A list of 50 numbers
 
   Returns:
     The dot product between the
@@ -41,6 +41,9 @@ def cosine_distance(vec1, vec2):
   """
   return __dot(vec1, vec2)
 
-# Gets dot product (Vectors are all of size 100)
+# Gets dot product (Vectors are all of size 50)
 def __dot(vec1, vec2):
-  return sum([i*j for i, j in zip(vec1, vec2)])
+  res = 0
+  for i in range(len(vec1)):
+    res += vec1[i]*vec2[i]
+  return res
