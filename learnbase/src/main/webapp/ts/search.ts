@@ -53,3 +53,4 @@ async function getSimilarTopics(topic: string) : Promise<void> {
   return similarTopics;
 }
 
+

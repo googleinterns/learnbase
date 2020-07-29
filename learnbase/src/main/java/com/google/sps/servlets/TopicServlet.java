@@ -87,8 +87,8 @@ public class TopicServlet extends HttpServlet{
         }
 
         String topic = request.getParameter("topic");
-	ArrayList<String> urls = new ArrayList<>();
         String topics = (String) entity.getProperty("topics"); 
+	ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
 
         if (topics.equals("")){
             entity.setProperty("topics", topic);
@@ -97,12 +97,14 @@ public class TopicServlet extends HttpServlet{
             topics += topic;
             entity.setProperty("topics", topics);
         }
-        datastore.put(entity); 
+	if(urls.isEmpty()) {
+          urls = new ArrayList<>();
+        }
 	String[] values = topics.split(",");
-	for (String value : values) {
-	  urls = getSearch(value, urls);
-	}
+        urls = getSearch(topic, urls);
 	System.out.println(urls);
+	entity.setProperty("urls", urls);
+	datastore.put(entity);
         response.sendRedirect("/search.html");
     }
 
