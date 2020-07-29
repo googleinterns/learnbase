@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-document.getElementById("timeChange").addEventListener("click", timeChange);
+document.getElementById("timeChange").addEventListener("click", timeChangeReveal);
 document.getElementById("submitButton").addEventListener("click", timeChange);
 window.onload = function getTopics() {
     fetch('/topics').then(response => response.json()).then((response) => {
@@ -16,10 +16,12 @@ window.onload = function getTopics() {
         topicManager(response);
         getRecommendedTopics(response);
     });
+    console.log("First fetch complete");
     fetch('/scheduler').then(response => response.json()).then((response) => {
         console.log(response);
         document.getElementById("timeDisplay").innerHTML = response;
     });
+    console.log("second fetch complete");
 };
 function getRecommendedTopics(response) {
     return __awaiter(this, void 0, void 0, function* () {

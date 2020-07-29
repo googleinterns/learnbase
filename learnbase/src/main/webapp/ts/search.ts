@@ -2,7 +2,7 @@
 
 type TopicInfo = [string, string[]];
 
-document.getElementById("timeChange").addEventListener("click", timeChange);
+document.getElementById("timeChange").addEventListener("click", timeChangeReveal);
 document.getElementById("submitButton").addEventListener("click", timeChange);
 
 
@@ -13,11 +13,14 @@ window.onload = function getTopics() : void {
 
     getRecommendedTopics(response);
   });
-    
+  
+  console.log("First fetch complete");
+
   fetch('/scheduler').then(response => response.json()).then((response) =>{
     console.log(response);
     document.getElementById("timeDisplay").innerHTML = response; 
   });   
+  console.log("second fetch complete");
 }
 
 async function getRecommendedTopics(response: string)  {
