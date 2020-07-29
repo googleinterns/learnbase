@@ -90,7 +90,6 @@ public class TopicServlet extends HttpServlet{
 
         String currentUrl = (String) entity.getProperty("currentUrl");
         String topic = request.getParameter("topic");
-	    getSearch(topic);
         String topics = (String) entity.getProperty("topics"); 
 
 	    ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
@@ -125,7 +124,7 @@ public class TopicServlet extends HttpServlet{
         response.sendRedirect("/search.html");
     }
 
-  private String getSearch(String topic) throws IOException {
+  private ArrayList<String> getSearch(String topic, ArrayList<String> urls) throws IOException {
     String google = "https://www.google.com/search";
     int num = 5;
     String searchURL = google + "?q=" + topic + "&num=" + num;
@@ -138,10 +137,10 @@ public class TopicServlet extends HttpServlet{
 	String linkHref = result.attr("href");
 	String linkText = result.text();
 	if (linkHref.contains("https")) {
-          System.out.println(linkHref.substring(7, linkHref.indexOf("&"))); 
+	  urls.add(linkHref.substring(7, linkHref.indexOf("&")));
 	} 
     }
-    return ""; 
+    return urls; 
   }
 
   private void getInfo(ArrayList<String> urls, String currentUrl) throws IOException {
