@@ -88,7 +88,7 @@ public class TopicServlet extends HttpServlet{
         }
 
         String topic = request.getParameter("topic");
-	getSearch(topic);
+	ArrayList<String> urls = new ArrayList<>();
         String topics = (String) entity.getProperty("topics"); 
 
         if (topics.equals("")){
@@ -99,14 +99,18 @@ public class TopicServlet extends HttpServlet{
             entity.setProperty("topics", topics);
         }
         datastore.put(entity); 
+	String[] values = topics.split(",");
+	for (String value : values) {
+	  urls = getSearch(value, urls);
+	}
+	System.out.println(urls);
         response.sendRedirect("/search.html");
     }
 
-  private String getSearch(String topic) throws IOException {
+  private ArrayList<String> getSearch(String topic, ArrayList<String> urls) throws IOException {
     String google = "https://www.google.com/search";
     int num = 5;
     String searchURL = google + "?q=" + topic + "&num=" + num;
-    System.out.println(searchURL);
 
     Document doc  = Jsoup.connect(searchURL).userAgent("Chrome").get();
     Elements results = doc.select("a[href]:has(span)").select("a[href]:not(:has(div))");
@@ -115,10 +119,10 @@ public class TopicServlet extends HttpServlet{
 	String linkHref = result.attr("href");
 	String linkText = result.text();
 	if (linkHref.contains("https")) {
-          System.out.println(linkHref.substring(7, linkHref.indexOf("&"))); 
+          urls.add(linkHref.substring(7, linkHref.indexOf("&"))); 
 	} 
     }
-    return ""; 
+    return urls;
   }
 
 }
