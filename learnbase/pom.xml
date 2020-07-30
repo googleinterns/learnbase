@@ -60,7 +60,14 @@
     <artifactId>jython</artifactId>
     <version>2.7.2</version>
    </dependency>
-    
+
+  <dependency>
+    <groupId>com.mailjet</groupId>
+    <artifactId>mailjet-client</artifactId>
+    <version>4.2.0</version>
+  </dependency>
+
+
   </dependencies>
 
   <build>
