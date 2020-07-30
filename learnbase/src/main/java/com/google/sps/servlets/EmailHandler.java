@@ -21,7 +21,11 @@ public class EmailHandler{
     MailjetClient client;
     MailjetRequest request;
     MailjetResponse response = null;
-    client = new MailjetClient(System.getenv("2065063d2f679c68571c386cf8d13767"), System.getenv("2921119afe3fec7e64e36d4677fc4a75"), new ClientOptions("v3.1"));
+    //client = new MailjetClient(System.getenv("2065063d2f679c68571c386cf8d13767"), System.getenv("2921119afe3fec7e64e36d4677fc4a75"), new ClientOptions("v3.1"));
+    client = new MailjetClient("2065063d2f679c68571c386cf8d13767", "2921119afe3fec7e64e36d4677fc4a75")
+            {
+                Version = ApiVersion.V3_1,
+            };
     request = new MailjetRequest(Emailv31.resource)
     .property(Emailv31.MESSAGES, new JSONArray()
     .put(new JSONObject()
