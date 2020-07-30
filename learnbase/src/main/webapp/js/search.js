@@ -56,6 +56,8 @@ function getRecommendedTopics(response) {
             }
             console.log(rand);
         }
+        var rangeForFirstTopic = getRandomNumbersNoRepetition(4, 10);
+        var rangeForAllOtherTopics = getRandomNumbersNoRepetition(0, 10);
         var currIndex = 0;
         for (let i = 0; i < 10; i++) {
             if (i < 4) {
@@ -68,17 +70,24 @@ function getRecommendedTopics(response) {
                 else {
                     recsPerTopic[currIndex] -= 1;
                 }
-                // TODO: Eliminate duplicates
-                let rand = (currIndex === 0) ? Math.floor(Math.random() * 6) + 4 : Math.floor(Math.random() * 10);
+                let rand = (currIndex === 0) ? rangeForFirstTopic[i - 4] : rangeForAllOtherTopics[i];
                 let nextTopic = topicInfoList[currIndex][1][rand];
                 recommendations.push(nextTopic);
             }
         }
-        console.log("Recommendations: " + recommendations);
+        return recommendations;
     });
 }
+// min inclusive, max exclusive
 function getRandomNumbersNoRepetition(min, max) {
-    var numbers;
+    var numbers = [];
+    for (let i = min; i < max; i++) {
+        numbers.push(i);
+    }
+    for (let i = numbers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [numbers[j], numbers[i]] = [numbers[i], numbers[j]];
+    }
     return numbers;
 }
 function topicManager(topics) {

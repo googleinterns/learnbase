@@ -23,7 +23,7 @@ window.onload = function getTopics() : void {
   console.log("second fetch complete");
 }
 
-async function getRecommendedTopics(response: string)  {
+async function getRecommendedTopics(response: string) : Promise<string[]> {
   var topicInfoList : TopicInfo[] = [];
   var recsPerTopic : number[] = [];
   
@@ -65,6 +65,9 @@ async function getRecommendedTopics(response: string)  {
 
   }
   
+  var rangeForFirstTopic : number[] = getRandomNumbersNoRepetition(4, 10);
+  var rangeForAllOtherTopics : number[] = getRandomNumbersNoRepetition(0, 10);
+
   var currIndex : number = 0;
   for (let i = 0; i < 10; i++) {
     if (i < 4) {
@@ -77,23 +80,27 @@ async function getRecommendedTopics(response: string)  {
         recsPerTopic[currIndex] -= 1
       }
       
-      // TODO: Eliminate duplicates
-      let rand : number = (currIndex === 0) ? Math.floor(Math.random()* 6) + 4 : Math.floor(Math.random() * 10);
+      let rand : number = (currIndex === 0) ? rangeForFirstTopic[i-4] : rangeForAllOtherTopics[i];
       let nextTopic : string = topicInfoList[currIndex][1][rand];
       
       recommendations.push(nextTopic);
     }
   }
 
-  console.log("Recommendations: " + recommendations);
+  return recommendations;
 }
 
+// min inclusive, max exclusive
 function getRandomNumbersNoRepetition(min: number, max: number) : number[] {
-  var numbers : number[];
+  var numbers : number[] = [];
   for (let i = min; i < max; i++) {
     numbers.push(i);
   }
 
+  for (let i = numbers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [numbers[j], numbers[i]] = [numbers[i], numbers[j]];
+  }
   
   return numbers;
 }
@@ -116,6 +123,7 @@ function topicManager(topics: string[]) : void {
     deleteCell.appendChild(deleteButtonElement);
     
   });
+  
 //   for (i = 0; i < topics.length-1; i++){
 //     var newRow = table.insertRow();
 //     var cell = newRow.insertCell(); 
