@@ -14,10 +14,10 @@ import org.json.JSONObject;
 public class EmailHandler{
 
   public EmailHandler(){
-    
+
   }
 
-  public void sendMail() throws MailjetException, MailjetSocketTimeoutException {
+  public void sendMail() {
     MailjetClient client;
     MailjetRequest request;
     MailjetResponse response;
