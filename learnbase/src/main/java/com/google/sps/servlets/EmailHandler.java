@@ -20,7 +20,7 @@ public class EmailHandler{
   public void sendMail() {
     MailjetClient client;
     MailjetRequest request;
-    MailjetResponse response;
+    MailjetResponse response = null;
     client = new MailjetClient(System.getenv("2065063d2f679c68571c386cf8d13767"), System.getenv("2921119afe3fec7e64e36d4677fc4a75"), new ClientOptions("v3.1"));
     request = new MailjetRequest(Emailv31.resource)
     .property(Emailv31.MESSAGES, new JSONArray()
@@ -36,6 +36,7 @@ public class EmailHandler{
     .put(Emailv31.Message.TEXTPART, "My first Mailjet email")
     .put(Emailv31.Message.HTMLPART, "<h3>Dear passenger 1, welcome to <a href='https://www.mailjet.com/'>Mailjet</a>!</h3><br />May the delivery force be with you!")
     .put(Emailv31.Message.CUSTOMID, "AppGettingStartedTest")));
+
     try{
       response = client.post(request);
     } catch (Exception e){
