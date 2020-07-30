@@ -40,10 +40,11 @@ public class EmailHandler{
     try{
       response = client.post(request);
     } catch (Exception e){
+      System.out.println("catch");
       System.out.println(e);
     }
       
     System.out.println(response.getStatus());
     System.out.println(response.getData());
   }
-}
+} 
