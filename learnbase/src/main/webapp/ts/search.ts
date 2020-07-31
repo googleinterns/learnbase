@@ -36,7 +36,8 @@ function displayRecommendedTopics(recommended : string[]) {
     recommended.forEach((topic: string) => {
       var newRow = table.insertRow();
       var cell = newRow.insertCell(); 
-      cell.innerHTML = topic.replace("_", " ");
+      
+      cell.innerHTML = topic.toUpperCase();
     });
   }
 }
@@ -130,7 +131,7 @@ function topicManager(topics: string[]) : void {
   topics.forEach((topic: string) => {
     var newRow = table.insertRow();
     var cell = newRow.insertCell(); 
-    cell.innerHTML = topic;
+    cell.innerHTML = topic.toUpperCase();
 
     const deleteButtonElement = document.createElement('button');
     deleteButtonElement.innerText = 'Delete';
