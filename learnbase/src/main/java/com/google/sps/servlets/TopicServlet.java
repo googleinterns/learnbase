@@ -88,6 +88,8 @@ public class TopicServlet extends HttpServlet{
 
         String currentUrl = (String) entity.getProperty("currentUrl");
         String topic = request.getParameter("topic");
+	String topicName = topic+"topic";
+	System.out.println(topicName);
         String topics = (String) entity.getProperty("topics"); 
 
 	    ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
