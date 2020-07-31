@@ -20,6 +20,7 @@ import java.net.URLDecoder;
 import java.io.*; 
 import java.util.*; 
 
+
 @WebServlet("/topics")
 public class TopicServlet extends HttpServlet{
 
@@ -78,6 +79,7 @@ public class TopicServlet extends HttpServlet{
         UserService userService = UserServiceFactory.getUserService(); 
         User user = userService.getCurrentUser();
         String userId = user.getUserId(); 
+
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Query query = new Query("UserInfo").setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
         PreparedQuery results = datastore.prepare(query); 
@@ -91,26 +93,31 @@ public class TopicServlet extends HttpServlet{
 	String topicName = topic+"topic";
 	System.out.println(topicName);
         String topics = (String) entity.getProperty("topics"); 
-
-	    ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
-        
+        ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
+            
         if(currentUrl == null) { 
-          currentUrl = "0";
-	    }
-
+            currentUrl = "0";
+        }
         if (topics.equals("")){
             entity.setProperty("topics", topic);
         }  else {
-            topics += ",";
-            topics += topic;
-            entity.setProperty("topics", topics);
+
+            List<String> listOfTopics = new ArrayList<String>();
+            String str[] = topics.split(",");
+            listOfTopics = Arrays.asList(str);
+
+            if (!listOfTopics.contains(topic)) {
+                topics += ",";
+                topics += topic;
+                entity.setProperty("topics", topics);
+            }
         }
         datastore.put(entity); 
 
         if(urls == null) {
-          urls = new ArrayList<>();
+            urls = new ArrayList<>();
         }
-    	String[] values = topics.split(",");
+        String[] values = topics.split(",");
         urls = getSearch(topic, urls);
         System.out.println(urls);
         getInfo(urls, currentUrl);
