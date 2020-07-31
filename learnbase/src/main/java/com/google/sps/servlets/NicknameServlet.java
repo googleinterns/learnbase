@@ -50,7 +50,7 @@ public class NicknameServlet extends HttpServlet {
     String nickname = request.getParameter("nickname");
     String id = userService.getCurrentUser().getUserId();
     EmailHandler handler = new EmailHandler();
-    handler.sendWelcomeMail(userService.getCurrentUser().getName().getEmail());
+    handler.sendWelcomeMail(userService.getCurrentUser().getEmail());
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity entity = new Entity("UserInfo", id);
