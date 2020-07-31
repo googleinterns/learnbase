@@ -93,6 +93,10 @@ public class TopicServlet extends HttpServlet{
 	String topicName = topic+"topic";
 	//System.out.println(topicName);
         String topics = (String) entity.getProperty("topics"); 
+	if (topics.contains(topic)) {
+          response.sendRedirect("/search.html");
+          return;
+	}
         //ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
             
         if(currentUrl == null) { 
