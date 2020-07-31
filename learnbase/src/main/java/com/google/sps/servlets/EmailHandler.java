@@ -9,11 +9,13 @@ public class EmailHandler{
 
   }
 
-  public void sendMail() throws IOException{
+  public void sendWelcomeMail(String userEmail) throws IOException{
     Email from = new Email("learnbase2020@gmail.com");
-    String subject = "Sending with SendGrid is Fun";
-    Email to = new Email("thefed@google.com");
-    Content content = new Content("text/plain", "and easy to do anywhere, even with Java");
+    String subject = "Welcome to LearnBase!";
+    Email to = new Email(userEmail);
+    Content content = new Content("text/plain", "Welcome to LearnBase! We're very happy to have you." + 
+      "\n If you haven't already done so, please choose a topic under the Search page and select a time " +
+      "to recieve daily emails! ");
     Mail mail = new Mail(from, subject, to, content);
 
     SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));

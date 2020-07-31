@@ -76,11 +76,10 @@ public class TopicServlet extends HttpServlet{
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        EmailHandler handler = new EmailHandler();
-        handler.sendMail();
         UserService userService = UserServiceFactory.getUserService(); 
         User user = userService.getCurrentUser();
         String userId = user.getUserId(); 
+
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Query query = new Query("UserInfo").setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
         PreparedQuery results = datastore.prepare(query); 
