@@ -68,9 +68,12 @@ public class DeleteTopicServlet extends HttpServlet{
           editedTopics = "";
         }
         entity.setProperty("topics", editedTopics);
+	datastore.put(entity);
+	response.sendRedirect("/search.html");
+	//response.sendRedirect("/search.html");
 	urls = deleteUrls(editedTopics);
 	entity.setProperty("urls", urls);
-        datastore.put(entity); 
+        datastore.put(entity);
         response.sendRedirect("/search.html");
     }
 
