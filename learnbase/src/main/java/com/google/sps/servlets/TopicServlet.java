@@ -26,6 +26,8 @@ public class TopicServlet extends HttpServlet{
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        
+        response.setContentType("application/json;");
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         UserService userService = UserServiceFactory.getUserService(); 
@@ -69,7 +71,6 @@ public class TopicServlet extends HttpServlet{
         System.out.println(Arrays.toString(listedTopics));
         Gson gson = new Gson(); 
         String returnTopics = gson.toJson(listedTopics);
-        response.setContentType("application/json;");
         response.getWriter().println(returnTopics);
     }
 
@@ -81,9 +82,7 @@ public class TopicServlet extends HttpServlet{
         User user = userService.getCurrentUser();
         String userId = user.getUserId(); 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Query query = 
-        new Query("UserInfo")
-        .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+        Query query = new Query("UserInfo").setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
         PreparedQuery results = datastore.prepare(query); 
         Entity entity = results.asSingleEntity(); 
         if (entity == null){
@@ -95,28 +94,29 @@ public class TopicServlet extends HttpServlet{
         String topics = (String) entity.getProperty("topics"); 
         ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
             
-            if(currentUrl == null) { 
+        if(currentUrl == null) { 
             currentUrl = "0";
         }
-            if (topics.equals("")){
-                entity.setProperty("topics", topic);
-            }  else {
-                topics += ",";
-                topics += topic;
-                entity.setProperty("topics", topics);
-            } 
+        if (topics.equals("")){
+            entity.setProperty("topics", topic);
+        }  else {
+            topics += ",";
+            topics += topic;
+            entity.setProperty("topics", topics);
+        } 
         if(urls == null) {
             urls = new ArrayList<>();
-            }
+        }
         String[] values = topics.split(",");
-            urls = getSearch(topic, urls);
+        urls = getSearch(topic, urls);
         System.out.println(urls);
         getInfo(urls, currentUrl);
         currentUrl =  Integer.toString(Integer.parseInt(currentUrl)+1); 
         entity.setProperty("currentUrl", currentUrl);
         entity.setProperty("urls", urls);
         datastore.put(entity);
-            response.sendRedirect("/search.html");
+
+        response.sendRedirect("/search.html");
     }
 
   private ArrayList<String> getSearch(String topic, ArrayList<String> urls) throws IOException {
@@ -129,11 +129,11 @@ public class TopicServlet extends HttpServlet{
     Elements results = doc.select("a[href]:has(span)").select("a[href]:not(:has(div))");
 
     for (Element result : results) {
-	String linkHref = result.attr("href");
-	String linkText = result.text();
-	if (linkHref.contains("https")) {
-	  urls.add(linkHref.substring(7, linkHref.indexOf("&")));
-	} 
+        String linkHref = result.attr("href");
+        String linkText = result.text();
+        if (linkHref.contains("https")) {
+        urls.add(linkHref.substring(7, linkHref.indexOf("&")));
+        } 
     }
     return urls; 
   }

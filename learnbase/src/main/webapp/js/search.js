@@ -8,21 +8,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-document.getElementById("timeChange").addEventListener("click", timeChangeReveal);
-document.getElementById("submitButton").addEventListener("click", timeChange);
+if (location.pathname === "/search.html") {
+    document.getElementById("timeChange").addEventListener("click", timeChangeReveal);
+    document.getElementById("submitButton").addEventListener("click", timeChange);
+}
 window.onload = function getTopics() {
     fetch('/topics').then(response => response.json()).then((response) => {
         console.log(response);
-        topicManager(response);
-        getRecommendedTopics(response);
+        if (location.pathname === "/search.html") {
+            topicManager(response);
+        }
+        getRecommendedTopics(response).then((result) => {
+            displayRecommendedTopics(result);
+        });
     });
     console.log("First fetch complete");
-    fetch('/scheduler').then(response => response.text()).then((response) => {
-        console.log(response);
-        document.getElementById("timeDisplay").innerHTML = response;
-    });
-    console.log("second fetch complete");
+    if (location.pathname === "/search.html") {
+        fetch('/scheduler').then(response => response.text()).then((response) => {
+            console.log(response);
+            document.getElementById("timeDisplay").innerHTML = response;
+        });
+        console.log("second fetch complete");
+    }
 };
+function displayRecommendedTopics(recommended) {
+    if (location.pathname === "/recommendations.html") {
+        var table = document.getElementById('recommended-topics');
+        recommended.forEach((topic) => {
+            var newRow = table.insertRow();
+            var cell = newRow.insertCell();
+            cell.innerHTML = topic.toUpperCase();
+        });
+    }
+}
 function getRecommendedTopics(response) {
     return __awaiter(this, void 0, void 0, function* () {
         var topicInfoList = [];
@@ -56,6 +74,8 @@ function getRecommendedTopics(response) {
             }
             console.log(rand);
         }
+        var rangeForFirstTopic = getRandomNumbersNoRepetition(4, 10);
+        var rangeForAllOtherTopics = getRandomNumbersNoRepetition(0, 10);
         var currIndex = 0;
         for (let i = 0; i < 10; i++) {
             if (i < 4) {
@@ -68,17 +88,24 @@ function getRecommendedTopics(response) {
                 else {
                     recsPerTopic[currIndex] -= 1;
                 }
-                // TODO: Eliminate duplicates
-                let rand = (currIndex === 0) ? Math.floor(Math.random() * 6) + 4 : Math.floor(Math.random() * 10);
+                let rand = (currIndex === 0) ? rangeForFirstTopic[i - 4] : rangeForAllOtherTopics[i];
                 let nextTopic = topicInfoList[currIndex][1][rand];
                 recommendations.push(nextTopic);
             }
         }
-        console.log("Recommendations: " + recommendations);
+        return recommendations;
     });
 }
+// min inclusive, max exclusive
 function getRandomNumbersNoRepetition(min, max) {
-    var numbers;
+    var numbers = [];
+    for (let i = min; i < max; i++) {
+        numbers.push(i);
+    }
+    for (let i = numbers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [numbers[j], numbers[i]] = [numbers[i], numbers[j]];
+    }
     return numbers;
 }
 function topicManager(topics) {
@@ -88,7 +115,7 @@ function topicManager(topics) {
     topics.forEach((topic) => {
         var newRow = table.insertRow();
         var cell = newRow.insertCell();
-        cell.innerHTML = topic;
+        cell.innerHTML = topic.toUpperCase();
         const deleteButtonElement = document.createElement('button');
         deleteButtonElement.innerText = 'Delete';
         deleteButtonElement.addEventListener('click', () => {
@@ -121,7 +148,6 @@ function deleteTopic(topic) {
 // TODO: Change functionality so that it loads on submit
 function getSimilarTopics(topic) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(`topic: ${topic}`);
         const response = yield fetch(`/recommend-topics?topic=${topic}`);
         const similarTopics = yield response.json();
         return similarTopics;

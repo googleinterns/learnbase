@@ -2,28 +2,47 @@
 
 type TopicInfo = [string, string[]];
 
-document.getElementById("timeChange").addEventListener("click", timeChangeReveal);
-document.getElementById("submitButton").addEventListener("click", timeChange);
-
+if (location.pathname === "/search.html") {
+  document.getElementById("timeChange").addEventListener("click", timeChangeReveal);
+  document.getElementById("submitButton").addEventListener("click", timeChange);
+}
 
 window.onload = function getTopics() : void {
   fetch('/topics').then(response => response.json()).then((response) =>{
     console.log(response);
-    topicManager(response);
+    if (location.pathname === "/search.html") {
+      topicManager(response);
+    }
 
-    getRecommendedTopics(response);
+    getRecommendedTopics(response).then((result: string[]) => {
+      displayRecommendedTopics(result);
+    });
+    
   });
   
   console.log("First fetch complete");
-
-  fetch('/scheduler').then(response => response.text()).then((response) =>{
-    console.log(response);
-    document.getElementById("timeDisplay").innerHTML = response; 
-  });   
-  console.log("second fetch complete");
+  if (location.pathname === "/search.html") {
+    fetch('/scheduler').then(response => response.text()).then((response) =>{
+      console.log(response);
+      document.getElementById("timeDisplay").innerHTML = response; 
+    });   
+    console.log("second fetch complete");
+  }
 }
 
-async function getRecommendedTopics(response: string)  {
+function displayRecommendedTopics(recommended : string[]) {
+  if (location.pathname === "/recommendations.html") {
+    var table = document.getElementById('recommended-topics') as HTMLTableElement;
+    recommended.forEach((topic: string) => {
+      var newRow = table.insertRow();
+      var cell = newRow.insertCell(); 
+      
+      cell.innerHTML = topic.toUpperCase();
+    });
+  }
+}
+
+async function getRecommendedTopics(response: string) : Promise<string[]> {
   var topicInfoList : TopicInfo[] = [];
   var recsPerTopic : number[] = [];
   
@@ -65,6 +84,9 @@ async function getRecommendedTopics(response: string)  {
 
   }
   
+  var rangeForFirstTopic : number[] = getRandomNumbersNoRepetition(4, 10);
+  var rangeForAllOtherTopics : number[] = getRandomNumbersNoRepetition(0, 10);
+
   var currIndex : number = 0;
   for (let i = 0; i < 10; i++) {
     if (i < 4) {
@@ -77,23 +99,27 @@ async function getRecommendedTopics(response: string)  {
         recsPerTopic[currIndex] -= 1
       }
       
-      // TODO: Eliminate duplicates
-      let rand : number = (currIndex === 0) ? Math.floor(Math.random()* 6) + 4 : Math.floor(Math.random() * 10);
+      let rand : number = (currIndex === 0) ? rangeForFirstTopic[i-4] : rangeForAllOtherTopics[i];
       let nextTopic : string = topicInfoList[currIndex][1][rand];
       
       recommendations.push(nextTopic);
     }
   }
 
-  console.log("Recommendations: " + recommendations);
+  return recommendations;
 }
 
+// min inclusive, max exclusive
 function getRandomNumbersNoRepetition(min: number, max: number) : number[] {
-  var numbers : number[];
+  var numbers : number[] = [];
   for (let i = min; i < max; i++) {
     numbers.push(i);
   }
 
+  for (let i = numbers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [numbers[j], numbers[i]] = [numbers[i], numbers[j]];
+  }
   
   return numbers;
 }
@@ -105,7 +131,7 @@ function topicManager(topics: string[]) : void {
   topics.forEach((topic: string) => {
     var newRow = table.insertRow();
     var cell = newRow.insertCell(); 
-    cell.innerHTML = topic;
+    cell.innerHTML = topic.toUpperCase();
 
     const deleteButtonElement = document.createElement('button');
     deleteButtonElement.innerText = 'Delete';
@@ -116,6 +142,7 @@ function topicManager(topics: string[]) : void {
     deleteCell.appendChild(deleteButtonElement);
     
   });
+  
 //   for (i = 0; i < topics.length-1; i++){
 //     var newRow = table.insertRow();
 //     var cell = newRow.insertCell(); 
@@ -143,8 +170,6 @@ function deleteTopic(topic: string) : void {
 
 // TODO: Change functionality so that it loads on submit
 async function getSimilarTopics(topic: string) : Promise<string[]> {
-  console.log(`topic: ${topic}`);
-
   const response = await fetch(`/recommend-topics?topic=${topic}`);
   const similarTopics = await response.json();
 
