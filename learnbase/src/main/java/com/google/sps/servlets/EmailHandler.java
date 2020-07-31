@@ -9,7 +9,7 @@ public class EmailHandler{
 
   }
 
-  public void sendMail() {
+  public void sendMail() throws IOException{
     Email from = new Email("learnbase2020@gmail.com");
     String subject = "Sending with SendGrid is Fun";
     Email to = new Email("thefed@google.com");
