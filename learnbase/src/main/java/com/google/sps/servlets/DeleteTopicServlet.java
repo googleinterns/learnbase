@@ -13,6 +13,10 @@ import com.google.appengine.api.datastore.*;
 import java.io.PrintWriter;
 import java.io.*; 
 import java.util.*; 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 @WebServlet("/deleteTopic")
 public class DeleteTopicServlet extends HttpServlet{
@@ -34,11 +38,13 @@ public class DeleteTopicServlet extends HttpServlet{
         PreparedQuery results = datastore.prepare(query); 
         Entity entity = results.asSingleEntity(); 
         String topics = (String) entity.getProperty("topics"); 
+	ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
         String [] listedTopics = topics.split(",");
         //System.out.println("Listed topics from datastore: " +Arrays.toString(listedTopics));
         
         String removedTopic = request.getParameter("topic");
         //System.out.println("Topic to be removed:" + removedTopic);
+	String removedTopicCopy = removedTopic;
 
         String editedTopics = "";
         //System.out.println("Edited Topics:");
@@ -62,8 +68,33 @@ public class DeleteTopicServlet extends HttpServlet{
           editedTopics = "";
         }
         entity.setProperty("topics", editedTopics);
+	urls = deleteUrls(editedTopics);
+	entity.setProperty("urls", urls);
         datastore.put(entity); 
         response.sendRedirect("/search.html");
+    }
+
+    private ArrayList<String> deleteUrls(String topics) throws IOException {
+      ArrayList<String> newUrls = new ArrayList<>();
+      String[] topicArray = topics.split(",");
+      for (String topic : topicArray) {
+        String google = "https://www.google.com/search";
+	int num = 5;
+	String searchURL = google + "?q=" + topic + "&num=" + num;
+
+	Document doc  = Jsoup.connect(searchURL).userAgent("Chrome").get();
+        Elements results = doc.select("a[href]:has(span)").select("a[href]:not(:has(div))");
+
+        for (Element result : results) {
+	  String linkHref = result.attr("href");
+	  String linkText = result.text();
+	  if (linkHref.contains("https")) {
+	    newUrls.add(linkHref.substring(7, linkHref.indexOf("&")));
+	  } 
+        }
+      }
+      System.out.println(newUrls);
+      return newUrls;
     }
 
 }
