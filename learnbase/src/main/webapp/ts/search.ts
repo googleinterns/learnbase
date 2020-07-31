@@ -2,25 +2,43 @@
 
 type TopicInfo = [string, string[]];
 
-document.getElementById("timeChange").addEventListener("click", timeChangeReveal);
-document.getElementById("submitButton").addEventListener("click", timeChange);
-
+if (location.pathname === "/search.html") {
+  document.getElementById("timeChange").addEventListener("click", timeChangeReveal);
+  document.getElementById("submitButton").addEventListener("click", timeChange);
+}
 
 window.onload = function getTopics() : void {
   fetch('/topics').then(response => response.json()).then((response) =>{
     console.log(response);
-    topicManager(response);
+    if (location.pathname === "/search.html") {
+      topicManager(response);
+    }
 
-    getRecommendedTopics(response);
+    getRecommendedTopics(response).then((result: string[]) => {
+      displayRecommendedTopics(result);
+    });
+    
   });
   
   console.log("First fetch complete");
+  if (location.pathname === "/search.html") {
+    fetch('/scheduler').then(response => response.text()).then((response) =>{
+      console.log(response);
+      document.getElementById("timeDisplay").innerHTML = response; 
+    });   
+    console.log("second fetch complete");
+  }
+}
 
-  fetch('/scheduler').then(response => response.text()).then((response) =>{
-    console.log(response);
-    document.getElementById("timeDisplay").innerHTML = response; 
-  });   
-  console.log("second fetch complete");
+function displayRecommendedTopics(recommended : string[]) {
+  if (location.pathname === "/recommendations.html") {
+    var table = document.getElementById('recommended-topics') as HTMLTableElement;
+    recommended.forEach((topic: string) => {
+      var newRow = table.insertRow();
+      var cell = newRow.insertCell(); 
+      cell.innerHTML = topic.replace("_", " ");
+    });
+  }
 }
 
 async function getRecommendedTopics(response: string) : Promise<string[]> {
@@ -151,8 +169,6 @@ function deleteTopic(topic: string) : void {
 
 // TODO: Change functionality so that it loads on submit
 async function getSimilarTopics(topic: string) : Promise<string[]> {
-  console.log(`topic: ${topic}`);
-
   const response = await fetch(`/recommend-topics?topic=${topic}`);
   const similarTopics = await response.json();
 
