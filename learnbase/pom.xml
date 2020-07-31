@@ -62,9 +62,9 @@
    </dependency>
 
   <dependency>
-    <groupId>com.mailjet</groupId>
-    <artifactId>mailjet-client</artifactId>
-    <version>4.2.0</version>
+    <groupId>com.sendgrid</groupId>
+    <artifactId>sendgrid-java</artifactId>
+    <version>4.2.1</version>
   </dependency>
 
 

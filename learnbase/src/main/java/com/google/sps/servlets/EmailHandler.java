@@ -1,15 +1,7 @@
 package com.google.sps.servlets;
 
-
-import com.mailjet.client.errors.MailjetException;
-import com.mailjet.client.errors.MailjetSocketTimeoutException;
-import com.mailjet.client.MailjetClient;
-import com.mailjet.client.MailjetRequest;
-import com.mailjet.client.MailjetResponse;
-import com.mailjet.client.ClientOptions;
-import com.mailjet.client.resource.Emailv31;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.sendgrid.*;
+import java.io.IOException;
 
 public class EmailHandler{
 
@@ -18,34 +10,26 @@ public class EmailHandler{
   }
 
   public void sendMail() {
-    MailjetClient client;
-    MailjetRequest request;
-    MailjetResponse response = null;
-    //client = new MailjetClient(System.getenv("2065063d2f679c68571c386cf8d13767"), System.getenv("2921119afe3fec7e64e36d4677fc4a75"), new ClientOptions("v3.1"));
-    client = new MailjetClient(System.getenv("2065063d2f679c68571c386cf8d13767"), System.getenv("2921119afe3fec7e64e36d4677fc4a75"), new ClientOptions("v3.1"));
-    request = new MailjetRequest(Emailv31.resource)
-    .property(Emailv31.MESSAGES, new JSONArray()
-    .put(new JSONObject()
-    .put(Emailv31.Message.FROM, new JSONObject()
-    .put("Email", "thefed@google.com")
-    .put("Name", "Federick"))
-    .put(Emailv31.Message.TO, new JSONArray()
-    .put(new JSONObject()
-    .put("Email", "thefed@google.com")
-    .put("Name", "Federick")))
-    .put(Emailv31.Message.SUBJECT, "Greetings from Mailjet.")
-    .put(Emailv31.Message.TEXTPART, "My first Mailjet email")
-    .put(Emailv31.Message.HTMLPART, "<h3>Dear passenger 1, welcome to <a href='https://www.mailjet.com/'>Mailjet</a>!</h3><br />May the delivery force be with you!")
-    .put(Emailv31.Message.CUSTOMID, "AppGettingStartedTest")));
+    Email from = new Email("learnbase2020@gmail.com");
+    String subject = "Sending with SendGrid is Fun";
+    Email to = new Email("thefed@google.com");
+    Content content = new Content("text/plain", "and easy to do anywhere, even with Java");
+    Mail mail = new Mail(from, subject, to, content);
 
-    try{
-      response = client.post(request);
-    } catch (Exception e){
-      System.out.println("catch");
-      System.out.println(e);
+    SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
+    //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 <-- API key
+
+    Request request = new Request();
+    try {
+      request.setMethod(Method.POST);
+      request.setEndpoint("mail/send");
+      request.setBody(mail.build());
+      Response response = sg.api(request);
+      System.out.println(response.getStatusCode());
+      System.out.println(response.getBody());
+      System.out.println(response.getHeaders());
+    } catch (IOException ex) {
+      throw ex;
     }
-      
-    System.out.println(response.getStatus());
-    System.out.println(response.getData());
   }
-} 
+} -
