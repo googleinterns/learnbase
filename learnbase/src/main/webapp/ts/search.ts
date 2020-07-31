@@ -37,7 +37,7 @@ function displayRecommendedTopics(recommended : string[]) {
       var newRow = table.insertRow();
       var cell = newRow.insertCell(); 
       
-      cell.innerHTML = topic.toUpperCase();
+      cell.innerHTML = topic.toUpperCase().replace("_", " ");
     });
   }
 }
@@ -128,7 +128,7 @@ function topicManager(topics: string[]) : void {
   var table = document.getElementById('subjectTable') as HTMLTableElement;
   var i = 0 ; 
   var size = topics.length;
-  topics.forEach((topic: string) => {
+  topics.reverse().forEach((topic: string) => {
     var newRow = table.insertRow();
     var cell = newRow.insertCell(); 
     cell.innerHTML = topic.toUpperCase();
