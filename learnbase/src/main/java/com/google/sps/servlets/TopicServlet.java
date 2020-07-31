@@ -102,13 +102,24 @@ public class TopicServlet extends HttpServlet{
 
             List<String> listOfTopics = new ArrayList<String>();
             String str[] = topics.split(",");
-            listOfTopics = Arrays.asList(str);
+            for (int i = 0; i < str.length; i++) {
+                listOfTopics.add(str[i]);
+            }
 
             if (!listOfTopics.contains(topic)) {
                 topics += ",";
                 topics += topic;
-                entity.setProperty("topics", topics);
+            } else {
+                listOfTopics.remove(topic);
+                topics = "";
+                for (int i = 0; i < listOfTopics.size(); i++) {
+                    topics += listOfTopics.get(i);
+                    topics += ",";
+                }
+                topics += topic;
             }
+            entity.setProperty("topics", topics);
+
         }
         datastore.put(entity); 
 

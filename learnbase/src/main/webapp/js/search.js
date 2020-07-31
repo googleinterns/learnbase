@@ -119,16 +119,19 @@ function topicManager(topics) {
     var i = 0;
     var size = topics.length;
     topics.reverse().forEach((topic) => {
-        var newRow = table.insertRow();
-        var cell = newRow.insertCell();
-        cell.innerHTML = topic.toUpperCase();
-        const deleteButtonElement = document.createElement('button');
-        deleteButtonElement.innerText = 'Delete';
-        deleteButtonElement.addEventListener('click', () => {
-            deleteTopic(topic);
-        });
-        var deleteCell = newRow.insertCell();
-        deleteCell.appendChild(deleteButtonElement);
+        if (i < 8) {
+            var newRow = table.insertRow();
+            var cell = newRow.insertCell();
+            cell.innerHTML = topic.toUpperCase();
+            const deleteButtonElement = document.createElement('button');
+            deleteButtonElement.innerText = 'Delete';
+            deleteButtonElement.addEventListener('click', () => {
+                deleteTopic(topic);
+            });
+            var deleteCell = newRow.insertCell();
+            deleteCell.appendChild(deleteButtonElement);
+            i++;
+        }
     });
     //   for (i = 0; i < topics.length-1; i++){
     //     var newRow = table.insertRow();
