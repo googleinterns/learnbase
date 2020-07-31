@@ -51,10 +51,16 @@ function getRecommendedTopics(response) {
             let similarTopics;
             let topicInfo = yield getSimilarTopics(topic).then((results) => {
                 similarTopics = results;
+                console.log(topic + ": " + results);
                 let topicTuple = [topic, similarTopics];
                 return topicTuple;
             });
-            topicInfoList.push(topicInfo);
+            if (topicInfo[1].length !== 0) {
+                topicInfoList.push(topicInfo);
+            }
+            else {
+                continue;
+            }
             recsPerTopic.push(0);
         }
         // First topic has 4 automatic recommendations from most recent choice.

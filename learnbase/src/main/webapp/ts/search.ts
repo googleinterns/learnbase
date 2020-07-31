@@ -10,6 +10,7 @@ if (location.pathname === "/search.html") {
 window.onload = function getTopics() : void {
   fetch('/topics').then(response => response.json()).then((response) =>{
     console.log(response);
+
     if (location.pathname === "/search.html") {
       topicManager(response);
     }
@@ -54,12 +55,17 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
 
     let topicInfo : TopicInfo = await getSimilarTopics(topic).then((results : string[]) => {
       similarTopics = results;
+      console.log(topic + ": " + results);
       let topicTuple : TopicInfo = [topic, similarTopics];
-
+      
       return topicTuple;
     });
 
-    topicInfoList.push(topicInfo);
+    if (topicInfo[1].length !== 0) {
+      topicInfoList.push(topicInfo);
+    } else {
+      continue;
+    }
     recsPerTopic.push(0);  
   }
 
@@ -142,7 +148,7 @@ function topicManager(topics: string[]) : void {
     deleteCell.appendChild(deleteButtonElement);
     
   });
-  
+
 //   for (i = 0; i < topics.length-1; i++){
 //     var newRow = table.insertRow();
 //     var cell = newRow.insertCell(); 
