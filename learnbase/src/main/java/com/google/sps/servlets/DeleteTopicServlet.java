@@ -38,7 +38,7 @@ public class DeleteTopicServlet extends HttpServlet{
         PreparedQuery results = datastore.prepare(query); 
         Entity entity = results.asSingleEntity(); 
         String topics = (String) entity.getProperty("topics"); 
-	ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
+	//ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
         String [] listedTopics = topics.split(",");
         //System.out.println("Listed topics from datastore: " +Arrays.toString(listedTopics));
         
@@ -71,10 +71,10 @@ public class DeleteTopicServlet extends HttpServlet{
 	datastore.put(entity);
 	response.sendRedirect("/search.html");
 	//response.sendRedirect("/search.html");
-	urls = deleteUrls(editedTopics);
-	entity.setProperty("urls", urls);
-        datastore.put(entity);
-        response.sendRedirect("/search.html");
+	//urls = deleteUrls(editedTopics);
+	//entity.setProperty("urls", urls);
+        //datastore.put(entity);
+        //response.sendRedirect("/search.html");
     }
 
     private ArrayList<String> deleteUrls(String topics) throws IOException {
