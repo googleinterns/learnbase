@@ -99,10 +99,19 @@ public class TopicServlet extends HttpServlet{
         if (topics.equals("")){
             entity.setProperty("topics", topic);
         }  else {
-            topics += ",";
-            topics += topic;
-            entity.setProperty("topics", topics);
-        } 
+
+            List<String> listOfTopics = new ArrayList<String>();
+            String str[] = topics.split(",");
+            listOfTopics = Arrays.asList(str);
+
+            if (!listOfTopics.contains(topic)) {
+                topics += ",";
+                topics += topic;
+                entity.setProperty("topics", topics);
+            }
+        }
+        datastore.put(entity); 
+
         if(urls == null) {
             urls = new ArrayList<>();
         }
