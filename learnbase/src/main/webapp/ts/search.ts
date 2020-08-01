@@ -16,7 +16,11 @@ window.onload = function getTopics() : void {
     }
 
     getRecommendedTopics(response).then((result: string[]) => {
-      displayRecommendedTopics(result);
+      if (location.pathname === "/recommendations.html") {
+        document.getElementById("loader").style.display = "block";
+        document.getElementById("recommended-topics").style.display = "none";
+        displayRecommendedTopics(result);
+      }
     });
     
   });
@@ -32,15 +36,16 @@ window.onload = function getTopics() : void {
 }
 
 function displayRecommendedTopics(recommended : string[]) {
-  if (location.pathname === "/recommendations.html") {
-    var table = document.getElementById('recommended-topics') as HTMLTableElement;
-    recommended.forEach((topic: string) => {
-      var newRow = table.insertRow();
-      var cell = newRow.insertCell(); 
-      
-      cell.innerHTML = topic.toUpperCase().replace("_", " ");
-    });
-  }
+  var table = document.getElementById('recommended-topics') as HTMLTableElement;
+  recommended.forEach((topic: string) => {
+    var newRow = table.insertRow();
+    var cell = newRow.insertCell(); 
+    
+    cell.innerHTML = topic.toUpperCase().replace("_", " ");
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("recommended-topics").style.display = "block";
+  });
+  
 }
 
 async function getRecommendedTopics(response: string) : Promise<string[]> {

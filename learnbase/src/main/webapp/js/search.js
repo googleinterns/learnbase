@@ -19,7 +19,11 @@ window.onload = function getTopics() {
             topicManager(response);
         }
         getRecommendedTopics(response).then((result) => {
-            displayRecommendedTopics(result);
+            if (location.pathname === "/recommendations.html") {
+                document.getElementById("loader").style.display = "block";
+                document.getElementById("recommended").style.display = "none";
+                displayRecommendedTopics(result);
+            }
         });
     });
     console.log("First fetch complete");
@@ -32,14 +36,14 @@ window.onload = function getTopics() {
     }
 };
 function displayRecommendedTopics(recommended) {
-    if (location.pathname === "/recommendations.html") {
-        var table = document.getElementById('recommended-topics');
-        recommended.forEach((topic) => {
-            var newRow = table.insertRow();
-            var cell = newRow.insertCell();
-            cell.innerHTML = topic.toUpperCase().replace("_", " ");
-        });
-    }
+    var table = document.getElementById('recommended-topics');
+    recommended.forEach((topic) => {
+        var newRow = table.insertRow();
+        var cell = newRow.insertCell();
+        cell.innerHTML = topic.toUpperCase().replace("_", " ");
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("recommended").style.display = "block";
+    });
 }
 function getRecommendedTopics(response) {
     return __awaiter(this, void 0, void 0, function* () {
