@@ -89,7 +89,7 @@ public class TopicServlet extends HttpServlet{
         }
 
         String currentUrl = (String) entity.getProperty("currentUrl");
-        String topic = request.getParameter("topic");
+        String topic = request.getParameter("topic").trim().replaceAll(" +", " ").toLowerCase();
         String topics = (String) entity.getProperty("topics"); 
         ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
             
