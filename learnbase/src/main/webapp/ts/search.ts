@@ -43,7 +43,7 @@ function displayRecommendedTopics(recommended : string[]) {
     
     cell.innerHTML = topic.toUpperCase().replace("_", " ");
     document.getElementById("loader").style.display = "none";
-    document.getElementById("recommended-topics").style.display = "block";
+    document.getElementById("recommended-topics").style.display = "table";
   });
   
 }
@@ -60,7 +60,6 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
 
     let topicInfo : TopicInfo = await getSimilarTopics(topic).then((results : string[]) => {
       similarTopics = results;
-      console.log(topic + ": " + results);
       let topicTuple : TopicInfo = [topic, similarTopics];
       
       return topicTuple;
@@ -90,8 +89,6 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
       }
       j++;
     }
-
-    console.log(rand);
 
   }
   

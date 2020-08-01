@@ -21,7 +21,7 @@ window.onload = function getTopics() {
         getRecommendedTopics(response).then((result) => {
             if (location.pathname === "/recommendations.html") {
                 document.getElementById("loader").style.display = "block";
-                document.getElementById("recommended").style.display = "none";
+                document.getElementById("recommended-topics").style.display = "none";
                 displayRecommendedTopics(result);
             }
         });
@@ -42,7 +42,7 @@ function displayRecommendedTopics(recommended) {
         var cell = newRow.insertCell();
         cell.innerHTML = topic.toUpperCase().replace("_", " ");
         document.getElementById("loader").style.display = "none";
-        document.getElementById("recommended").style.display = "block";
+        document.getElementById("recommended-topics").style.display = "table";
     });
 }
 function getRecommendedTopics(response) {
@@ -55,7 +55,6 @@ function getRecommendedTopics(response) {
             let similarTopics;
             let topicInfo = yield getSimilarTopics(topic).then((results) => {
                 similarTopics = results;
-                console.log(topic + ": " + results);
                 let topicTuple = [topic, similarTopics];
                 return topicTuple;
             });
@@ -82,7 +81,6 @@ function getRecommendedTopics(response) {
                 }
                 j++;
             }
-            console.log(rand);
         }
         var rangeForFirstTopic = getRandomNumbersNoRepetition(4, 10);
         var rangeForAllOtherTopics = getRandomNumbersNoRepetition(0, 10);
