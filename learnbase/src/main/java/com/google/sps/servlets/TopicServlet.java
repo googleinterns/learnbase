@@ -88,9 +88,11 @@ public class TopicServlet extends HttpServlet{
             response.sendRedirect("/search.html");
         }
 
-        String currentUrl = (String) entity.getProperty("currentUrl");
+        //String currentUrl = (String) entity.getProperty("currentUrl");
         String topic = request.getParameter("topic").trim().replaceAll(" +", " ").toLowerCase();
 	String topicName = topic+"topic";
+	String iteratorName = topic+"iterator";
+	System.out.println(iteratorName);
 
         String topics = (String) entity.getProperty("topics"); 
 	if (topics.contains(topic)) {
@@ -100,9 +102,9 @@ public class TopicServlet extends HttpServlet{
 	ArrayList<String> urls = getSearch(topic);
         //ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
             
-        if(currentUrl == null) { 
-            currentUrl = "0";
-        }
+        //if(currentUrl == null) { 
+        //   currentUrl = "0";
+        //}
         if (topics.equals("")){
             entity.setProperty("topics", topic);
         }  else {
@@ -131,6 +133,7 @@ public class TopicServlet extends HttpServlet{
         datastore.put(entity); 
 	//ArrayList<String> urls = getSearch(topic);
 	entity.setProperty(topicName, urls);
+	entity.setProperty(iteratorName, "0");
         System.out.println(topicName + ": " + urls); 
         //if(urls == null) {
         //    urls = new ArrayList<>();
@@ -139,8 +142,8 @@ public class TopicServlet extends HttpServlet{
         //urls = getSearch(topic, urls);
         //System.out.println(urls);
         //getInfo(urls, currentUrl);
-        currentUrl =  Integer.toString(Integer.parseInt(currentUrl)+1); 
-        entity.setProperty("currentUrl", currentUrl);
+        //currentUrl =  Integer.toString(Integer.parseInt(currentUrl)+1); 
+        //entity.setProperty("currentUrl", currentUrl);
         //entity.setProperty("urls", urls);
         datastore.put(entity);
         String[] topicsArray = topics.split(",");
@@ -174,8 +177,8 @@ public class TopicServlet extends HttpServlet{
     return urls; 
   }
 
-  private void getInfo(ArrayList<String> urls, String currentUrl) throws IOException {
-    int currentUrlNum = Integer.parseInt(currentUrl);
+  private void getInfo(ArrayList<String> urls) throws IOException {
+    int currentUrlNum = 1;
     String url = urls.get(currentUrlNum);
 
     Document doc = Jsoup.connect(url).get();
