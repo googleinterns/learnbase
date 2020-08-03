@@ -40,7 +40,7 @@ public class NicknameServlet extends HttpServlet {
   }
 
   @Override 
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, MailjetException, MailjetSocketTimeoutException {
     UserService userService = UserServiceFactory.getUserService();
     if(!userService.isUserLoggedIn()) {
       response.sendRedirect("/nickname");
