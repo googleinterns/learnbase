@@ -119,7 +119,7 @@ public class TopicServlet extends HttpServlet{
             response.sendRedirect("/search.html");
             return;
 	    }
-	ArrayList<String> urls = getSearch(topic);
+	    ArrayList<String> urls = getSearch(topic);
         //ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
             
         //if(currentUrl == null) { 
@@ -129,31 +129,17 @@ public class TopicServlet extends HttpServlet{
             entity.setProperty("topics", topic);
         }  else {
 
-            List<String> listOfTopics = new ArrayList<String>();
-            String str[] = topics.split(",");
-            for (int i = 0; i < str.length; i++) {
-                listOfTopics.add(str[i]);
-            }
-
-            if (!listOfTopics.contains(topic)) {
-                topics += ",";
-                topics += topic;
-            } else {
-                listOfTopics.remove(topic);
-                topics = "";
-                for (int i = 0; i < listOfTopics.size(); i++) {
-                    topics += listOfTopics.get(i);
-                    topics += ",";
-                }
-                topics += topic;
-            }
+            
+            topics += ",";
+            topics += topic;
+        
             entity.setProperty("topics", topics);
 
         }
         datastore.put(entity); 
-	//ArrayList<String> urls = getSearch(topic);
-	entity.setProperty(topicName, urls);
-	entity.setProperty(iteratorName, "0");
+        //ArrayList<String> urls = getSearch(topic);
+        entity.setProperty(topicName, urls);
+        entity.setProperty(iteratorName, "0");
         System.out.println(topicName + ": " + urls); 
         //if(urls == null) {
         //    urls = new ArrayList<>();
