@@ -32,14 +32,31 @@ public class SearchServlet extends HttpServlet {
         .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
-    String topics = (String) entity.getProperty("topics");
-    //System.out.println(topics);
-    ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
-    //System.out.println(urls);
-    System.out.println("in search servlet");
 
-    Gson gson = new Gson();
+    String topics = (String) entity.getProperty("topics");
+    ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
+    String currentUrl = (String) entity.getProperty("currentUrl");
+    if (currentUrl == null) {
+      currentUrl = "0";
+    }
+
+    ArrayList<String> info = getInfo(urls, currentUrl);
+    
     response.setContentType("text/html");
-    response.getWriter().println("<h1>Gonna be urls</h1>");
+    response.getWriter().println(info);
+  }
+  
+  private ArrayList<String> getInfo(ArrayList<String> urls, String currentUrl) throws IOException {
+    ArrayList<String> info = new ArrayList<>();
+    int currentUrlNum = Integer.parseInt(currentUrl);
+    String url = urls.get(currentUrlNum);
+
+    Document doc = Jsoup.connect(url).get();
+    Elements results = doc.select("p");
+
+    for(Element result : results) {
+      info.add(result.toString());
+    }
+    return info;
   }
 }

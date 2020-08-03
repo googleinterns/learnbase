@@ -97,6 +97,7 @@ public class TopicServlet extends HttpServlet{
           response.sendRedirect("/search.html");
           return;
 	}
+	ArrayList<String> urls = getSearch(topic);
         //ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
             
         if(currentUrl == null) { 
@@ -117,7 +118,7 @@ public class TopicServlet extends HttpServlet{
             }
         }
         datastore.put(entity); 
-	ArrayList<String> urls = getSearch(topic);
+	//ArrayList<String> urls = getSearch(topic);
 	entity.setProperty(topicName, urls);
         System.out.println(topicName + ": " + urls); 
         //if(urls == null) {
