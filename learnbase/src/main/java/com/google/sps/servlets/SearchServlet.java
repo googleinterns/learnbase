@@ -22,24 +22,52 @@ import java.util.*;
 
 @WebServlet("/search")
 public class SearchServlet extends HttpServlet {
-  
-  public void doGet(HttpServletResponse request, HttpServletResponse response) throws IOException {
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    response.setContentType("application/json;");
+
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserService userService = UserServiceFactory.getUserService();
     User user = userService.getCurrentUser();
-    String userId = user.getUserId(); 
-    Query query = new Query("UserInfo")
-        .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+    String userId = user.getUserId();
+    Query query = 
+      new Query("UserInfo")
+      .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
     String topics = (String) entity.getProperty("topics");
-    //System.out.println(topics);
-    ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
-    //System.out.println(urls);
-    System.out.println("in search servlet");
-
+    if (topics.equals("")) { 
+      return;
+    }
+    String[] topicsArray = topics.split(",");
+    String topic = topicsArray[0];
+    String topicName = topic+"topic";
+    String iteratorName = topic+"iterator";
+    System.out.println(iteratorName);
+    String iterator = (String) entity.getProperty(iteratorName);
+    ArrayList<String> urls = (ArrayList<String>) entity.getProperty(topicName);
+    String info = getInfo(urls, iterator);
+    iterator = Integer.toString(Integer.parseInt(iterator)+1);
+    entity.setProperty(iteratorName, iterator);
+    datastore.put(entity);
+    System.out.println(info);
     Gson gson = new Gson();
-    response.setContentType("text/html");
-    response.getWriter().println("<h1>Gonna be urls</h1>");
+    response.getWriter().println(gson.toJson(info));
+
+  }
+  
+  private String getInfo(ArrayList<String> urls, String currentUrl) throws IOException {
+    String info = "";
+    int currentUrlNum = Integer.parseInt(currentUrl);
+    String url = urls.get(currentUrlNum);
+
+    Document doc = Jsoup.connect(url).get();
+    Elements results = doc.select("p");
+
+    for(Element result : results) {
+      info = info + result.toString() + "<br>";
+    }
+    return info;
   }
 }
