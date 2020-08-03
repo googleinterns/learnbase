@@ -3,7 +3,7 @@ package com.google.sps.servlets;
 // import com.sendgrid.*;
 
 //mailjet imports 
-package com.my.project;
+
 import com.mailjet.client.errors.MailjetException;
 import com.mailjet.client.errors.MailjetSocketTimeoutException;
 import com.mailjet.client.MailjetClient;
@@ -16,7 +16,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class EmailHandler{
-  private const String API_KEY = "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"
+  private const String API_KEY = "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";
   private const String PUB_KEY = "2065063d2f679c68571c386cf8d13767";
   private const String PRIV_KEY =  "2921119afe3fec7e64e36d4677fc4a75";
   public EmailHandler(){
