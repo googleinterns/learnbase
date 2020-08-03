@@ -19,7 +19,11 @@ window.onload = function getTopics() {
             topicManager(response);
         }
         getRecommendedTopics(response).then((result) => {
-            displayRecommendedTopics(result);
+            if (location.pathname === "/recommendations.html") {
+                document.getElementById("loader").style.display = "block";
+                document.getElementById("recommended-topics").style.display = "none";
+                displayRecommendedTopics(result);
+            }
         });
     });
     console.log("First fetch complete");
@@ -32,14 +36,14 @@ window.onload = function getTopics() {
     }
 };
 function displayRecommendedTopics(recommended) {
-    if (location.pathname === "/recommendations.html") {
-        var table = document.getElementById('recommended-topics');
-        recommended.forEach((topic) => {
-            var newRow = table.insertRow();
-            var cell = newRow.insertCell();
-            cell.innerHTML = topic.toUpperCase().replace("_", " ");
-        });
-    }
+    var table = document.getElementById('recommended-topics');
+    recommended.forEach((topic) => {
+        var newRow = table.insertRow();
+        var cell = newRow.insertCell();
+        cell.innerHTML = topic.toUpperCase().replace("_", " ");
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("recommended-topics").style.display = "table";
+    });
 }
 function getRecommendedTopics(response) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -54,7 +58,12 @@ function getRecommendedTopics(response) {
                 let topicTuple = [topic, similarTopics];
                 return topicTuple;
             });
-            topicInfoList.push(topicInfo);
+            if (topicInfo[1].length !== 0) {
+                topicInfoList.push(topicInfo);
+            }
+            else {
+                continue;
+            }
             recsPerTopic.push(0);
         }
         // First topic has 4 automatic recommendations from most recent choice.
@@ -72,7 +81,6 @@ function getRecommendedTopics(response) {
                 }
                 j++;
             }
-            console.log(rand);
         }
         var rangeForFirstTopic = getRandomNumbersNoRepetition(4, 10);
         var rangeForAllOtherTopics = getRandomNumbersNoRepetition(0, 10);
@@ -113,16 +121,19 @@ function topicManager(topics) {
     var i = 0;
     var size = topics.length;
     topics.reverse().forEach((topic) => {
-        var newRow = table.insertRow();
-        var cell = newRow.insertCell();
-        cell.innerHTML = topic.toUpperCase();
-        const deleteButtonElement = document.createElement('button');
-        deleteButtonElement.innerText = 'Delete';
-        deleteButtonElement.addEventListener('click', () => {
-            deleteTopic(topic);
-        });
-        var deleteCell = newRow.insertCell();
-        deleteCell.appendChild(deleteButtonElement);
+        if (i < 8) {
+            var newRow = table.insertRow();
+            var cell = newRow.insertCell();
+            cell.innerHTML = topic.toUpperCase();
+            const deleteButtonElement = document.createElement('button');
+            deleteButtonElement.innerText = 'Delete';
+            deleteButtonElement.addEventListener('click', () => {
+                deleteTopic(topic);
+            });
+            var deleteCell = newRow.insertCell();
+            deleteCell.appendChild(deleteButtonElement);
+            i++;
+        }
     });
     //   for (i = 0; i < topics.length-1; i++){
     //     var newRow = table.insertRow();

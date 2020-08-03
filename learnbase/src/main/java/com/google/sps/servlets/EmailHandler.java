@@ -18,8 +18,8 @@ public class EmailHandler{
       "to recieve daily emails! ");
     Mail mail = new Mail(from, subject, to, content);
 
-    SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
-    //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 <-- API key
+    SendGrid sg = new SendGrid("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");
+    // <-- API key
 
     Request request = new Request();
     try {

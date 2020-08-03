@@ -10,12 +10,17 @@ if (location.pathname === "/search.html") {
 window.onload = function getTopics() : void {
   fetch('/topics').then(response => response.json()).then((response) =>{
     console.log(response);
+
     if (location.pathname === "/search.html") {
       topicManager(response);
     }
 
     getRecommendedTopics(response).then((result: string[]) => {
-      displayRecommendedTopics(result);
+      if (location.pathname === "/recommendations.html") {
+        document.getElementById("loader").style.display = "block";
+        document.getElementById("recommended-topics").style.display = "none";
+        displayRecommendedTopics(result);
+      }
     });
     
   });
@@ -31,15 +36,16 @@ window.onload = function getTopics() : void {
 }
 
 function displayRecommendedTopics(recommended : string[]) {
-  if (location.pathname === "/recommendations.html") {
-    var table = document.getElementById('recommended-topics') as HTMLTableElement;
-    recommended.forEach((topic: string) => {
-      var newRow = table.insertRow();
-      var cell = newRow.insertCell(); 
-      
-      cell.innerHTML = topic.toUpperCase().replace("_", " ");
-    });
-  }
+  var table = document.getElementById('recommended-topics') as HTMLTableElement;
+  recommended.forEach((topic: string) => {
+    var newRow = table.insertRow();
+    var cell = newRow.insertCell(); 
+    
+    cell.innerHTML = topic.toUpperCase().replace("_", " ");
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("recommended-topics").style.display = "table";
+  });
+  
 }
 
 async function getRecommendedTopics(response: string) : Promise<string[]> {
@@ -55,11 +61,15 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
     let topicInfo : TopicInfo = await getSimilarTopics(topic).then((results : string[]) => {
       similarTopics = results;
       let topicTuple : TopicInfo = [topic, similarTopics];
-
+      
       return topicTuple;
     });
 
-    topicInfoList.push(topicInfo);
+    if (topicInfo[1].length !== 0) {
+      topicInfoList.push(topicInfo);
+    } else {
+      continue;
+    }
     recsPerTopic.push(0);  
   }
 
@@ -79,8 +89,6 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
       }
       j++;
     }
-
-    console.log(rand);
 
   }
   
@@ -129,20 +137,22 @@ function topicManager(topics: string[]) : void {
   var i = 0 ; 
   var size = topics.length;
   topics.reverse().forEach((topic: string) => {
-    var newRow = table.insertRow();
-    var cell = newRow.insertCell(); 
-    cell.innerHTML = topic.toUpperCase();
+    if (i < 8) {
+      var newRow = table.insertRow();
+      var cell = newRow.insertCell(); 
+      cell.innerHTML = topic.toUpperCase();
 
-    const deleteButtonElement = document.createElement('button');
-    deleteButtonElement.innerText = 'Delete';
-    deleteButtonElement.addEventListener('click', () =>{
-      deleteTopic(topic);
-    });
-    var deleteCell = newRow.insertCell();
-    deleteCell.appendChild(deleteButtonElement);
-    
+      const deleteButtonElement = document.createElement('button');
+      deleteButtonElement.innerText = 'Delete';
+      deleteButtonElement.addEventListener('click', () =>{
+        deleteTopic(topic);
+      });
+      var deleteCell = newRow.insertCell();
+      deleteCell.appendChild(deleteButtonElement);
+      i++;
+    }
   });
-  
+
 //   for (i = 0; i < topics.length-1; i++){
 //     var newRow = table.insertRow();
 //     var cell = newRow.insertCell(); 
