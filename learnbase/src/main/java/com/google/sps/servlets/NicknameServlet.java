@@ -57,6 +57,7 @@ public class NicknameServlet extends HttpServlet {
     } catch (Exception e){
       System.out.println(e);
     }
+    
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity entity = new Entity("UserInfo", id);
     entity.setProperty("id", id);

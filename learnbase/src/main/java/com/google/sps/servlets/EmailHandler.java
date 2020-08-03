@@ -25,10 +25,9 @@ public class EmailHandler{
   }
 
   public void sendWelcomeMail(String userEmail) throws MailjetException, MailjetSocketTimeoutException{
-    MailjetClient client;
+    MailjetClient client = client = new MailjetClient(PUB_KEY, PRIV_KEY, new ClientOptions("v3.1"));
     MailjetRequest request;
     MailjetResponse response;
-    client = new MailjetClient(PUB_KEY, PRIV_KEY, new ClientOptions("v3.1"));
     request = new MailjetRequest(Emailv31.resource)
     .property(Emailv31.MESSAGES, new JSONArray()
     .put(new JSONObject()
@@ -39,13 +38,46 @@ public class EmailHandler{
     .put(new JSONObject()
     .put("Email", userEmail)
     .put("Name", "Federick")))
-    .put(Emailv31.Message.SUBJECT, "Greetings from Mailjet.")
-    .put(Emailv31.Message.TEXTPART, "My first Mailjet email")
-    .put(Emailv31.Message.HTMLPART, "<h3>Dear passenger 1, welcome to <a href='https://www.mailjet.com/'>Mailjet</a>!</h3><br />May the delivery force be with you!")
+    .put(Emailv31.Message.SUBJECT, "Welcome to LearnBase!")
+    .put(Emailv31.Message.TEXTPART, "")
+    .put(Emailv31.Message.HTMLPART, "<h3>Welcome to <a href='https://www.learnbase-step-2020.appspot.com/'>"+
+      "LearnBase</a>!</h3><br />" + "We're very happy to have you." + 
+      "\n If you haven't already done so, please choose a topic under the Search page and select a time " +
+      "to recieve daily emails! ")
     .put(Emailv31.Message.CUSTOMID, "AppGettingStartedTest")));
     response = client.post(request);
     System.out.println(response.getStatus());
     System.out.println(response.getData());
+  }
+
+  public sendMail(String userEmail, String username, String[] topics, String[] info){
+    String htmlOutput = "";
+    for (int i = 0; i < topics.length; i++){
+      htmlOutput += "<h3>" + topics[i] + "<\h3>";
+      htmlOutput += "<br>" + info + "<br>";
+    }
+
+    MailjetClient client = client = new MailjetClient(PUB_KEY, PRIV_KEY, new ClientOptions("v3.1"));
+    MailjetRequest request;
+    MailjetResponse response;
+    request = new MailjetRequest(Emailv31.resource)
+    .property(Emailv31.MESSAGES, new JSONArray()
+    .put(new JSONObject()
+    .put(Emailv31.Message.FROM, new JSONObject()
+    .put("Email", "learnbase2020@gmail.com")
+    .put("Name", "Learnbase"))
+    .put(Emailv31.Message.TO, new JSONArray()
+    .put(new JSONObject()
+    .put("Email", userEmail)
+    .put("Name", username)))
+    .put(Emailv31.Message.SUBJECT, "Your Daily dose of info!")
+    .put(Emailv31.Message.TEXTPART, "")
+    .put(Emailv31.Message.HTMLPART, htmlOutput)
+    .put(Emailv31.Message.CUSTOMID, "AppGettingStartedTest")));
+    response = client.post(request);
+    System.out.println(response.getStatus());
+    System.out.println(response.getData());
+
   }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
   /* Sendgrid stuff
