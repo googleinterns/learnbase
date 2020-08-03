@@ -37,18 +37,22 @@ public class RecommendationsServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
+    response.setContentType("application/json;");
+
     String topic = request.getParameter("topic").trim().replaceAll(" +", " ").replace(" ", "_").toLowerCase();
     
     if (!wordCache.containsKey(topic)) {
       words2vecs = (HashMap<String, ArrayList<Double>>) gson.fromJson(new FileReader("model/word_embedding.json"), words2vecs.getClass());
-
+      if (!words2vecs.containsKey(topic)) {
+        response.getWriter().println("[]");
+        return;
+      }
       ArrayList<String> closestWords = getClosestWords(words2vecs, topic);
 
       wordCache.put(topic, closestWords);
     }
     
     String similarTopics = gson.toJson(wordCache.get(topic)); 
-    response.setContentType("application/json;");
     response.getWriter().println(similarTopics);
   }
 
