@@ -90,8 +90,14 @@ public class TopicServlet extends HttpServlet{
 
         String currentUrl = (String) entity.getProperty("currentUrl");
         String topic = request.getParameter("topic").trim().replaceAll(" +", " ").toLowerCase();
+	String topicName = topic+"topic";
+
         String topics = (String) entity.getProperty("topics"); 
-        ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
+	if (topics.contains(topic)) {
+          response.sendRedirect("/search.html");
+          return;
+	}
+        //ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
             
         if(currentUrl == null) { 
             currentUrl = "0";
@@ -122,27 +128,37 @@ public class TopicServlet extends HttpServlet{
 
         }
         datastore.put(entity); 
-
-        if(urls == null) {
-            urls = new ArrayList<>();
-        }
+	ArrayList<String> urls = getSearch(topic);
+	entity.setProperty(topicName, urls);
+        System.out.println(topicName + ": " + urls); 
+        //if(urls == null) {
+        //    urls = new ArrayList<>();
+        //}
         String[] values = topics.split(",");
-        urls = getSearch(topic, urls);
-        System.out.println(urls);
-        getInfo(urls, currentUrl);
+        //urls = getSearch(topic, urls);
+        //System.out.println(urls);
+        //getInfo(urls, currentUrl);
         currentUrl =  Integer.toString(Integer.parseInt(currentUrl)+1); 
         entity.setProperty("currentUrl", currentUrl);
-        entity.setProperty("urls", urls);
+        //entity.setProperty("urls", urls);
         datastore.put(entity);
+        String[] topicsArray = topics.split(",");
+	for (String thisTopic : topicsArray) { 
+          String thisTopicName = thisTopic+"topic";
+	  ArrayList<String> topicUrls = (ArrayList<String>) entity.getProperty(thisTopicName);
+          System.out.println(thisTopic+ ": ");
+	  System.out.println(topicUrls);
+	}
 
         response.sendRedirect("/search.html");
     }
 
-  private ArrayList<String> getSearch(String topic, ArrayList<String> urls) throws IOException {
+  private ArrayList<String> getSearch(String topic) throws IOException {
     String google = "https://www.google.com/search";
     int num = 5;
     String searchURL = google + "?q=" + topic + "&num=" + num;
-    System.out.println(searchURL);
+    ArrayList<String> urls = new ArrayList<>();
+    //System.out.println(searchURL);
 
     Document doc  = Jsoup.connect(searchURL).userAgent("Chrome").get();
     Elements results = doc.select("a[href]:has(span)").select("a[href]:not(:has(div))");
