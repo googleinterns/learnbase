@@ -16,10 +16,17 @@ window.onload = function getTopics() : void {
     }
 
     getRecommendedTopics(response).then((result: string[]) => {
+
       if (location.pathname === "/recommendations.html") {
-        document.getElementById("loader").style.display = "block";
-        document.getElementById("recommended-topics").style.display = "none";
-        displayRecommendedTopics(result);
+        if (result.length === 0) {
+          document.getElementById("no-recs").style.display = "block";
+          document.getElementById("loader").style.display = "none";
+          document.getElementById("recommended-topics").style.display = "none";
+        } else {
+          document.getElementById("loader").style.display = "block";
+          document.getElementById("recommended-topics").style.display = "none";
+          displayRecommendedTopics(result);
+        }
       }
     });
     
@@ -54,6 +61,10 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
   
   var recommendations : string[] = [];
 
+  if (JSON.stringify(response) === "{}") {
+    return recommendations;
+  }
+
   for (let i = response.length-1; i >= 0; i--) {
     let topic : string = response[i];
     let similarTopics : string[];
@@ -73,9 +84,9 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
     recsPerTopic.push(0);  
   }
 
-  // First topic has 4 automatic recommendations from most recent choice.
-  // Other 6 are drawn from random distribution of all topics.
-  for (let i = 0; i < 6; i++) {
+  // First topic has 3 automatic recommendations from most recent choice.
+  // Other 7 are drawn from random distribution of all topics.
+  for (let i = 0; i < 7; i++) {
     let rand : number = Math.random()*10000;
     let j = 1;
     
@@ -92,12 +103,12 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
 
   }
   
-  var rangeForFirstTopic : number[] = getRandomNumbersNoRepetition(4, 10);
+  var rangeForFirstTopic : number[] = getRandomNumbersNoRepetition(3, 10);
   var rangeForAllOtherTopics : number[] = getRandomNumbersNoRepetition(0, 10);
 
   var currIndex : number = 0;
   for (let i = 0; i < 10; i++) {
-    if (i < 4) {
+    if (i < 3) {
       recommendations.push(topicInfoList[0][1][i]);
     } else {
       
@@ -107,7 +118,7 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
         recsPerTopic[currIndex] -= 1
       }
       
-      let rand : number = (currIndex === 0) ? rangeForFirstTopic[i-4] : rangeForAllOtherTopics[i];
+      let rand : number = (currIndex === 0) ? rangeForFirstTopic[i-3] : rangeForAllOtherTopics[i];
       let nextTopic : string = topicInfoList[currIndex][1][rand];
       
       recommendations.push(nextTopic);

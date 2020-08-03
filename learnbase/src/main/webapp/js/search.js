@@ -20,9 +20,16 @@ window.onload = function getTopics() {
         }
         getRecommendedTopics(response).then((result) => {
             if (location.pathname === "/recommendations.html") {
-                document.getElementById("loader").style.display = "block";
-                document.getElementById("recommended-topics").style.display = "none";
-                displayRecommendedTopics(result);
+                if (result.length === 0) {
+                    document.getElementById("no-recs").style.display = "block";
+                    document.getElementById("loader").style.display = "none";
+                    document.getElementById("recommended-topics").style.display = "none";
+                }
+                else {
+                    document.getElementById("loader").style.display = "block";
+                    document.getElementById("recommended-topics").style.display = "none";
+                    displayRecommendedTopics(result);
+                }
             }
         });
     });
@@ -50,6 +57,9 @@ function getRecommendedTopics(response) {
         var topicInfoList = [];
         var recsPerTopic = [];
         var recommendations = [];
+        if (JSON.stringify(response) === "{}") {
+            return recommendations;
+        }
         for (let i = response.length - 1; i >= 0; i--) {
             let topic = response[i];
             let similarTopics;
@@ -66,9 +76,9 @@ function getRecommendedTopics(response) {
             }
             recsPerTopic.push(0);
         }
-        // First topic has 4 automatic recommendations from most recent choice.
-        // Other 6 are drawn from random distribution of all topics.
-        for (let i = 0; i < 6; i++) {
+        // First topic has 3 automatic recommendations from most recent choice.
+        // Other 7 are drawn from random distribution of all topics.
+        for (let i = 0; i < 7; i++) {
             let rand = Math.random() * 10000;
             let j = 1;
             if (rand < 10000 / Math.pow(2, topicInfoList.length - 1)) {
@@ -82,11 +92,11 @@ function getRecommendedTopics(response) {
                 j++;
             }
         }
-        var rangeForFirstTopic = getRandomNumbersNoRepetition(4, 10);
+        var rangeForFirstTopic = getRandomNumbersNoRepetition(3, 10);
         var rangeForAllOtherTopics = getRandomNumbersNoRepetition(0, 10);
         var currIndex = 0;
         for (let i = 0; i < 10; i++) {
-            if (i < 4) {
+            if (i < 3) {
                 recommendations.push(topicInfoList[0][1][i]);
             }
             else {
@@ -96,7 +106,7 @@ function getRecommendedTopics(response) {
                 else {
                     recsPerTopic[currIndex] -= 1;
                 }
-                let rand = (currIndex === 0) ? rangeForFirstTopic[i - 4] : rangeForAllOtherTopics[i];
+                let rand = (currIndex === 0) ? rangeForFirstTopic[i - 3] : rangeForAllOtherTopics[i];
                 let nextTopic = topicInfoList[currIndex][1][rand];
                 recommendations.push(nextTopic);
             }
