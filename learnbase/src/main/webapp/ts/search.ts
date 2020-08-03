@@ -7,6 +7,8 @@ if (location.pathname === "/search.html") {
   document.getElementById("submitButton").addEventListener("click", timeChange);
 }
 
+// Get the topics and recommendations, and display
+// them on the webpage.
 window.onload = function getTopics() : void {
   fetch('/topics').then(response => response.json()).then((response) =>{
     console.log(response);
@@ -42,6 +44,7 @@ window.onload = function getTopics() : void {
   }
 }
 
+// Display recommended topics
 function displayRecommendedTopics(recommended : string[]) {
   var table = document.getElementById('recommended-topics') as HTMLTableElement;
   recommended.forEach((topic: string) => {
@@ -55,16 +58,27 @@ function displayRecommendedTopics(recommended : string[]) {
   
 }
 
+/*
+ * Get top 10 recommended topics. The first 3 are 
+ * the most similar topics to the most recently queried
+ * subject, and the remaining 7 are drawned from a random
+ * distribution. 
+ */
 async function getRecommendedTopics(response: string) : Promise<string[]> {
-  var topicInfoList : TopicInfo[] = [];
+  // Stores each topic with its corresponding list of recommended topics.
+  var topicInfoList : TopicInfo[] = []; 
+  // Keeps track of number of recommendations for each topic that will be displayed.
   var recsPerTopic : number[] = [];
-  
+  // List of recommendations that will be returned.
   var recommendations : string[] = [];
 
   if (JSON.stringify(response) === "{}") {
     return recommendations;
   }
 
+  // For each topic the user has selected,
+  // get all the similar topics. Also initialize
+  // recsPerTopic list.
   for (let i = response.length-1; i >= 0; i--) {
     let topic : string = response[i];
     let similarTopics : string[];
@@ -86,6 +100,7 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
 
   // First topic has 3 automatic recommendations from most recent choice.
   // Other 7 are drawn from random distribution of all topics.
+  // Counts are stored in the recsPerTopic list.
   for (let i = 0; i < 7; i++) {
     let rand : number = Math.random()*10000;
     let j = 1;
@@ -103,6 +118,9 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
 
   }
   
+  // Gets list of indices in a random order, and pulls
+  // each index based off of the results of the 
+  // random distribution above.
   var rangeForFirstTopic : number[] = getRandomNumbersNoRepetition(3, 10);
   var rangeForAllOtherTopics : number[] = getRandomNumbersNoRepetition(0, 10);
 
@@ -143,6 +161,8 @@ function getRandomNumbersNoRepetition(min: number, max: number) : number[] {
   return numbers;
 }
 
+// Displays list of selected topics to the screen.
+// Will only display the 8 most recently searched topics.
 function topicManager(topics: string[]) : void {
   var table = document.getElementById('subjectTable') as HTMLTableElement;
   var i = 0 ; 
@@ -182,6 +202,7 @@ function topicManager(topics: string[]) : void {
 
 }
 
+// Deletes topic.
 function deleteTopic(topic: string) : void {
   const params = new URLSearchParams(); 
   params.append("topic", topic)
