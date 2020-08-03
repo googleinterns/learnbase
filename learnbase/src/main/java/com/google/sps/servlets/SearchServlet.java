@@ -40,20 +40,24 @@ public class SearchServlet extends HttpServlet {
     if (topics.equals("")) { 
       return;
     }
+    ArrayList<String> topicsInfo = new ArrayList<>();
     String[] topicsArray = topics.split(",");
-    String topic = topicsArray[0];
-    String topicName = topic+"topic";
-    String iteratorName = topic+"iterator";
-    System.out.println(iteratorName);
-    String iterator = (String) entity.getProperty(iteratorName);
-    ArrayList<String> urls = (ArrayList<String>) entity.getProperty(topicName);
-    String info = getInfo(urls, iterator);
-    iterator = Integer.toString(Integer.parseInt(iterator)+1);
-    entity.setProperty(iteratorName, iterator);
+    for (String topic : topicsArray) {
+      String topicName = topic+"topic";
+      String iteratorName = topic+"iterator";
+      System.out.println(iteratorName);
+      String iterator = (String) entity.getProperty(iteratorName);
+      ArrayList<String> urls = (ArrayList<String>) entity.getProperty(topicName);
+      String info = getInfo(urls, iterator);
+      topicsInfo.add("<h1>"+topic+":</h1>");
+      topicsInfo.add(info);
+      iterator = Integer.toString(Integer.parseInt(iterator)+1);
+      entity.setProperty(iteratorName, iterator);
+    }
     datastore.put(entity);
-    System.out.println(info);
+    //System.out.println(info);
     Gson gson = new Gson();
-    response.getWriter().println(gson.toJson(info));
+    response.getWriter().println(gson.toJson(topicsInfo));
 
   }
   
@@ -66,7 +70,7 @@ public class SearchServlet extends HttpServlet {
     Elements results = doc.select("p");
 
     for(Element result : results) {
-      info = info + result.toString() + "<br>";
+      info = info + result.toString();
     }
     return info;
   }
