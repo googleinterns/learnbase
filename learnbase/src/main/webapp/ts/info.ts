@@ -3,6 +3,10 @@ window.onload = function getInfo() : void {
     console.log(response);
     
     var infoSection = document.getElementById('info-container') as HTMLDivElement;
-    infoSection.innerHTML = response;
+    response.forEach((element) => {
+      console.log(element);
+      infoSection.innerHTML += element;
+    })
   });
 }
+
