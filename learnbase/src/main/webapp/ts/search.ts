@@ -16,10 +16,17 @@ window.onload = function getTopics() : void {
     }
 
     getRecommendedTopics(response).then((result: string[]) => {
+
       if (location.pathname === "/recommendations.html") {
-        document.getElementById("loader").style.display = "block";
-        document.getElementById("recommended-topics").style.display = "none";
-        displayRecommendedTopics(result);
+        if (result.length === 0) {
+          document.getElementById("no-recs").style.display = "block";
+          document.getElementById("loader").style.display = "none";
+          document.getElementById("recommended-topics").style.display = "none";
+        } else {
+          document.getElementById("loader").style.display = "block";
+          document.getElementById("recommended-topics").style.display = "none";
+          displayRecommendedTopics(result);
+        }
       }
     });
     
@@ -53,6 +60,10 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
   var recsPerTopic : number[] = [];
   
   var recommendations : string[] = [];
+
+  if (JSON.stringify(response) === "{}") {
+    return recommendations;
+  }
 
   for (let i = response.length-1; i >= 0; i--) {
     let topic : string = response[i];

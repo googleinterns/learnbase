@@ -20,9 +20,16 @@ window.onload = function getTopics() {
         }
         getRecommendedTopics(response).then((result) => {
             if (location.pathname === "/recommendations.html") {
-                document.getElementById("loader").style.display = "block";
-                document.getElementById("recommended-topics").style.display = "none";
-                displayRecommendedTopics(result);
+                if (result.length === 0) {
+                    document.getElementById("no-recs").style.display = "block";
+                    document.getElementById("loader").style.display = "none";
+                    document.getElementById("recommended-topics").style.display = "none";
+                }
+                else {
+                    document.getElementById("loader").style.display = "block";
+                    document.getElementById("recommended-topics").style.display = "none";
+                    displayRecommendedTopics(result);
+                }
             }
         });
     });
@@ -50,6 +57,9 @@ function getRecommendedTopics(response) {
         var topicInfoList = [];
         var recsPerTopic = [];
         var recommendations = [];
+        if (JSON.stringify(response) === "{}") {
+            return recommendations;
+        }
         for (let i = response.length - 1; i >= 0; i--) {
             let topic = response[i];
             let similarTopics;
