@@ -1,15 +1,24 @@
 "use strict";
 console.log("tester");
-window.onload = function userLogin() {
+function userLogin() {
     fetch('/userlogin').then(response => response.text()).then((pageContent) => {
         const loginSection = document.getElementById('user-page-content');
-        try {
-            loginSection.innerHTML = pageContent;
-        }
-        catch (error) {
-            console.log(error);
-        }
+        console.log(pageContent);
+        loginSection.innerHTML = pageContent;
     });
+}
+function getInterests() {
+    fetch('/interests').then(response => response.json()).then((topics) => {
+        const interestsSection = document.getElementById('interests-section');
+        topics.forEach((topic) => {
+            console.log(topic);
+            interestsSection.innerHTML += topic;
+        });
+    });
+}
+window.onload = function start() {
+    userLogin();
+    getInterests();
 };
 function pageChanger() {
     const navBar = document.getElementById("myTopnav");
