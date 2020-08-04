@@ -12,6 +12,8 @@ if (location.pathname === "/search.html") {
     document.getElementById("timeChange").addEventListener("click", timeChangeReveal);
     document.getElementById("submitButton").addEventListener("click", timeChange);
 }
+// Get the topics and recommendations, and display
+// them on the webpage.
 window.onload = function getTopics() {
     fetch('/topics').then(response => response.json()).then((response) => {
         console.log(response);
@@ -42,24 +44,41 @@ window.onload = function getTopics() {
         console.log("second fetch complete");
     }
 };
+// Display recommended topics
 function displayRecommendedTopics(recommended) {
     var table = document.getElementById('recommended-topics');
+    var setOfTopics = new Set();
     recommended.forEach((topic) => {
-        var newRow = table.insertRow();
-        var cell = newRow.insertCell();
-        cell.innerHTML = topic.toUpperCase().replace("_", " ");
-        document.getElementById("loader").style.display = "none";
-        document.getElementById("recommended-topics").style.display = "table";
+        if (!setOfTopics.has(topic)) {
+            setOfTopics.add(topic);
+            var newRow = table.insertRow();
+            var cell = newRow.insertCell();
+            cell.innerHTML = topic.toUpperCase().replace("_", " ");
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("recommended-topics").style.display = "table";
+        }
     });
 }
+/*
+ * Get top 10 recommended topics. The first 3 are
+ * the most similar topics to the most recently queried
+ * subject, and the remaining 7 are drawned from a random
+ * distribution.
+ */
 function getRecommendedTopics(response) {
     return __awaiter(this, void 0, void 0, function* () {
+        // Stores each topic with its corresponding list of recommended topics.
         var topicInfoList = [];
+        // Keeps track of number of recommendations for each topic that will be displayed.
         var recsPerTopic = [];
+        // List of recommendations that will be returned.
         var recommendations = [];
         if (JSON.stringify(response) === "{}") {
             return recommendations;
         }
+        // For each topic the user has selected,
+        // get all the similar topics. Also initialize
+        // recsPerTopic list.
         for (let i = response.length - 1; i >= 0; i--) {
             let topic = response[i];
             let similarTopics;
@@ -78,6 +97,7 @@ function getRecommendedTopics(response) {
         }
         // First topic has 3 automatic recommendations from most recent choice.
         // Other 7 are drawn from random distribution of all topics.
+        // Counts are stored in the recsPerTopic list.
         for (let i = 0; i < 7; i++) {
             let rand = Math.random() * 10000;
             let j = 1;
@@ -92,6 +112,9 @@ function getRecommendedTopics(response) {
                 j++;
             }
         }
+        // Gets list of indices in a random order, and pulls
+        // each index based off of the results of the 
+        // random distribution above.
         var rangeForFirstTopic = getRandomNumbersNoRepetition(3, 10);
         var rangeForAllOtherTopics = getRandomNumbersNoRepetition(0, 10);
         var currIndex = 0;
@@ -126,6 +149,8 @@ function getRandomNumbersNoRepetition(min, max) {
     }
     return numbers;
 }
+// Displays list of selected topics to the screen.
+// Will only display the 8 most recently searched topics.
 function topicManager(topics) {
     var table = document.getElementById('subjectTable');
     var i = 0;
@@ -160,6 +185,7 @@ function topicManager(topics) {
     //   var time = topics[topics.length-1];
     //   document.getElementById("timeDisplay").innerHTML = time;
 }
+// Deletes topic.
 function deleteTopic(topic) {
     const params = new URLSearchParams();
     params.append("topic", topic);
