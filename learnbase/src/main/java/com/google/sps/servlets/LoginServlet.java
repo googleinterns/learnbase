@@ -55,10 +55,9 @@ public class LoginServlet extends HttpServlet {
       String topicOutput = "<p>" + topic + "</p>";
       topicsOutput += topicOutput;
     }
-
     response.getWriter().println("<h1>Welcome " + nickname  + "!</h1>");
     response.getWriter().println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
-    if (topicsOutput.equals("")) {
+    if (topicsOutput.equals("") || topicsOutput.equals("<p></p>")) {
       response.getWriter().println("<p> You have no topics yet! </p>");
     } else {
       response.getWriter().println("<p>Your current interests are: </p>");
