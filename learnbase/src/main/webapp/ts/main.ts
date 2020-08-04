@@ -1,6 +1,6 @@
 console.log("tester");
 
-function userLogin() : void {
+window.onload = function userLogin() : void {
   fetch('/userlogin').then(response => response.text()).then((pageContent) => {
     const loginSection = document.getElementById('user-page-content') as HTMLDivElement;
     console.log(pageContent);
@@ -18,10 +18,10 @@ function getInterests() : void {
   });
 } 
 
-window.onload = function start() : void {
-  userLogin();
-  getInterests();
-}
+//window.onload = function start() : void {
+//  userLogin();
+//  getInterests();
+//}
 
 function pageChanger() : void {
   const navBar = document.getElementById("myTopnav") as HTMLDivElement;
