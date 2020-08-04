@@ -53,7 +53,19 @@ function displayRecommendedTopics(recommended : string[]) {
       setOfTopics.add(topic);
       var newRow = table.insertRow();
       var cell = newRow.insertCell(); 
+      cell.setAttribute('class', 'rec');
+      cell.addEventListener('mouseover', () => {
+        cell.style.color = "#009900";
+      });
+      cell.addEventListener('mouseout', () => {
+        cell.style.color = "#003509";
+      });
       
+
+      cell.addEventListener('click', () => {
+        
+      });
+
       cell.innerHTML = topic.toUpperCase().replace("_", " ");
       document.getElementById("loader").style.display = "none";
       document.getElementById("recommended-topics").style.display = "table";
