@@ -47,12 +47,16 @@ window.onload = function getTopics() {
 // Display recommended topics
 function displayRecommendedTopics(recommended) {
     var table = document.getElementById('recommended-topics');
+    var setOfTopics = new Set();
     recommended.forEach((topic) => {
-        var newRow = table.insertRow();
-        var cell = newRow.insertCell();
-        cell.innerHTML = topic.toUpperCase().replace("_", " ");
-        document.getElementById("loader").style.display = "none";
-        document.getElementById("recommended-topics").style.display = "table";
+        if (!setOfTopics.has(topic)) {
+            setOfTopics.add(topic);
+            var newRow = table.insertRow();
+            var cell = newRow.insertCell();
+            cell.innerHTML = topic.toUpperCase().replace("_", " ");
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("recommended-topics").style.display = "table";
+        }
     });
 }
 /*
