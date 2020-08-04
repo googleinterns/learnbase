@@ -90,25 +90,12 @@ public class TopicServlet extends HttpServlet{
 
         //String currentUrl = (String) entity.getProperty("currentUrl");
         String topic = request.getParameter("topic").trim().replaceAll(" +", " ").toLowerCase();
-	String topicName = topic+"topic";
-	String iteratorName = topic+"iterator";
-	System.out.println(iteratorName);
+	    String topicName = topic+"topic";
+	    String iteratorName = topic+"iterator";
+	    System.out.println(iteratorName);
 
         String topics = (String) entity.getProperty("topics"); 
-	if (topics.contains(topic)) {
-          response.sendRedirect("/search.html");
-          return;
-	}
-	ArrayList<String> urls = getSearch(topic);
-        //ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
-            
-        //if(currentUrl == null) { 
-        //   currentUrl = "0";
-        //}
-        if (topics.equals("")){
-            entity.setProperty("topics", topic);
-        }  else {
-
+	    if (topics.contains(topic)) {
             List<String> listOfTopics = new ArrayList<String>();
             String str[] = topics.split(",");
             for (int i = 0; i < str.length; i++) {
@@ -128,12 +115,31 @@ public class TopicServlet extends HttpServlet{
                 topics += topic;
             }
             entity.setProperty("topics", topics);
+            datastore.put(entity);
+            response.sendRedirect("/search.html");
+            return;
+	    }
+	    ArrayList<String> urls = getSearch(topic);
+        //ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
+            
+        //if(currentUrl == null) { 
+        //   currentUrl = "0";
+        //}
+        if (topics.equals("")){
+            entity.setProperty("topics", topic);
+        }  else {
+
+            
+            topics += ",";
+            topics += topic;
+        
+            entity.setProperty("topics", topics);
 
         }
         datastore.put(entity); 
-	//ArrayList<String> urls = getSearch(topic);
-	entity.setProperty(topicName, urls);
-	entity.setProperty(iteratorName, "0");
+        //ArrayList<String> urls = getSearch(topic);
+        entity.setProperty(topicName, urls);
+        entity.setProperty(iteratorName, "0");
         System.out.println(topicName + ": " + urls); 
         //if(urls == null) {
         //    urls = new ArrayList<>();

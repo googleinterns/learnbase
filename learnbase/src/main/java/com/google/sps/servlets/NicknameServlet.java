@@ -13,6 +13,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.mailjet.client.errors.MailjetException;
+import com.mailjet.client.errors.MailjetSocketTimeoutException;
 
 @WebServlet("/nickname")
 public class NicknameServlet extends HttpServlet {
@@ -40,7 +42,7 @@ public class NicknameServlet extends HttpServlet {
   }
 
   @Override 
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
     UserService userService = UserServiceFactory.getUserService();
     if(!userService.isUserLoggedIn()) {
       response.sendRedirect("/nickname");
@@ -50,7 +52,11 @@ public class NicknameServlet extends HttpServlet {
     String nickname = request.getParameter("nickname");
     String id = userService.getCurrentUser().getUserId();
     EmailHandler handler = new EmailHandler();
-    handler.sendWelcomeMail(userService.getCurrentUser().getEmail());
+    try{
+      handler.sendWelcomeMail(userService.getCurrentUser().getEmail());
+    } catch (Exception e){
+      System.out.println(e);
+    }
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity entity = new Entity("UserInfo", id);
