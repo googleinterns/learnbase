@@ -48,6 +48,12 @@ public class SearchServlet extends HttpServlet {
       System.out.println(iteratorName);
       String iterator = (String) entity.getProperty(iteratorName);
       ArrayList<String> urls = (ArrayList<String>) entity.getProperty(topicName);
+      int iteratorNum = Integer.parseInt(iterator);
+      if (iteratorNum >= urls.size()) {
+        topicsInfo.add("<h1>"+topic+":</h1>");
+	topicsInfo.add("No more info for this topic!");
+	continue;
+      }
       String info = getInfo(urls, iterator);
       topicsInfo.add("<h1>"+topic+":</h1>");
       topicsInfo.add(info);

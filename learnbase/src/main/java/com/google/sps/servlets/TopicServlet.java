@@ -165,7 +165,7 @@ public class TopicServlet extends HttpServlet{
 
   private ArrayList<String> getSearch(String topic) throws IOException {
     String google = "https://www.google.com/search";
-    int num = 5;
+    int num = 8;
     String searchURL = google + "?q=" + topic + "&num=" + num;
     ArrayList<String> urls = new ArrayList<>();
     //System.out.println(searchURL);
