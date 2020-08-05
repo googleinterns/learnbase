@@ -61,11 +61,6 @@ function displayRecommendedTopics(recommended : string[]) {
         cell.style.color = "#003509";
       });
       
-
-      cell.addEventListener('click', () => {
-        
-      });
-
       cell.innerHTML = topic.toUpperCase().replace("_", " ");
       document.getElementById("loader").style.display = "none";
       document.getElementById("recommended-topics").style.display = "table";
