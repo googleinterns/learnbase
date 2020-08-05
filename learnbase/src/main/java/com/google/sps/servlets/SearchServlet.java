@@ -38,10 +38,13 @@ public class SearchServlet extends HttpServlet {
     Entity entity = results.asSingleEntity();
     String topics = (String) entity.getProperty("topics");
     if (topics.equals("")) { 
+      Gson gson = new Gson();
+      response.getWriter().println("No topics yet! Search something you want to know more about to get info");
       return;
     }
     ArrayList<String> topicsInfo = new ArrayList<>();
     String[] topicsArray = topics.split(",");
+    System.out.println(topicsArray);
     for (String topic : topicsArray) {
       String topicName = topic+"topic";
       String iteratorName = topic+"iterator";
@@ -50,18 +53,17 @@ public class SearchServlet extends HttpServlet {
       ArrayList<String> urls = (ArrayList<String>) entity.getProperty(topicName);
       int iteratorNum = Integer.parseInt(iterator);
       if (iteratorNum >= urls.size()) {
-        topicsInfo.add("<h1>"+topic+":</h1>");
-	topicsInfo.add("No more info for this topic!");
+	topicsInfo.add(0,"No more info for this topic!");
+	topicsInfo.add(0, "<h1>"+topic+":</h1>");
 	continue;
       }
       String info = getInfo(urls, iterator);
-      topicsInfo.add("<h1>"+topic+":</h1>");
-      topicsInfo.add(info);
+      topicsInfo.add(0, info);
+      topicsInfo.add(0, "<h1>"+topic+":</h1>");
       iterator = Integer.toString(Integer.parseInt(iterator)+1);
       entity.setProperty(iteratorName, iterator);
     }
     datastore.put(entity);
-    //System.out.println(info);
     Gson gson = new Gson();
     response.getWriter().println(gson.toJson(topicsInfo));
 
