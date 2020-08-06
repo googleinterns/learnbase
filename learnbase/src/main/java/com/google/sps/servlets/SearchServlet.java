@@ -37,14 +37,17 @@ public class SearchServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
     String topics = (String) entity.getProperty("topics");
-    if (topics.equals("")) { 
+    if (topics.trim().equals("")) {
       Gson gson = new Gson();
-      response.getWriter().println("No topics yet! Search something you want to know more about to get info");
+      ArrayList<String> topicsInfo = new ArrayList<>();
+      topicsInfo.add("<h2>No topics yet! Search something you want to know more about to get info</h2>");
+      response.getWriter().println(gson.toJson(topicsInfo));
       return;
     }
+    System.out.println("topics:" + topics);
     ArrayList<String> topicsInfo = new ArrayList<>();
     String[] topicsArray = topics.split(",");
-    System.out.println(topicsArray);
+    System.out.println("topics array:" + topicsArray);
     for (String topic : topicsArray) {
       String topicName = topic+"topic";
       String iteratorName = topic+"iterator";
@@ -63,6 +66,7 @@ public class SearchServlet extends HttpServlet {
       iterator = Integer.toString(Integer.parseInt(iterator)+1);
       entity.setProperty(iteratorName, iterator);
     }
+    System.out.println(topicsInfo);
     datastore.put(entity);
     Gson gson = new Gson();
     response.getWriter().println(gson.toJson(topicsInfo));
@@ -73,6 +77,8 @@ public class SearchServlet extends HttpServlet {
     String info = "";
     int currentUrlNum = Integer.parseInt(currentUrl);
     String url = urls.get(currentUrlNum);
+
+    System.out.println(url);
 
     Document doc = Jsoup.connect(url).get();
     Elements results = doc.select("p");
