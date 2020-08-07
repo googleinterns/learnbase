@@ -46,7 +46,7 @@ public class SchedulerServlet extends HttpServlet{
         newTime = recordedTime; 
       }
     
-      DialyListener listener = new DialyListener;
+      DailyListener listener = new DailyListener();
       listener.scheduleTask(newTime, userService.getCurrentUser().getEmail(), userId);
       response.getWriter().println(newTime);
       System.out.println("Printed " + newTime);

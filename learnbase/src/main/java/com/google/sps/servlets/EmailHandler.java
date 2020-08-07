@@ -68,9 +68,13 @@ public class EmailHandler{
     .put(Emailv31.Message.SUBJECT, "Welcome to LearnBase!")
     .put(Emailv31.Message.TEXTPART, message)
     .put(Emailv31.Message.CUSTOMID, "AppGettingStartedTest")));
-    response = client.post(request);
-    System.out.println(response.getStatus());
-    System.out.println(response.getData());
+    try{
+      response = client.post(request);
+      System.out.println(response.getStatus());
+      System.out.println(response.getData());
+    } catch (Exception e){
+      e.printStackTrace();
+    }
   }
 
   public void sendMail(String userEmail, String username, String[] topics, String[] info){
