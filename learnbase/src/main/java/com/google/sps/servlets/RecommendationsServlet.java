@@ -43,12 +43,21 @@ public class RecommendationsServlet extends HttpServlet {
     
     if (!wordCache.containsKey(topic)) {
       words2vecs = (HashMap<String, ArrayList<Double>>) gson.fromJson(new FileReader("model/word_embedding.json"), words2vecs.getClass());
+      HashSet<String> omittedWords = new HashSet<String>(
+          Arrays.asList("lecture_notes", "tutorial", "introductory", "textbook", "mathematical", "scientific", "study"));
+      
+      for (String word : omittedWords) {
+        words2vecs.remove(word);
+      }
+      
       if (!words2vecs.containsKey(topic)) {
         response.getWriter().println("[]");
+        wordCache.put(topic, new ArrayList<String>());
+
         return;
       }
       ArrayList<String> closestWords = getClosestWords(words2vecs, topic);
-
+      
       wordCache.put(topic, closestWords);
     }
     
@@ -56,6 +65,12 @@ public class RecommendationsServlet extends HttpServlet {
     response.getWriter().println(similarTopics);
   }
 
+  /**
+   * Takes in a hashmap mapping words to their corresponding word embeddings,
+   * represented as ArrayLists of doubles, as well as the topic we want to find
+   * other similar topics for. 
+   * Outputs top 10 similar words based off of word2vec model. 
+   */
   private ArrayList<String> getClosestWords(HashMap<String, ArrayList<Double>> words2vecs, String topic) {
     String[] currentTopTenWords = new String[10];
     Double[] currentTopTenDistances = new Double[10];
@@ -87,6 +102,10 @@ public class RecommendationsServlet extends HttpServlet {
     return closestWords;
   } 
 
+  /**
+   * Takes two word vectors and multiplies them together 
+   * and returns the result. 
+   */
   private double getCosineDistance(HashMap<String, ArrayList<Double>> words2vecs, String word1, String word2) {
     double distance = 0.0;
     for (int i = 0; i < words2vecs.get(word1).size(); i++) {

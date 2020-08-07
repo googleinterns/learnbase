@@ -114,6 +114,10 @@
   }
 }
 
+#no-recs {
+  display: none;
+}
+
 #loader {
   position: relative;
   left: 50%;

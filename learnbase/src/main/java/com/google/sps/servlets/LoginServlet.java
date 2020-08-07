@@ -1,5 +1,6 @@
 package com.google.sps.servlets;
 
+import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
@@ -9,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.*;
 import java.io.PrintWriter;
+import java.io.*; 
+import java.util.*; 
+
 
 @WebServlet("/userlogin")
 public class LoginServlet extends HttpServlet {
@@ -36,10 +40,30 @@ public class LoginServlet extends HttpServlet {
     //String userEmail = userService.getCurrentUser().getEmail();
     String urlRedirectLogout = "/index.html";
     String logoutUrl = userService.createLogoutURL(urlRedirectLogout);
-
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    User user = userService.getCurrentUser();
+    String userId = user.getUserId();
+    Query query = 
+    new Query("UserInfo")
+    .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+    String topics = (String) entity.getProperty("topics");
+    String topicsOutput = "";
+    String[] topicsArray = topics.split(",");
+    for (String topic : topicsArray) {
+      String topicOutput = "<p>" + topic + "</p>";
+      topicsOutput += topicOutput;
+    }
+    
     response.getWriter().println("<h1>Welcome " + nickname  + "!</h1>");
     response.getWriter().println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
-    response.getWriter().println("<p>Your current interests are: </p>");
+    if (topicsOutput.equals("") || topicsOutput.equals("<p></p>")) {
+      response.getWriter().println("<p> You have no topics yet! </p>");
+    } else {
+      response.getWriter().println("<p>Your current interests are: </p>");
+      response.getWriter().println(topicsOutput);
+    }
   }
 
   private String getUserNickname(String id) {
