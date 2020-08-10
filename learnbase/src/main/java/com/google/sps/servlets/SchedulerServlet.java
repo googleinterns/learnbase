@@ -47,7 +47,7 @@ public class SchedulerServlet extends HttpServlet{
       }
     
       DailyListener listener = new DailyListener();
-      if (!newTime.isEmpty){
+      if (!newTime.isEmpty()){
         listener.scheduleTask(newTime, userService.getCurrentUser().getEmail(), userId);
       }
       response.getWriter().println(newTime);
