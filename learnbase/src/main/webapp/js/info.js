@@ -7,5 +7,6 @@ window.onload = function getInfo() {
             console.log(element);
             infoSection.innerHTML += element;
         });
+        document.getElementById("loader").style.display = "none";
     });
 };

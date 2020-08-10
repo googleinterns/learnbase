@@ -7,6 +7,7 @@ window.onload = function getInfo() : void {
       console.log(element);
       infoSection.innerHTML += element;
     })
+    document.getElementById("loader").style.display = "none";
   });
 }
 
