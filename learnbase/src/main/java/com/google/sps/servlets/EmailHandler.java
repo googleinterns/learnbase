@@ -51,6 +51,32 @@ public class EmailHandler{
     System.out.println(response.getData());
   }
 
+  public void sendMessage(String userEmail, String message){
+    MailjetClient client = client = new MailjetClient(PUB_KEY, PRIV_KEY, new ClientOptions("v3.1"));
+    MailjetRequest request;
+    MailjetResponse response;
+    request = new MailjetRequest(Emailv31.resource)
+    .property(Emailv31.MESSAGES, new JSONArray()
+    .put(new JSONObject()
+    .put(Emailv31.Message.FROM, new JSONObject()
+    .put("Email", "learnbase2020@gmail.com")
+    .put("Name", "Learnbase"))
+    .put(Emailv31.Message.TO, new JSONArray()
+    .put(new JSONObject()
+    .put("Email", userEmail)
+    .put("Name", "Federick")))
+    .put(Emailv31.Message.SUBJECT, "Welcome to LearnBase!")
+    .put(Emailv31.Message.TEXTPART, message)
+    .put(Emailv31.Message.CUSTOMID, "AppGettingStartedTest")));
+    try{
+      response = client.post(request);
+      System.out.println(response.getStatus());
+      System.out.println(response.getData());
+    } catch (Exception e){
+      e.printStackTrace();
+    }
+  }
+
   public void sendMail(String userEmail, String username, String[] topics, String[] info){
     String htmlOutput = "";
     for (int i = 0; i < topics.length; i++){
@@ -76,7 +102,7 @@ public class EmailHandler{
     .put(Emailv31.Message.HTMLPART, htmlOutput)
     .put(Emailv31.Message.CUSTOMID, "AppGettingStartedTest")));
     try{ 
-      response = client.post(request);
+      response = client.post(request);    
       System.out.println(response.getStatus());
       System.out.println(response.getData());
     } catch (Exception e){
