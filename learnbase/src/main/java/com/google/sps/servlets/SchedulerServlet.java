@@ -32,13 +32,16 @@ public class SchedulerServlet extends HttpServlet{
       .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
       PreparedQuery results = datastore.prepare(query); 
       Entity entity = results.asSingleEntity();     
-      String recordedTime = (String) entity.getProperty("time");
+      String recordedTime = (String) entity.getProperty("hour") + ":" + (String) entity.getProperty("minute");
       System.out.println("Time recorded: " + recordedTime);
       String newTime = "";
       newTime = request.getParameter("time");
       System.out.println("New time: " + newTime);
       if (newTime != null && !newTime.isEmpty()){
-        entity.setProperty("time", newTime);
+        String[] time = newTime.split(":");
+        entity.setProperty("hour", Integer.parseInt(time[0]));
+        entity.setProperty("minute", Integer.parseInt(time[1]));
+
         datastore.put(entity); 
 
       } else {
@@ -46,10 +49,6 @@ public class SchedulerServlet extends HttpServlet{
         newTime = recordedTime; 
       }
     
-      DailyListener listener = new DailyListener();
-      if (!newTime.isEmpty()){
-        listener.scheduleTask(newTime, userService.getCurrentUser().getEmail(), userId);
-      }
       response.getWriter().println(newTime);
       System.out.println("Printed " + newTime);
   }

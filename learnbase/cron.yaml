@@ -1,0 +1,4 @@
+cron:
+- description: "daily email job"
+  url: /emails
+  schedule: every 15 minutes

@@ -15,6 +15,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.mailjet.client.errors.MailjetException;
 import com.mailjet.client.errors.MailjetSocketTimeoutException;
+import java.security.*;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.Signature;
+import javax.crypto.Cipher;
+
 
 @WebServlet("/nickname")
 public class NicknameServlet extends HttpServlet {
@@ -63,7 +69,9 @@ public class NicknameServlet extends HttpServlet {
     entity.setProperty("id", id);
     entity.setProperty("nickname", nickname);
     entity.setProperty("topics", "");
-    entity.setProperty("time", "12:00");
+    entity.setProperty("hour", 12);
+    entity.setProperty("minute", 00);
+    entity.setProperty("mail", encryptEmail((String) userService.getCurrentUser().getEmail()));
     datastore.put(entity);
 
     response.sendRedirect("/index.html");
@@ -81,6 +89,26 @@ public class NicknameServlet extends HttpServlet {
     }
     String nickname = (String) entity.getProperty("nickname");
     return nickname;
+  }
+
+  private String encryptEmail(String email){
+    try{
+      Signature sign = Signature.getInstance("SHA256withRSA");
+      KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
+      keyPairGen.initialize(2048);
+      KeyPair pair = keyPairGen.generateKeyPair();   
+      PublicKey publicKey = pair.getPublic(); 
+      Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+      cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+      byte[] input = email.getBytes();	  
+      cipher.update(input);
+      byte[] cipherText = cipher.doFinal();
+      return new String(cipherText, "UTF8");
+    } 
+    catch(Exception e){
+      e.printStackTrace(); 
+      return "email failed";
+    }
   }
 
 }
