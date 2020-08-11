@@ -91,6 +91,7 @@ public class TopicServlet extends HttpServlet{
         String topic = request.getParameter("topic").trim().replaceAll(" +", " ").toLowerCase();
 	String topicName = topic+"topic";
         String iteratorName = topic+"iterator";
+	String advanced = "advanced"+topic;
 
         String topics = (String) entity.getProperty("topics"); 
 	if (topics.contains(topic)) {
@@ -130,6 +131,7 @@ public class TopicServlet extends HttpServlet{
       entity.setProperty(topicName, urls);
       entity.setProperty(iteratorName, "0");
       System.out.println(topicName + ": " + urls); 
+      entity.setProperty(advanced, false);
       String[] values = topics.split(",");
       datastore.put(entity);
       String[] topicsArray = topics.split(",");
