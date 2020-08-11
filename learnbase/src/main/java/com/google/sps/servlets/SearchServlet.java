@@ -59,13 +59,27 @@ public class SearchServlet extends HttpServlet {
       String iterator = (String) entity.getProperty(iteratorName);
       ArrayList<String> urls = (ArrayList<String>) entity.getProperty(topicName);
       int iteratorNum = Integer.parseInt(iterator);
+      Boolean advanced = (Boolean)entity.getProperty("advanced"+topic);
       
       //If there are no more urls for this topic, 
-      //Print that there are none and then go to next topic 
+      //Move to an advanced search
+      //If there are no more urls in the advanced search 
+      //print that there is no more info for the topic 
       if (iteratorNum >= urls.size()) {
-	topicsInfo.add(0,"No more info for this topic!");
-	topicsInfo.add(0, "<h1>"+topic+":</h1>");
-	continue;
+	if (advanced) {
+          topicsInfo.add(0, "No more info for this topic!");
+	  topicsInfo.add(0, "<h1>"+topic+":</h1>");
+	  continue;
+	} else {
+          System.out.println("advanced");
+          String advancedTopic = "advanced"+topic;
+	  urls = getSearch(advancedTopic);
+	  iterator = "0";
+	  iteratorNum = 0;
+	  entity.setProperty(advancedTopic, true);
+	  entity.setProperty(topicName, urls);
+	}
+	System.out.println(urls);
       }
 
       String info = getInfo(urls, iterator);
@@ -87,6 +101,7 @@ public class SearchServlet extends HttpServlet {
     String info = "";
     int currentUrlNum = Integer.parseInt(currentUrl);
     String url = urls.get(currentUrlNum);
+    System.out.println(url);
 
     Document doc = Jsoup.connect(url).get();
     Elements results = doc.select("p, a");
@@ -95,5 +110,25 @@ public class SearchServlet extends HttpServlet {
       info = info + result.toString();
     }
     return info;
+  }
+
+  private ArrayList<String> getSearch(String topic) throws IOException {
+    String google = "https://www.google.com/search";
+    int num = 8;
+    String searchURL = google + "?q=" + topic + "&num=" + num;
+    ArrayList<String> urls = new ArrayList<>();
+    System.out.println(searchURL);
+
+    Document doc  = Jsoup.connect(searchURL).userAgent("Chrome").get();
+    Elements results = doc.select("a[href]:has(span)").select("a[href]:not(:has(div))");
+
+    for (Element result : results) {
+        String linkHref = result.attr("href");
+        String linkText = result.text();
+        if (linkHref.contains("https")) {
+        urls.add(linkHref.substring(7, linkHref.indexOf("&")));
+        } 
+    }
+    return urls; 
   }
 }
