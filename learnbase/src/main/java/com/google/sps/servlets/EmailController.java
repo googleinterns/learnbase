@@ -34,7 +34,7 @@ public class EmailController extends HttpServlet {
     int hour = d.getHours();
     int minute = d.getMinutes();
     Query q;
-    if (minute < 15){
+    if (minute < 5){
       if (hour == 0){
         q = new Query("UserInfo")
           .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, 23));
@@ -48,7 +48,7 @@ public class EmailController extends HttpServlet {
       for (Entity entity: pq.asIterable()){
         Long em = (Long) entity.getProperty("minute");
         int entityMinute = em.intValue();
-        if (entityMinute >= 45){
+        if (entityMinute >= 55){
           String encryptedMail = (String) entity.getProperty("mail"); 
           String email = decryptEmail(encryptedMail); 
           EmailHandler handler = new EmailHandler(); 
@@ -63,7 +63,7 @@ public class EmailController extends HttpServlet {
       for (Entity entity: pq.asIterable()){
         Long em = (Long) entity.getProperty("minute");
         int entityMinute = em.intValue();
-        if (minute-15 <= entityMinute && entityMinute < minute){
+        if (minute-5 <= entityMinute && entityMinute < minute){
           String encryptedMail = (String) entity.getProperty("mail"); 
           String email = decryptEmail(encryptedMail); 
           EmailHandler handler = new EmailHandler(); 
