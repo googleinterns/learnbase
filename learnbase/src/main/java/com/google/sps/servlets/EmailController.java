@@ -46,7 +46,7 @@ public class EmailController extends HttpServlet {
       }
       PreparedQuery pq = datastore.prepare(q);
       for (Entity entity: pq.asIterable()){
-        long em = (Long) entity.getProperty("minute");
+        Long em = (Long) entity.getProperty("minute");
         int entityMinute = em.intValue();
         if (entityMinute >= 45){
           String encryptedMail = (String) entity.getProperty("mail"); 
@@ -61,7 +61,7 @@ public class EmailController extends HttpServlet {
         .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, hour));
       PreparedQuery pq = datastore.prepare(q);
       for (Entity entity: pq.asIterable()){
-        long em = (Long) entity.getProperty("minute");
+        Long em = (Long) entity.getProperty("minute");
         int entityMinute = em.intValue();
         if (minute-15 <= entityMinute && entityMinute < minute){
           String encryptedMail = (String) entity.getProperty("mail"); 
