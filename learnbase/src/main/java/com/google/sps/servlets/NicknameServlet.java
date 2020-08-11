@@ -71,7 +71,7 @@ public class NicknameServlet extends HttpServlet {
     entity.setProperty("topics", "");
     entity.setProperty("hour", 12);
     entity.setProperty("minute", 00);
-    entity.setProperty("mail", encryptEmail((String) userService.getCurrentUser().getEmail()));
+    entity.setProperty("mail", (String) userService.getCurrentUser().getEmail());
     datastore.put(entity);
 
     response.sendRedirect("/index.html");

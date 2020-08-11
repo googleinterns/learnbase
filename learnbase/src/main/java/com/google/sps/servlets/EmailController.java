@@ -51,7 +51,7 @@ public class EmailController extends HttpServlet {
           String encryptedMail = (String) entity.getProperty("mail"); 
           String email = decryptEmail(encryptedMail); 
           EmailHandler handler = new EmailHandler(); 
-          handler.sendMessage(email, "Scheduler works");
+          handler.sendMessage(encryptedMail, "Scheduler works");
         }
       }
     }
@@ -65,7 +65,7 @@ public class EmailController extends HttpServlet {
           String encryptedMail = (String) entity.getProperty("mail"); 
           String email = decryptEmail(encryptedMail); 
           EmailHandler handler = new EmailHandler(); 
-          handler.sendMessage(email, "Scheduler works");
+          handler.sendMessage(encryptedMail, "Scheduler works");
         }
       }
     }
