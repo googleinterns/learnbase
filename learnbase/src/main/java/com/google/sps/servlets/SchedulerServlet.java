@@ -37,6 +37,9 @@ public class SchedulerServlet extends HttpServlet{
       if (minute.equals("0")){
         minute += "0";
       }
+      else if(Integer.parseInt(minute) <10){
+        minute = "0" + minute; 
+      }
       String recordedTime = hour + ":" + minute;
       System.out.println("Time recorded: " + recordedTime);
       String newTime = "";
