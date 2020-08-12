@@ -81,8 +81,8 @@ public class SearchServlet extends HttpServlet {
 	}
 	System.out.println(urls);
       }
-
-      String info = getInfo(urls, iterator);
+      String url = urls.get(iteratorNum);
+      String info = "<iframe src=\"" + url + "\" style=\"height:1000px;width:100%;\"></iframe>"; 
       topicsInfo.add(0, info);
       topicsInfo.add(0, "<h1>"+topic+":</h1>");
 
