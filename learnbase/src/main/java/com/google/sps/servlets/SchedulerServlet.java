@@ -23,6 +23,9 @@ import java.util.*;
 @WebServlet("/scheduler")
 public class SchedulerServlet extends HttpServlet{
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
+      TimeZone timeZone = TimeZone.getDefault();
+      int offset = -(int) ((timeZone.getOffset( System.currentTimeMillis())/(1000*60*60)));
+
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       UserService userService = UserServiceFactory.getUserService(); 
       User user = userService.getCurrentUser();
@@ -44,17 +47,31 @@ public class SchedulerServlet extends HttpServlet{
       System.out.println("Time recorded: " + recordedTime);
       String newTime = "";
       newTime = request.getParameter("time");
-      System.out.println("New time: " + newTime);
       if (newTime != null && !newTime.isEmpty()){
         String[] time = newTime.split(":");
-        entity.setProperty("hour", Integer.parseInt(time[0]));
+        System.out.println("Offset: " + offset);
+        int newHour = Integer.parseInt(time[0])+offset;
+        if (newHour >= 24){
+          newHour -=24;
+        }
+        if (newHour < 0){
+          newHour += 24;
+        }
+        entity.setProperty("hour", );
         entity.setProperty("minute", Integer.parseInt(time[1]));
-
+        entity.setProperty("offset", offset); 
         datastore.put(entity); 
 
       } else {
-
-        newTime = recordedTime; 
+        String[] time = recordedTime.split(":");
+        int newHour = (Integer.parseInt(time[0]) - offset); 
+          if (newHour >= 24){
+          newHour -=24;
+        }
+        if (newHour < 0){
+          newHour += 24;
+        }
+        newTime = newHour + ":"+time[1];
       }
     
       response.getWriter().println(newTime);
