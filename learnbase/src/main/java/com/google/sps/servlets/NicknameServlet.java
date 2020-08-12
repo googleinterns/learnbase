@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
+import java.util.*;
 import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -49,6 +50,9 @@ public class NicknameServlet extends HttpServlet {
 
   @Override 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
+
+    TimeZone timeZone = TimeZone.getDefault();
+    int offset = (int) ((timeZone.getOffset( System.currentTimeMillis())/(1000*60*60)));
     UserService userService = UserServiceFactory.getUserService();
     if(!userService.isUserLoggedIn()) {
       response.sendRedirect("/nickname");
@@ -69,8 +73,9 @@ public class NicknameServlet extends HttpServlet {
     entity.setProperty("id", id);
     entity.setProperty("nickname", nickname);
     entity.setProperty("topics", "");
-    entity.setProperty("hour", 12);
+    entity.setProperty("hour", 12 );
     entity.setProperty("minute", 00);
+    entity.setProperty("offset", offset);
     entity.setProperty("mail", (String) userService.getCurrentUser().getEmail());
     datastore.put(entity);
 
