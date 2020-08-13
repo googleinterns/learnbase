@@ -19,6 +19,9 @@ import java.net.URLEncoder;
 import java.net.URLDecoder;
 import java.io.*; 
 import java.util.*; 
+import javax.script.*;
+import java.net.URL;
+import java.net.URLConnection;
 
 @WebServlet("/search")
 public class SearchServlet extends HttpServlet {
