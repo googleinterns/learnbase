@@ -46,7 +46,7 @@ public class SearchServlet extends HttpServlet {
     if (topics.trim().equals("")) {
       Gson gson = new Gson();
       ArrayList<String> topicsInfo = new ArrayList<>();
-      topicsInfo.add("<h2>No topics yet! Search something you want to know more about to get info</h2>");
+      topicsInfo.add("<h2>No topics yet! Search something you want to know more about to get info.</h2>");
       response.getWriter().println(gson.toJson(topicsInfo));
       return;
     }
