@@ -57,7 +57,7 @@ public class SchedulerServlet extends HttpServlet{
         if (newHour < 0){
           newHour += 24;
         }
-        entity.setProperty("hour", );
+        entity.setProperty("hour", newHour);
         entity.setProperty("minute", Integer.parseInt(time[1]));
         entity.setProperty("offset", offset); 
         datastore.put(entity); 
