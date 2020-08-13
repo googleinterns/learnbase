@@ -46,7 +46,7 @@ public class SearchServlet extends HttpServlet {
     if (topics.trim().equals("")) {
       Gson gson = new Gson();
       ArrayList<String> topicsInfo = new ArrayList<>();
-      topicsInfo.add("<h2>No topics yet! Search something you want to know more about to get info</h2>");
+      topicsInfo.add("<h2>No topics yet! Search something you want to know more about to get info.</h2>");
       response.getWriter().println(gson.toJson(topicsInfo));
       return;
     }
@@ -71,7 +71,7 @@ public class SearchServlet extends HttpServlet {
       if (iteratorNum >= urls.size()) {
 	if (advanced) {
           topicsInfo.add(0, "No more info for this topic!");
-	  topicsInfo.add(0, "<h1>"+topic+":</h1>");
+	  topicsInfo.add(0, "<h1>"+topic.toUpperCase()+"</h1>");
 	  continue;
 	} else {
           System.out.println("advanced");
@@ -90,9 +90,9 @@ public class SearchServlet extends HttpServlet {
 	System.out.println(urls);
       }
       String url = urls.get(iteratorNum);
-      String info = "<iframe src=\"" + url + "\" style=\"height:600px;width:100%;\"></iframe>"; 
+      String info = "<iframe src=\"" + url + "\" style=\"height:600px;width:80%;\"></iframe>"; 
       topicsInfo.add(0, info);
-      topicsInfo.add(0, "<h1>"+topic+":</h1>");
+      topicsInfo.add(0, "<h1>"+topic.toUpperCase()+"</h1>");
 
       //Increment iterator so that the next day they get new info 
       iterator = Integer.toString(Integer.parseInt(iterator)+1);
