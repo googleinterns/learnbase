@@ -77,6 +77,11 @@ public class SearchServlet extends HttpServlet {
           System.out.println("advanced");
           String advancedTopic = "advanced"+topic;
 	  urls = getSearch(advancedTopic);
+	  if(urls.isEmpty()) {
+            topicsInfo.add(0, "No more info for this topic!");
+	    topicsInfo.add(0, "<h1>"+topic+":</h1>");
+	    continue;
+          }
 	  iterator = "0";
 	  iteratorNum = 0;
 	  entity.setProperty(advancedTopic, true);
