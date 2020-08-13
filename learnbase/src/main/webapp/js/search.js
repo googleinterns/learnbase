@@ -80,6 +80,8 @@ function getRecommendedTopics(response) {
         var recsPerTopic = [];
         // List of recommendations that will be returned.
         var recommendations = [];
+        // Boolean for whether or not recommendations exist.
+        var recsExist = false;
         if (JSON.stringify(response) === "{}") {
             return recommendations;
         }
@@ -96,11 +98,15 @@ function getRecommendedTopics(response) {
             });
             if (topicInfo[1].length !== 0) {
                 topicInfoList.push(topicInfo);
+                recsExist = true;
             }
             else {
                 continue;
             }
             recsPerTopic.push(0);
+        }
+        if (!recsExist) {
+            return recommendations;
         }
         // First topic has 3 automatic recommendations from most recent choice.
         // Other 7 are drawn from random distribution of all topics.
@@ -177,20 +183,6 @@ function topicManager(topics) {
             i++;
         }
     });
-    //   for (i = 0; i < topics.length-1; i++){
-    //     var newRow = table.insertRow();
-    //     var cell = newRow.insertCell(); 
-    //     cell.innerHTML = topics[i];
-    //     const deleteButtonElement = document.createElement('button');
-    //     deleteButtonElement.innerText = 'Delete';
-    //     deleteButtonElement.addEventListener('click', () =>{
-    //       deleteTopic(topics[i]);
-    //     });
-    //     var deleteCell = newRow.insertCell();
-    //     deleteCell.appendChild(deleteButtonElement);
-    //   } 
-    //   var time = topics[topics.length-1];
-    //   document.getElementById("timeDisplay").innerHTML = time;
 }
 // Deletes topic.
 function deleteTopic(topic) {

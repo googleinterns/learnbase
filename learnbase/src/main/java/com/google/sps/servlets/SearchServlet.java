@@ -71,7 +71,7 @@ public class SearchServlet extends HttpServlet {
       if (iteratorNum >= urls.size()) {
 	if (advanced) {
           topicsInfo.add(0, "No more info for this topic!");
-	  topicsInfo.add(0, "<h1>"+topic+":</h1>");
+	  topicsInfo.add(0, "<h1>"+topic.toUpperCase()+"</h1>");
 	  continue;
 	} else {
           System.out.println("advanced");
@@ -87,7 +87,7 @@ public class SearchServlet extends HttpServlet {
       String url = urls.get(iteratorNum);
       String info = "<iframe src=\"" + url + "\" style=\"height:600px;width:80%;\"></iframe>"; 
       topicsInfo.add(0, info);
-      topicsInfo.add(0, "<h1>"+topic+":</h1>");
+      topicsInfo.add(0, "<h1>"+topic.toUpperCase()+"</h1>");
 
       //Increment iterator so that the next day they get new info 
       iterator = Integer.toString(Integer.parseInt(iterator)+1);
