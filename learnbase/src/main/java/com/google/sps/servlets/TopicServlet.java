@@ -150,7 +150,7 @@ public class TopicServlet extends HttpServlet{
   //Given a topic, gets urls from google 
   private ArrayList<String> getSearch(String topic) throws IOException {
     String google = "https://www.google.com/search";
-    int num = 15;
+    int num = 20;
     String searchURL = google + "?q=" + topic + "&num=" + num;
     ArrayList<String> urls = new ArrayList<>();
 
@@ -162,6 +162,9 @@ public class TopicServlet extends HttpServlet{
         String linkText = result.text();
         if (linkHref.contains("https")) {
 	  String url = linkHref.substring(7, linkHref.indexOf("&"));
+	  if("/www.google.com/search?num=20".equals(url)) {
+            continue;
+	  }
 	  URL obj = new URL(url);
 	  URLConnection conn = obj.openConnection();
 	  Map<String, List<String>> map = conn.getHeaderFields();
