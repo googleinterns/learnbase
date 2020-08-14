@@ -19,6 +19,8 @@ import java.net.URLEncoder;
 import java.net.URLDecoder;
 import java.io.*; 
 import java.util.*; 
+import java.net.URL;
+import java.net.URLConnection;
 
 
 @WebServlet("/topics")
@@ -151,7 +153,7 @@ public class TopicServlet extends HttpServlet{
   //Given a topic, gets urls from google 
   private ArrayList<String> getSearch(String topic) throws IOException {
     String google = "https://www.google.com/search";
-    int num = 7;
+    int num = 20;
     String searchURL = google + "?q=" + topic + "&num=" + num;
     ArrayList<String> urls = new ArrayList<>();
 
@@ -162,7 +164,23 @@ public class TopicServlet extends HttpServlet{
         String linkHref = result.attr("href");
         String linkText = result.text();
         if (linkHref.contains("https")) {
-        urls.add(linkHref.substring(7, linkHref.indexOf("&")));
+	  String url = linkHref.substring(7, linkHref.indexOf("&"));
+	  if("/www.google.com/search?num=20".equals(url)) {
+            continue;
+	  }
+	  URL obj = new URL(url);
+	  URLConnection conn = obj.openConnection();
+	  Map<String, List<String>> map = conn.getHeaderFields();
+	  boolean noIFrame = false;
+	  for(Map.Entry<String, List<String>> entry : map.entrySet()) {
+ 	    String key = entry.getKey();
+	    if("X-Frame-Options".equals(key)) { 
+              noIFrame = true;
+	    }
+          }
+	  if(!noIFrame) {
+            urls.add(url);
+	  }
         } 
     }
     return urls;  

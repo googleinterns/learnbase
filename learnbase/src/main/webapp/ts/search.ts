@@ -76,12 +76,15 @@ function displayRecommendedTopics(recommended : string[]) {
  * distribution. 
  */
 async function getRecommendedTopics(response: string) : Promise<string[]> {
+
   // Stores each topic with its corresponding list of recommended topics.
   var topicInfoList : TopicInfo[] = []; 
   // Keeps track of number of recommendations for each topic that will be displayed.
   var recsPerTopic : number[] = [];
   // List of recommendations that will be returned.
   var recommendations : string[] = [];
+  // Boolean for whether or not recommendations exist.
+  var recsExist : boolean = false;
 
   if (JSON.stringify(response) === "{}") {
     return recommendations;
@@ -103,10 +106,15 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
 
     if (topicInfo[1].length !== 0) {
       topicInfoList.push(topicInfo);
+      recsExist = true;
     } else {
       continue;
     }
     recsPerTopic.push(0);  
+  }
+
+  if (!recsExist) {
+    return recommendations;
   }
 
   // First topic has 3 automatic recommendations from most recent choice.
@@ -194,23 +202,6 @@ function topicManager(topics: string[]) : void {
       i++;
     }
   });
-
-//   for (i = 0; i < topics.length-1; i++){
-//     var newRow = table.insertRow();
-//     var cell = newRow.insertCell(); 
-//     cell.innerHTML = topics[i];
-
-//     const deleteButtonElement = document.createElement('button');
-//     deleteButtonElement.innerText = 'Delete';
-//     deleteButtonElement.addEventListener('click', () =>{
-//       deleteTopic(topics[i]);
-//     });
-//     var deleteCell = newRow.insertCell();
-//     deleteCell.appendChild(deleteButtonElement);
-//   } 
-//   var time = topics[topics.length-1];
-//   document.getElementById("timeDisplay").innerHTML = time;
-
 }
 
 // Deletes topic.

@@ -19,6 +19,9 @@ import java.net.URLEncoder;
 import java.net.URLDecoder;
 import java.io.*; 
 import java.util.*; 
+import javax.script.*;
+import java.net.URL;
+import java.net.URLConnection;
 
 @WebServlet("/search")
 public class SearchServlet extends HttpServlet {
@@ -43,7 +46,7 @@ public class SearchServlet extends HttpServlet {
     if (topics.trim().equals("")) {
       Gson gson = new Gson();
       ArrayList<String> topicsInfo = new ArrayList<>();
-      topicsInfo.add("<h2>No topics yet! Search something you want to know more about to get info</h2>");
+      topicsInfo.add("<h2>No topics yet! Search something you want to know more about to get info.</h2>");
       response.getWriter().println(gson.toJson(topicsInfo));
       return;
     }
@@ -68,12 +71,17 @@ public class SearchServlet extends HttpServlet {
       if (iteratorNum >= urls.size()) {
 	if (advanced) {
           topicsInfo.add(0, "No more info for this topic!");
-	  topicsInfo.add(0, "<h1>"+topic+":</h1>");
+	  topicsInfo.add(0, "<h1>"+topic.toUpperCase()+"</h1>");
 	  continue;
 	} else {
           System.out.println("advanced");
           String advancedTopic = "advanced"+topic;
 	  urls = getSearch(advancedTopic);
+	  if(urls.isEmpty()) {
+            topicsInfo.add(0, "No more info for this topic!");
+	    topicsInfo.add(0, "<h1>"+topic+":</h1>");
+	    continue;
+          }
 	  iterator = "0";
 	  iteratorNum = 0;
 	  entity.setProperty(advancedTopic, true);
@@ -82,9 +90,9 @@ public class SearchServlet extends HttpServlet {
 	System.out.println(urls);
       }
       String url = urls.get(iteratorNum);
-      String info = "<iframe src=\"" + url + "\" style=\"height:1000px;width:100%;\"></iframe>"; 
+      String info = "<iframe src=\"" + url + "\" style=\"height:600px;width:80%;\"></iframe>"; 
       topicsInfo.add(0, info);
-      topicsInfo.add(0, "<h1>"+topic+":</h1>");
+      topicsInfo.add(0, "<h1>"+topic.toUpperCase()+"</h1>");
 
       //Increment iterator so that the next day they get new info 
       iterator = Integer.toString(Integer.parseInt(iterator)+1);
@@ -114,7 +122,7 @@ public class SearchServlet extends HttpServlet {
 
   private ArrayList<String> getSearch(String topic) throws IOException {
     String google = "https://www.google.com/search";
-    int num = 8;
+    int num = 20;
     String searchURL = google + "?q=" + topic + "&num=" + num;
     ArrayList<String> urls = new ArrayList<>();
     System.out.println(searchURL);
@@ -126,8 +134,25 @@ public class SearchServlet extends HttpServlet {
         String linkHref = result.attr("href");
         String linkText = result.text();
         if (linkHref.contains("https")) {
-        urls.add(linkHref.substring(7, linkHref.indexOf("&")));
-        } 
+          String url = linkHref.substring(7, linkHref.indexOf("&"));
+	  System.out.println(url);
+	  if("/www.google.com/search?num=20".equals(url)) {
+            continue;
+	  }
+	  URL obj = new URL(url);
+	  URLConnection conn = obj.openConnection();
+	  Map<String, List<String>> map = conn.getHeaderFields();
+	  boolean noIFrame = false;
+	  for(Map.Entry<String, List<String>> entry : map.entrySet()) {
+ 	    String key = entry.getKey();
+	    if("X-Frame-Options".equals(key)) { 
+              noIFrame = true;
+	    }
+          }
+	  if(!noIFrame) {
+            urls.add(url);
+	  }
+      } 
     }
     return urls; 
   }
