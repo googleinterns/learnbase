@@ -122,7 +122,7 @@ public class SearchServlet extends HttpServlet {
 
   private ArrayList<String> getSearch(String topic) throws IOException {
     String google = "https://www.google.com/search";
-    int num = 8;
+    int num = 20;
     String searchURL = google + "?q=" + topic + "&num=" + num;
     ArrayList<String> urls = new ArrayList<>();
     System.out.println(searchURL);
@@ -134,8 +134,25 @@ public class SearchServlet extends HttpServlet {
         String linkHref = result.attr("href");
         String linkText = result.text();
         if (linkHref.contains("https")) {
-        urls.add(linkHref.substring(7, linkHref.indexOf("&")));
-        } 
+          String url = linkHref.substring(7, linkHref.indexOf("&"));
+	  System.out.println(url);
+	  if("/www.google.com/search?num=20".equals(url)) {
+            continue;
+	  }
+	  URL obj = new URL(url);
+	  URLConnection conn = obj.openConnection();
+	  Map<String, List<String>> map = conn.getHeaderFields();
+	  boolean noIFrame = false;
+	  for(Map.Entry<String, List<String>> entry : map.entrySet()) {
+ 	    String key = entry.getKey();
+	    if("X-Frame-Options".equals(key)) { 
+              noIFrame = true;
+	    }
+          }
+	  if(!noIFrame) {
+            urls.add(url);
+	  }
+      } 
     }
     return urls; 
   }
