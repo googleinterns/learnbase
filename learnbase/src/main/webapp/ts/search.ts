@@ -195,7 +195,7 @@ function topicManager(topics: string[]) : void {
       const deleteButtonElement = document.createElement('button');
       deleteButtonElement.innerText = 'Delete';
       deleteButtonElement.addEventListener('click', () =>{
-        deleteTopic(topic);
+        deleteTopic(topic.toLowerCase());
       });
       var deleteCell = newRow.insertCell();
       deleteCell.appendChild(deleteButtonElement);
