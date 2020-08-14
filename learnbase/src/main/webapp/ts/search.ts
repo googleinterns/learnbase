@@ -190,7 +190,7 @@ function topicManager(topics: string[]) : void {
     if (i < 8) {
       var newRow = table.insertRow();
       var cell = newRow.insertCell(); 
-      cell.innerHTML = topic;
+      cell.innerHTML = topic.toUpperCase();
 
       const deleteButtonElement = document.createElement('button');
       deleteButtonElement.innerText = 'Delete';

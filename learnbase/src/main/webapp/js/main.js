@@ -12,7 +12,7 @@ function getInterests() {
         const interestsSection = document.getElementById('interests-section');
         topics.forEach((topic) => {
             console.log(topic);
-            interestsSection.innerHTML += topic;
+            interestsSection.innerHTML += topic.toUpperCase();
         });
     });
 }
