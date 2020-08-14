@@ -581,9 +581,13 @@ border-radius: 8px;
 }
 
 .infoPage{
-  padding-top: 0.5em;
+  padding-top: 1em;
   background-color: white;
 }
+.infoPage h1{
+  padding-bottom: 1em;
+}
+
 .selectedSubjects{
   padding-top: 2em;
   padding-bottom: 2em;
@@ -749,8 +753,6 @@ O L D   C S S   B E L O W
   justify-content: center;
   min-height: 60%;
   text-align: center;
-  margin-top: 10%;
-  margin-bottom: 10%;
 }
 
 *::before,
