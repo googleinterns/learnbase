@@ -68,6 +68,9 @@ public class TopicServlet extends HttpServlet{
 
         }
         String [] listedTopics = topics.split(",");
+        for (int i = 0; i < listedTopics.length; i++){
+          listedTopics[i] = listedTopics[i].substring(0,1).toUpperCase() + listedTopics[i].substring(1);
+        }
         System.out.println(Arrays.toString(listedTopics));
         Gson gson = new Gson(); 
         String returnTopics = gson.toJson(listedTopics);
@@ -162,7 +165,7 @@ public class TopicServlet extends HttpServlet{
         urls.add(linkHref.substring(7, linkHref.indexOf("&")));
         } 
     }
-    return urls; 
+    return urls;  
   }
 
 }

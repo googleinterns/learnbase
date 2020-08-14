@@ -166,7 +166,7 @@ function topicManager(topics) {
         if (i < 8) {
             var newRow = table.insertRow();
             var cell = newRow.insertCell();
-            cell.innerHTML = topic.toUpperCase();
+            cell.innerHTML = topic;
             const deleteButtonElement = document.createElement('button');
             deleteButtonElement.innerText = 'Delete';
             deleteButtonElement.addEventListener('click', () => {
