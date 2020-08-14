@@ -580,6 +580,10 @@ border-radius: 8px;
   background-color: white;
 }
 
+.infoPage{
+  padding-top: 0.5em;
+  background-color: white;
+}
 .selectedSubjects{
   padding-top: 2em;
   padding-bottom: 2em;
