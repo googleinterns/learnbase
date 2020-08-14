@@ -22,47 +22,40 @@
       </a>
     </div>
     <div id="mainContent">
-        <div class="spaceAbove">
-   
-        </div>
-        <div class="searchSpace">
-            <div class="mainInfo">
-
+        <div class="mainInfo">
+            <div class = "title">
                 <h1> Search </h1>
-                <p>Welcome to the LearnBase search page. In the search bar below, please insert
+                <p class="byline">Welcome to the LearnBase search page. In the search bar below, please insert
                     a word or phrase detailing a subject in which you are interested in learning about!
                 </p>
-                <div class="searchContainer">
-                    <form action="/topics" method="POST">
-                        <input type="text" id="topic" name="topic" placeholder="Search..">
-                        <button type="submit" id="searchButton">Submit</button>    
-                    </form>
-                </div>
-                
-                <form id="currentTime">
-                    <p>Your currently selected time is: </p>
-                    <p id="timeDisplay"></p>
-                    <button id="timeChange" type="button">Change Time</button>
+            </div>
+            <div class="searchContainer">
+                <form action="/topics" method="POST">
+                    <input type="text" id="topic" name="topic" class="balloon" placeholder="Search..">
+                    <button type="submit" id="searchButton">Submit</button>    
                 </form>
+            </div>
+            
+            <form id="currentTime">
+                <p>Your currently selected time is: </p>
+                <p id="timeDisplay"></p>
+                <button id="timeChange" type="button">Change Time</button>
+            </form>
 
-                <div id = "selectTime">
-                    <label for="appt">Select a time to recieve daily emails:</label>
-                    <input type="time" id="appt" name="appt">
-                    <input id="submitButton" type="submit">
-                </div>
-            </div> 
-            <div class="selectedSubjects">
-                <table id="subjectTable" style="width:100%">
-                    <tr>
-                    <th>Selected Topics</th>
-                    </tr>
-                </table>
+            <div id = "selectTime">
+                <label for="appt">Select a time to recieve daily emails:</label>
+                <input type="time" id="appt" name="appt">
+                <input id="submitButton" type="submit">
             </div>
         </div>
-
-        <div class="suggestSpace">
-        
+        <div class="selectedSubjects">
+            <h2>Selected Topics</h2>
+            <table id="subjectTable" style="width:100%">
+                <tr>
+                </tr>
+            </table>
         </div>
+
 
     </div>
 </body>
