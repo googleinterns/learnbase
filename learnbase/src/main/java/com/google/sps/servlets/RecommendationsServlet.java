@@ -71,7 +71,7 @@ public class RecommendationsServlet extends HttpServlet {
    * other similar topics for. 
    * Outputs top 10 similar words based off of word2vec model. 
    */
-  private ArrayList<String> getClosestWords(HashMap<String, ArrayList<Double>> words2vecs, String topic) {
+  public ArrayList<String> getClosestWords(HashMap<String, ArrayList<Double>> words2vecs, String topic) {
     String[] currentTopTenWords = new String[10];
     Double[] currentTopTenDistances = new Double[10];
     Arrays.fill(currentTopTenDistances, Double.NEGATIVE_INFINITY);
@@ -106,7 +106,7 @@ public class RecommendationsServlet extends HttpServlet {
    * Takes two word vectors and multiplies them together 
    * and returns the result. 
    */
-  private double getCosineDistance(HashMap<String, ArrayList<Double>> words2vecs, String word1, String word2) {
+  public double getCosineDistance(HashMap<String, ArrayList<Double>> words2vecs, String word1, String word2) {
     double distance = 0.0;
     for (int i = 0; i < words2vecs.get(word1).size(); i++) {
       distance += words2vecs.get(word1).get(i) * words2vecs.get(word2).get(i);
