@@ -38,7 +38,18 @@ public final class RecommendationsTest {
     word2vecTestDict1.put("b", new ArrayList<Double>(Arrays.asList(2.0, 1.0)));
     word2vecTestDict1.put("c", new ArrayList<Double>(Arrays.asList(-2.0, 3.0)));  
     
-
+    word2vecTestDict2 = new HashMap<String, ArrayList<Double>>();
+    word2vecTestDict2.put("a", new ArrayList<Double>(Arrays.asList(0.0)));
+    word2vecTestDict2.put("b", new ArrayList<Double>(Arrays.asList(1.0)));
+    word2vecTestDict2.put("c", new ArrayList<Double>(Arrays.asList(4.0)));
+    word2vecTestDict2.put("d", new ArrayList<Double>(Arrays.asList(9.0)));
+    word2vecTestDict2.put("e", new ArrayList<Double>(Arrays.asList(16.0)));
+    word2vecTestDict2.put("f", new ArrayList<Double>(Arrays.asList(25.0)));
+    word2vecTestDict2.put("g", new ArrayList<Double>(Arrays.asList(36.0)));
+    word2vecTestDict2.put("h", new ArrayList<Double>(Arrays.asList(49.0)));
+    word2vecTestDict2.put("i", new ArrayList<Double>(Arrays.asList(64.0)));
+    word2vecTestDict2.put("j", new ArrayList<Double>(Arrays.asList(81.0)));
+    word2vecTestDict2.put("k", new ArrayList<Double>(Arrays.asList(100.0)));
   }
 
   @Test 
@@ -65,5 +76,33 @@ public final class RecommendationsTest {
     Assert.assertEquals(expected, actual, 0.0001);
   }
 
+  @Test 
+  public void closestWordsTest1() {
+    ArrayList<String> expected = new ArrayList<String>(
+        Arrays.asList("b","c","d","e","f","g","h","i","j","k"));
+    ArrayList<String> actual = rServlet.getClosestWords(word2vecTestDict2, "a");
 
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test 
+  public void closestWordsTest2() {
+    ArrayList<String> expected = new ArrayList<String>(
+        Arrays.asList("j", "i","h", "g","f", "e","d","c","b","a"));
+    ArrayList<String> actual = rServlet.getClosestWords(word2vecTestDict2, "k");
+
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test 
+  public void closestWordsTest3() {
+    // Note this is cosine distance, not normal distance,
+    // so order isn't necessarily intuitive.
+
+    ArrayList<String> expected = new ArrayList<String>(
+        Arrays.asList("k", "j", "i", "h", "g", "f", "d", "c", "b", "a"));
+    ArrayList<String> actual = rServlet.getClosestWords(word2vecTestDict2, "e");
+
+    Assert.assertEquals(expected, actual);
+  }
 }
