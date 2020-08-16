@@ -15,15 +15,58 @@
 package com.google.sps.servlets;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.*;
+
 @RunWith(JUnit4.class) 
 public final class RecommendationsTest {
 
-  @Test 
-  public void testCosineDistance() {
+  HashMap<String, ArrayList<Double>> word2vecTest;
+  RecommendationsServlet rServlet;
 
+  @Before 
+  public void setUp() {
+    rServlet = new RecommendationsServlet();
+    word2vecTest = new HashMap<String, ArrayList<Double>>();
+    word2vecTest.put("a", new ArrayList<Double>(Arrays.asList(1.0, 0.0)));
+    word2vecTest.put("b", new ArrayList<Double>(Arrays.asList(2.0, 1.0)));
+    word2vecTest.put("c", new ArrayList<Double>(Arrays.asList(-2.0, 3.0)));  
+    word2vecTest.put("d", new ArrayList<Double>(Arrays.asList(1.0, -1.0)));
+    word2vecTest.put("e", new ArrayList<Double>(Arrays.asList(-1.0, -1.0)));
+    word2vecTest.put("f", new ArrayList<Double>(Arrays.asList(-1.0, 1.0)));
+    word2vecTest.put("g", new ArrayList<Double>(Arrays.asList(-1.0, 0.0)));
+    word2vecTest.put("h", new ArrayList<Double>(Arrays.asList(0.0, -1.0)));
+    word2vecTest.put("i", new ArrayList<Double>(Arrays.asList(0.0, 1.0)));
+    word2vecTest.put("j", new ArrayList<Double>(Arrays.asList(1.0, 1.0)));
+  }
+
+  @Test 
+  public void cosineDistanceTest1() {
+    double expected = 2.0;
+    double actual = rServlet.getCosineDistance(word2vecTest, "a", "b");
+
+    Assert.assertEquals(expected, actual, 0.0001);
   } 
+
+  @Test
+  public void cosineDistanceTest2() {
+    double expected = -2.0;
+    double actual = rServlet.getCosineDistance(word2vecTest, "a", "c");
+
+    Assert.assertEquals(expected, actual, 0.0001);
+  }
+
+  @Test
+  public void cosineDistanceTest3() {
+    double expected = -1.0;
+    double actual = rServlet.getCosineDistance(word2vecTest, "b", "c");
+
+    Assert.assertEquals(expected, actual, 0.0001);
+  }
+
+
 }

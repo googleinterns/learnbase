@@ -104,7 +104,7 @@ public class RecommendationsServlet extends HttpServlet {
 
   /**
    * Takes two word vectors and multiplies them together 
-   * and returns the result. 
+   * and returns the result.  
    */
   public double getCosineDistance(HashMap<String, ArrayList<Double>> words2vecs, String word1, String word2) {
     double distance = 0.0;
