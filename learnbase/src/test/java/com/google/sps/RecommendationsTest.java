@@ -25,29 +25,26 @@ import java.util.*;
 @RunWith(JUnit4.class) 
 public final class RecommendationsTest {
 
-  HashMap<String, ArrayList<Double>> word2vecTest;
   RecommendationsServlet rServlet;
+
+  HashMap<String, ArrayList<Double>> word2vecTestDict1;
+  HashMap<String, ArrayList<Double>> word2vecTestDict2;
 
   @Before 
   public void setUp() {
     rServlet = new RecommendationsServlet();
-    word2vecTest = new HashMap<String, ArrayList<Double>>();
-    word2vecTest.put("a", new ArrayList<Double>(Arrays.asList(1.0, 0.0)));
-    word2vecTest.put("b", new ArrayList<Double>(Arrays.asList(2.0, 1.0)));
-    word2vecTest.put("c", new ArrayList<Double>(Arrays.asList(-2.0, 3.0)));  
-    word2vecTest.put("d", new ArrayList<Double>(Arrays.asList(1.0, -1.0)));
-    word2vecTest.put("e", new ArrayList<Double>(Arrays.asList(-1.0, -1.0)));
-    word2vecTest.put("f", new ArrayList<Double>(Arrays.asList(-1.0, 1.0)));
-    word2vecTest.put("g", new ArrayList<Double>(Arrays.asList(-1.0, 0.0)));
-    word2vecTest.put("h", new ArrayList<Double>(Arrays.asList(0.0, -1.0)));
-    word2vecTest.put("i", new ArrayList<Double>(Arrays.asList(0.0, 1.0)));
-    word2vecTest.put("j", new ArrayList<Double>(Arrays.asList(1.0, 1.0)));
+    word2vecTestDict1 = new HashMap<String, ArrayList<Double>>();
+    word2vecTestDict1.put("a", new ArrayList<Double>(Arrays.asList(1.0, 0.0)));
+    word2vecTestDict1.put("b", new ArrayList<Double>(Arrays.asList(2.0, 1.0)));
+    word2vecTestDict1.put("c", new ArrayList<Double>(Arrays.asList(-2.0, 3.0)));  
+    
+
   }
 
   @Test 
   public void cosineDistanceTest1() {
     double expected = 2.0;
-    double actual = rServlet.getCosineDistance(word2vecTest, "a", "b");
+    double actual = rServlet.getCosineDistance(word2vecTestDict1, "a", "b");
 
     Assert.assertEquals(expected, actual, 0.0001);
   } 
@@ -55,7 +52,7 @@ public final class RecommendationsTest {
   @Test
   public void cosineDistanceTest2() {
     double expected = -2.0;
-    double actual = rServlet.getCosineDistance(word2vecTest, "a", "c");
+    double actual = rServlet.getCosineDistance(word2vecTestDict1, "a", "c");
 
     Assert.assertEquals(expected, actual, 0.0001);
   }
@@ -63,7 +60,7 @@ public final class RecommendationsTest {
   @Test
   public void cosineDistanceTest3() {
     double expected = -1.0;
-    double actual = rServlet.getCosineDistance(word2vecTest, "b", "c");
+    double actual = rServlet.getCosineDistance(word2vecTestDict1, "b", "c");
 
     Assert.assertEquals(expected, actual, 0.0001);
   }
