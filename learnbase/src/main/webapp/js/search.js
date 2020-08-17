@@ -60,7 +60,7 @@ function displayRecommendedTopics(recommended) {
             cell.addEventListener('mouseout', () => {
                 cell.style.color = "#003509";
             });
-            cell.innerHTML = topic.toUpperCase().replace("_", " ");
+            cell.innerHTML = capital_letter(topic.toLowerCase().replace("_", " "));
             document.getElementById("loader").style.display = "none";
             document.getElementById("recommended-topics").style.display = "table";
         }
@@ -172,7 +172,7 @@ function topicManager(topics) {
         if (i < 8) {
             var newRow = table.insertRow();
             var cell = newRow.insertCell();
-            cell.innerHTML = topic;
+            cell.innerHTML = capital_letter(topic);
             const deleteButtonElement = document.createElement('button');
             deleteButtonElement.innerText = 'Delete';
             deleteButtonElement.addEventListener('click', () => {
@@ -183,6 +183,13 @@ function topicManager(topics) {
             i++;
         }
     });
+}
+function capital_letter(str) {
+    str = str.split(" ");
+    for (var i = 0, x = str.length; i < x; i++) {
+        str[i] = str[i][0].toUpperCase() + str[i].substr(1);
+    }
+    return str.join(" ");
 }
 // Deletes topic.
 function deleteTopic(topic) {
