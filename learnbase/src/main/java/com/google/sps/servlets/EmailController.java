@@ -124,7 +124,7 @@ public class EmailController extends HttpServlet {
       Boolean advanced = (Boolean)entity.getProperty("advanced"+topic);
       
       if (iteratorNum >= urls.size()) {
-        if (advanced) {
+        if (advanced != null && advanced) {
           html += "<br>" + "<h1>"+topic.toUpperCase()+"</h1>" + "<br> No more info for this topic!";
           continue;
         } else {
