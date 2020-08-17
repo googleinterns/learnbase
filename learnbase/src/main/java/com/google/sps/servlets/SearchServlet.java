@@ -70,25 +70,25 @@ public class SearchServlet extends HttpServlet {
       //If there are no more urls in the advanced search 
       //print that there is no more info for the topic 
       if (iteratorNum >= urls.size()) {
-	if (advanced) {
+        if (advanced) {
           topicsInfo.add(0, "No more info for this topic!");
-	  topicsInfo.add(0, "<h1>"+topic.toUpperCase()+"</h1>");
-	  continue;
-	} else {
-          System.out.println("advanced");
-          String advancedTopic = "advanced"+topic;
-	  urls = getSearch(advancedTopic);
-	  if(urls.isEmpty()) {
-            topicsInfo.add(0, "No more info for this topic!");
-	    topicsInfo.add(0, "<h1>"+topic+":</h1>");
-	    continue;
-          }
-	  iterator = "0";
-	  iteratorNum = 0;
-	  entity.setProperty(advancedTopic, true);
-	  entity.setProperty(topicName, urls);
-	}
-	System.out.println(urls);
+          topicsInfo.add(0, "<h1>"+topic.toUpperCase()+"</h1>");
+          continue;
+        } else {
+                System.out.println("advanced");
+                String advancedTopic = "advanced"+topic;
+          urls = getSearch(advancedTopic);
+          if(urls.isEmpty()) {
+                  topicsInfo.add(0, "No more info for this topic!");
+            topicsInfo.add(0, "<h1>"+topic+":</h1>");
+            continue;
+                }
+          iterator = "0";
+          iteratorNum = 0;
+          entity.setProperty(advancedTopic, true);
+          entity.setProperty(topicName, urls);
+        }
+	      System.out.println(urls);
       }
       String url = urls.get(iteratorNum);
       String info = "<iframe src=\"" + url + "\" style=\"height:600px;width:80%;\"></iframe>"; 
@@ -121,7 +121,7 @@ public class SearchServlet extends HttpServlet {
     return info;
   }
 
-  private ArrayList<String> getSearch(String topic) throws IOException {
+  public ArrayList<String> getSearch(String topic) throws IOException {
     String google = "https://www.google.com/search";
     int num = 20;
     String searchURL = google + "?q=" + topic + "&num=" + num;
