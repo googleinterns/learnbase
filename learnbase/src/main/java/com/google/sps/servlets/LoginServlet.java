@@ -52,7 +52,7 @@ public class LoginServlet extends HttpServlet {
     String topicsOutput = "";
     String[] topicsArray = topics.split(",");
     for (String topic : topicsArray) {
-      String topicOutput = "<p>" + topic + "</p>";
+      String topicOutput = "<p>" + topic.substring(0,1).toUpperCase() + topic.substring(1)+  "</p>";
       topicsOutput += topicOutput;
     }
     
