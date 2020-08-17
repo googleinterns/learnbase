@@ -13,7 +13,7 @@ function getInterests() : void {
     const interestsSection = document.getElementById('interests-section') as HTMLDivElement;
     topics.forEach((topic) => {
       console.log(topic);
-      interestsSection.innerHTML += topic.toUpperCase();
+      interestsSection.innerHTML += topic;
     })
   });
 } 
