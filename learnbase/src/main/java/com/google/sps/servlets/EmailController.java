@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.security.*;
 import java.time.LocalDateTime;    
 import java.util.Date;
-
+import java.util.*;
 
 @WebServlet("/emails")
 public class EmailController extends HttpServlet {
@@ -49,10 +49,7 @@ public class EmailController extends HttpServlet {
         Long em = (Long) entity.getProperty("minute");
         int entityMinute = em.intValue();
         if (entityMinute >= 55){
-          String encryptedMail = (String) entity.getProperty("mail"); 
-          String email = decryptEmail(encryptedMail); 
-          EmailHandler handler = new EmailHandler(); 
-          handler.sendMessage(encryptedMail, "Scheduler works");
+          sendEmail((String) entity.getProperty("mail"), entity); 
         }
       }
     }
@@ -64,10 +61,8 @@ public class EmailController extends HttpServlet {
         Long em = (Long) entity.getProperty("minute");
         int entityMinute = em.intValue();
         if (minute-5 <= entityMinute && entityMinute < minute){
-          String encryptedMail = (String) entity.getProperty("mail"); 
-          String email = decryptEmail(encryptedMail); 
-          EmailHandler handler = new EmailHandler(); 
-          handler.sendMessage(encryptedMail, "Scheduler works");
+          sendEmail((String) entity.getProperty("mail"), entity); 
+          
         }
       }
     }
@@ -91,6 +86,77 @@ public class EmailController extends HttpServlet {
       e.printStackTrace();
       return "failed";
     }
+  
+  }
+
+  private void sendEmail(String email, Entity entity){
+    EmailHandler handler = new EmailHandler();
+    String plaintext = "Welcome to your daily Learnbase email! Look below to find info on topics you've selected! ";
+    String html = buildHTML(entity);
+    handler.sendPlainAndHTML(email, plaintext, html);
+  }
+
+  private String buildHTML (Entity entity){   
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    String html = "";
+    
+    String topics = (String) entity.getProperty("topics");
+    
+
+    if (topics.trim().equals("")) {
+      ArrayList<String> topicsInfo = new ArrayList<>();
+      html += "<h2>No topics yet! Search something you want to know more about to get info.</h2>";
+      return html;
+    }
+
+    ArrayList<String> topicsInfo = new ArrayList<>();
+    String[] topicsArray = topics.split(",");
+
+    //Goes through each topic and gets that days info, 
+    //then adds it to the arraylist that stores the info to print
+    for (String topic : topicsArray) {
+      String topicName = topic+"topic";
+      String iteratorName = topic+"iterator";
+      String iterator = (String) entity.getProperty(iteratorName);
+      ArrayList<String> urls = (ArrayList<String>) entity.getProperty(topicName);
+      int iteratorNum = Integer.parseInt(iterator);
+      Boolean advanced = (Boolean)entity.getProperty("advanced"+topic);
+      
+      if (iteratorNum >= urls.size()) {
+        if (advanced) {
+          html += "<br>" + "<h1>"+topic.toUpperCase()+"</h1>" + "<br> No more info for this topic!";
+          continue;
+        } else {
+          System.out.println("advanced");
+          String advancedTopic = "advanced"+topic;
+          SearchServlet searcher= new SearchServlet();
+          try{
+            urls = searcher.getSearch(advancedTopic);
+            if(urls.isEmpty()) {
+              html += "<br>" + "<h1>"+topic.toUpperCase()+"</h1>" + "<br> No more info for this topic!";
+              continue;
+            }
+          } catch (Exception e){
+            e.printStackTrace();
+          }
+          iterator = "0";
+          iteratorNum = 0;
+          entity.setProperty(advancedTopic, true);
+          entity.setProperty(topicName, urls);
+        }
+	      System.out.println(urls);
+      }
+      String url = urls.get(iteratorNum);
+      String info = "<iframe src=\"" + url + "\" style=\"height:600px;width:80%;\"></iframe>"; 
+      html += "<br>" + "<h1>"+topic.toUpperCase()+"</h1>" + "<br> <iframe src=\"" + url + "\" style=\"height:600px;width:80%;\"></iframe>";
+
+      //Increment iterator so that the next day they get new info 
+      iterator = Integer.toString(Integer.parseInt(iterator)+1);
+      entity.setProperty(iteratorName, iterator);
+    }
+    datastore.put(entity);
+    return html;
   }
 
 }
