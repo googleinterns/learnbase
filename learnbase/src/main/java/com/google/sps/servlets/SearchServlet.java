@@ -63,6 +63,7 @@ public class SearchServlet extends HttpServlet {
       ArrayList<String> urls = (ArrayList<String>) entity.getProperty(topicName);
       int iteratorNum = Integer.parseInt(iterator);
       Boolean advanced = (Boolean)entity.getProperty("advanced"+topic);
+      System.out.println(advanced);
       
       //If there are no more urls for this topic, 
       //Move to an advanced search

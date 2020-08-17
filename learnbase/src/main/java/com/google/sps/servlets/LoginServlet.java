@@ -55,6 +55,13 @@ public class LoginServlet extends HttpServlet {
       String[] words_topic = topic.split(" ");
       String topicOutput = "<p>";
       for (String word : words_topic) {
+	if(word.length() == 1) {
+          topicOutput += word.substring(0,1).toUpperCase();
+	  continue;
+	}
+	if(word.length() == 0) {
+          continue;
+        }
         topicOutput+= word.substring(0,1).toUpperCase() + word.substring(1) + " ";
       }
       topicOutput += "</p>";
