@@ -99,7 +99,8 @@ public class EmailController extends HttpServlet {
   private String buildHTML (Entity entity){   
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    String html = "";
+    String html = "You can either visit the sites listed below or you can visit the " +
+      " <a href=\"learnbase-step-2020.appspot.com/info.html\"> Learnbase Info Page/a>";
     
     String topics = (String) entity.getProperty("topics");
     
@@ -125,7 +126,7 @@ public class EmailController extends HttpServlet {
       
       if (iteratorNum >= urls.size()) {
         if (advanced != null && advanced) {
-          html += "<br>" + "<h1>"+topic.toUpperCase()+"</h1>" + "<br> No more info for this topic!";
+          html += "<br>" + "<h2>"+topic.toUpperCase()+"</h2>" + "<br> No more info for this topic!";
           continue;
         } else {
           System.out.println("advanced");
@@ -134,7 +135,7 @@ public class EmailController extends HttpServlet {
           try{
             urls = searcher.getSearch(advancedTopic);
             if(urls.isEmpty()) {
-              html += "<br>" + "<h1>"+topic.toUpperCase()+"</h1>" + "<br> No more info for this topic!";
+              html += "<br>" + "<h2>"+topic.toUpperCase()+"</h2>" + "<br> No more info for this topic!";
               continue;
             }
           } catch (Exception e){
@@ -149,7 +150,7 @@ public class EmailController extends HttpServlet {
       }
       String url = urls.get(iteratorNum);
       String info = "<iframe src=\"" + url + "\" style=\"height:600px;width:80%;\"></iframe>"; 
-      html += "<br>" + "<h1>"+topic.toUpperCase()+"</h1>" + "<br> <iframe src=\"" + url + "\" style=\"height:600px;width:80%;\"></iframe>";
+      html += "<br>" + "<h2>"+topic.toUpperCase()+"</h2>" + "<br> <a href=\"" + url + "\">Daily info</a>";
 
       //Increment iterator so that the next day they get new info 
       iterator = Integer.toString(Integer.parseInt(iterator)+1);
