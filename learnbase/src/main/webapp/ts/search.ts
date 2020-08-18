@@ -58,7 +58,7 @@ function displayRecommendedTopics(recommended : string[]) {
         cell.style.color = "#009900";
       });
       cell.addEventListener('mouseout', () => {
-        cell.style.color = "#003509";
+        cell.style.color = "#656565";
       });
       
       cell.innerHTML = capital_letter(topic.toLowerCase().replace("_", " "));
