@@ -1,4 +1,5 @@
 window.onload = function getInfo() : void {
+  userStatus();
   fetch('/search').then(response => response.json()).then((response) => {
     console.log(response);
     

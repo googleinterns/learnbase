@@ -1,5 +1,6 @@
 "use strict";
 window.onload = function getInfo() {
+    userStatus();
     fetch('/search').then(response => response.json()).then((response) => {
         console.log(response);
         var infoSection = document.getElementById('info-container');
