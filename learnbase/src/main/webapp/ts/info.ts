@@ -1,5 +1,5 @@
 window.onload = function getInfo() : void {
-  userStatus();
+  userLoginStatus();
   fetch('/search').then(response => response.json()).then((response) => {
     console.log(response);
     
@@ -11,4 +11,11 @@ window.onload = function getInfo() : void {
     document.getElementById("loader").style.display = "none";
   });
 }
-
+function userLoginStatus() {
+  fetch('/status').then(response => response.text()).then((loginStatus) => {
+    var status = loginStatus.includes("In");
+    if(!status){
+      window.location.replace("/index.html");
+    }
+  });
+}
