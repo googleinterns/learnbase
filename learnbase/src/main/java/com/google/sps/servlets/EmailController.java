@@ -100,7 +100,7 @@ public class EmailController extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     String html = "You can either visit the sites listed below or you can visit the " +
-      " <a href=\"learnbase-step-2020.appspot.com/info.html\"> Learnbase Info Page/a>";
+      " <a href=\"learnbase-step-2020.appspot.com/info.html\"> Learnbase Info Page</a>";
     
     String topics = (String) entity.getProperty("topics");
     
