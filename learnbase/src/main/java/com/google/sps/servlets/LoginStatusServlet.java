@@ -26,7 +26,6 @@ public class LoginStatusServlet extends HttpServlet {
       response.getWriter().println("loggedIn");
     } else{
       response.getWriter().println("loggedOut");
-
     }
 
   }

@@ -15,6 +15,7 @@ if (location.pathname === "/search.html") {
 // Get the topics and recommendations, and display
 // them on the webpage.
 window.onload = function getTopics() {
+    var loggedIn = userStatus();
     fetch('/topics').then(response => response.json()).then((response) => {
         console.log(response);
         if (location.pathname === "/search.html") {
@@ -221,5 +222,13 @@ function timeChange() {
         document.getElementById("timeDisplay").innerHTML = response;
         document.getElementById("selectTime").style.display = "none";
         document.getElementById("currentTime").style.direction = "block";
+    });
+}
+function userStatus() {
+    fetch('/status').then(response => response.text()).then((loginStatus) => {
+        var status = loginStatus.includes("In");
+        if (!status) {
+            window.location.replace("/index.html");
+        }
     });
 }

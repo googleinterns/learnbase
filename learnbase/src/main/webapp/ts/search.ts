@@ -10,6 +10,7 @@ if (location.pathname === "/search.html") {
 // Get the topics and recommendations, and display
 // them on the webpage.
 window.onload = function getTopics() : void {
+  var loggedIn = userStatus();
   fetch('/topics').then(response => response.json()).then((response) =>{
     console.log(response);
 
@@ -252,4 +253,11 @@ function timeChange(){
 }
 
 
-
+function userStatus() {
+  fetch('/status').then(response => response.text()).then((loginStatus) => {
+    var status = loginStatus.includes("In");
+    if (!status){
+      window.location.replace("/index.html");
+    }
+  });
+}
