@@ -818,6 +818,10 @@ O L D   C S S   B E L O W
   display: none;
 }
 
+#recommended-topics {
+  font-size: 20px;
+}
+
 #loader {
   position: relative;
   left: 50%;
