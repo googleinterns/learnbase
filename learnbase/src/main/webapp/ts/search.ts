@@ -67,9 +67,6 @@ function displayRecommendedTopics(recommended : string[]) {
         const params = new URLSearchParams(); 
         params.append("topic", topic)
         fetch('/topics', {method: 'POST', body: params});
-        window.location.replace('/search.html');
-        fetch('/topics');
-        
         createSelectedTopic(topic, document.getElementById('subjectTable') as HTMLTableElement);
       });
       
