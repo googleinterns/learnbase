@@ -14,7 +14,7 @@ window.onload = function getTopics() : void {
   fetch('/topics').then(response => response.json()).then((response) =>{
     console.log(response);
 
-    if (location.pathname === "/search.html") {
+    if (location.pathname === "/search.html" || location.pathname === "/recommendations.html") {
       topicManager(response);
     }
 
@@ -60,6 +60,17 @@ function displayRecommendedTopics(recommended : string[]) {
       });
       cell.addEventListener('mouseout', () => {
         cell.style.color = "#656565";
+      });
+
+      cell.addEventListener('click', () => {
+        topic = topic.replace("_", " ")
+        const params = new URLSearchParams(); 
+        params.append("topic", topic)
+        fetch('/topics', {method: 'POST', body: params});
+        window.location.replace('/search.html');
+        fetch('/topics');
+        
+        createSelectedTopic(topic, document.getElementById('subjectTable') as HTMLTableElement);
       });
       
       cell.style.fontSize = "18px";
@@ -188,22 +199,29 @@ function topicManager(topics: string[]) : void {
   var table = document.getElementById('subjectTable') as HTMLTableElement;
   var i = 0 ; 
   var size = topics.length;
-  topics.reverse().forEach((topic: string) => {
+  if (size === 0) {
+    return;
+  }
+  topics.forEach((topic: string) => {
     if (i < 8) {
-      var newRow = table.insertRow();
-      var cell = newRow.insertCell(); 
-      cell.innerHTML = capital_letter(topic);
-
-      const deleteButtonElement = document.createElement('button');
-      deleteButtonElement.innerText = 'Delete';
-      deleteButtonElement.addEventListener('click', () =>{
-        deleteTopic(topic.toLowerCase());
-      });
-      var deleteCell = newRow.insertCell();
-      deleteCell.appendChild(deleteButtonElement);
+      createSelectedTopic(topic, table);
       i++;
     }
   });
+}
+
+function createSelectedTopic(topic: string, table: HTMLTableElement) {
+  var newRow = table.insertRow(0);
+  var cell = newRow.insertCell(); 
+  cell.innerHTML = capital_letter(topic);
+
+  const deleteButtonElement = document.createElement('button');
+  deleteButtonElement.innerText = 'Delete';
+  deleteButtonElement.addEventListener('click', () =>{
+    deleteTopic(topic.toLowerCase());
+  });
+  var deleteCell = newRow.insertCell();
+  deleteCell.appendChild(deleteButtonElement);
 }
 
 function capital_letter(str) 
