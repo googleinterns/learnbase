@@ -576,6 +576,11 @@ border-radius: 8px;
   font-size: 3em;
 }
 
+
+/*
+O L D   C S S   B E L O W 
+*/
+
 .mainInfo{
   padding-top: 2em;
   padding-bottom: 2em;
@@ -717,9 +722,6 @@ button {
           user-select: none;
 } */
 
-/*
-O L D   C S S   B E L O W 
-*/
 .searchSpace{
     display: flex;
     flex-direction: row;

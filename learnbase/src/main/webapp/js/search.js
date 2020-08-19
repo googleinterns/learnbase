@@ -15,7 +15,7 @@ if (location.pathname === "/search.html") {
 // Get the topics and recommendations, and display
 // them on the webpage.
 window.onload = function getTopics() {
-    userStatus();
+    var loggedIn = userStatus();
     fetch('/topics').then(response => response.json()).then((response) => {
         console.log(response);
         if (location.pathname === "/search.html") {
