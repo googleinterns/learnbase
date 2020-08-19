@@ -56,7 +56,6 @@ public class RecommendationsServlet extends HttpServlet {
 
         return;
       }
-      System.out.println("word in model");
       ArrayList<String> closestWords = getClosestWords(words2vecs, topic);
       
       wordCache.put(topic, closestWords);
