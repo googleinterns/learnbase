@@ -61,6 +61,7 @@ function displayRecommendedTopics(recommended) {
             cell.addEventListener('mouseout', () => {
                 cell.style.color = "#656565";
             });
+            cell.style.fontSize = "20px";
             cell.innerHTML = capital_letter(topic.toLowerCase().replace("_", " "));
             document.getElementById("loader").style.display = "none";
             document.getElementById("recommended-topics").style.display = "table";
