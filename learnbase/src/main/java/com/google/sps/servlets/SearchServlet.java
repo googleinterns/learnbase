@@ -96,13 +96,35 @@ public class SearchServlet extends HttpServlet {
       topicsInfo.add(0, "<h1>"+topic.toUpperCase()+"</h1>");
 
       //Increment iterator so that the next day they get new info 
-      iterator = Integer.toString(Integer.parseInt(iterator)+1);
       entity.setProperty(iteratorName, iterator);
     }
     datastore.put(entity);
     Gson gson = new Gson();
     response.getWriter().println(gson.toJson(topicsInfo));
 
+  }
+
+  public void changeIterator() {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    UserService userService = UserServiceFactory.getUserService();
+    User user = userService.getCurrentUser();
+    String userId = user.getUserId();
+    Query query = 
+      new Query("UserInfo")
+      .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+
+    String topics = (String) entity.getProperty("topics");
+    String[] topicsArray = topics.split(",");
+    for(String topic : topicsArray) {
+      String iteratorName = topic+"iterator";
+      String iterator = (String) entity.getProperty(iteratorName);
+      int iteratorNum = Integer.parseInt(iterator);
+      iterator = Integer.toString(Integer.parseInt(iterator)+1);
+      entity.setProperty(iteratorName, iterator);
+    }
+    datastore.put(entity);
   }
   
   //Gets the info off a page for a given url 
