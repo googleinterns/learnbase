@@ -68,6 +68,7 @@ function displayRecommendedTopics(recommended : string[]) {
         params.append("topic", topic)
         fetch('/topics', {method: 'POST', body: params});
         createSelectedTopic(topic, document.getElementById('subjectTable') as HTMLTableElement);
+        window.location.replace("/search.html");
       });
       
       cell.style.fontSize = "18px";
@@ -200,10 +201,8 @@ function topicManager(topics: string[]) : void {
     return;
   }
   topics.forEach((topic: string) => {
-    if (i < 8) {
-      createSelectedTopic(topic, table);
-      i++;
-    }
+    createSelectedTopic(topic, table);
+    i++;
   });
 }
 

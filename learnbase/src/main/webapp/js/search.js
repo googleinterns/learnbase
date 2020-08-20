@@ -67,7 +67,7 @@ function displayRecommendedTopics(recommended) {
                 params.append("topic", topic);
                 fetch('/topics', { method: 'POST', body: params });
                 createSelectedTopic(topic, document.getElementById('subjectTable'));
-                location.reload();
+                window.location.replace("/search.html");
             });
             cell.style.fontSize = "18px";
             cell.innerHTML = capital_letter(topic.toLowerCase().replace("_", " "));
@@ -182,10 +182,8 @@ function topicManager(topics) {
         return;
     }
     topics.forEach((topic) => {
-        if (i < 8) {
-            createSelectedTopic(topic, table);
-            i++;
-        }
+        createSelectedTopic(topic, table);
+        i++;
     });
 }
 function createSelectedTopic(topic, table) {
