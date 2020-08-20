@@ -21,6 +21,7 @@ window.onload = function getTopics() {
         if (location.pathname === "/search.html" || location.pathname === "/recommendations.html") {
             topicManager(response);
         }
+        document.getElementById("subjectTableContainer").style.display = "block";
         getRecommendedTopics(response).then((result) => {
             if (location.pathname === "/recommendations.html") {
                 if (result.length === 0) {
@@ -67,7 +68,6 @@ function displayRecommendedTopics(recommended) {
                 params.append("topic", topic);
                 fetch('/topics', { method: 'POST', body: params });
                 createSelectedTopic(topic, document.getElementById('subjectTable'));
-                window.location.replace("/search.html");
             });
             cell.style.fontSize = "18px";
             cell.innerHTML = capital_letter(topic.toLowerCase().replace("_", " "));

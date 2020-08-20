@@ -17,6 +17,7 @@ window.onload = function getTopics() : void {
     if (location.pathname === "/search.html" || location.pathname === "/recommendations.html") {
       topicManager(response);
     }
+    document.getElementById("subjectTableContainer").style.display = "block";
 
     getRecommendedTopics(response).then((result: string[]) => {
 
@@ -68,7 +69,6 @@ function displayRecommendedTopics(recommended : string[]) {
         params.append("topic", topic)
         fetch('/topics', {method: 'POST', body: params});
         createSelectedTopic(topic, document.getElementById('subjectTable') as HTMLTableElement);
-        window.location.replace("/search.html");
       });
       
       cell.style.fontSize = "18px";
