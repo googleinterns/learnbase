@@ -12,10 +12,14 @@ if (location.pathname === "/search.html") {
 window.onload = function getTopics() : void {
   var loggedIn = userStatus();
   var showSelectedTopicBox : number;
+  var selectedTopics = new Set<string>();
 
   fetch('/topics').then(response => response.json()).then((response) =>{
-    console.log(response);
-
+    if (JSON.stringify(response) !== "{}") {
+      response.forEach((topic: string) => {
+        selectedTopics.add(topic.toLowerCase().replace(" ", "_"));
+      });
+    }
     if (location.pathname === "/search.html" || location.pathname === "/recommendations.html") {
       showSelectedTopicBox = topicManager(response);
     }
@@ -33,7 +37,7 @@ window.onload = function getTopics() : void {
         } else {
           document.getElementById("loader").style.display = "block";
           document.getElementById("recommended-topics").style.display = "none";
-          displayRecommendedTopics(result);
+          displayRecommendedTopics(result, selectedTopics);
         }
       }
     });
@@ -51,11 +55,11 @@ window.onload = function getTopics() : void {
 }
 
 // Display recommended topics
-function displayRecommendedTopics(recommended : string[]) {
+function displayRecommendedTopics(recommended : string[], selectedTopics : Set<string>) {
   var table = document.getElementById('recommended-topics') as HTMLTableElement;
   var setOfTopics = new Set<string>();
   recommended.forEach((topic: string) => {
-    if (!setOfTopics.has(topic)) {
+    if (!setOfTopics.has(topic) && !selectedTopics.has(topic)) {
       setOfTopics.add(topic);
       var newRow = table.insertRow();
       var cell = newRow.insertCell(); 
@@ -73,6 +77,8 @@ function displayRecommendedTopics(recommended : string[]) {
         params.append("topic", topic)
         fetch('/topics', {method: 'POST', body: params});
         createSelectedTopic(topic, document.getElementById('subjectTable') as HTMLTableElement);
+        location.reload();
+        location.reload();
       });
       
       cell.style.fontSize = "18px";
@@ -212,6 +218,7 @@ function topicManager(topics: string[]) : number {
   return 1;
 }
 
+// Creates cell for a topic to display under "Selected Topics".
 function createSelectedTopic(topic: string, table: HTMLTableElement) {
   var newRow = table.insertRow(0);
   var cell = newRow.insertCell(); 
@@ -226,6 +233,7 @@ function createSelectedTopic(topic: string, table: HTMLTableElement) {
   deleteCell.appendChild(deleteButtonElement);
 }
 
+// Capitalizes first letter of each word in str.
 function capital_letter(str) 
 {
     str = str.split(" ");
