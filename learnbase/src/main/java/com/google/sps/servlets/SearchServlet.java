@@ -64,6 +64,8 @@ public class SearchServlet extends HttpServlet {
       int iteratorNum = Integer.parseInt(iterator);
       Boolean advanced = (Boolean)entity.getProperty("advanced"+topic);
       System.out.println(advanced);
+      System.out.println(topic + " iterator in search: " + iterator);
+
       
       //If there are no more urls for this topic, 
       //Move to an advanced search
@@ -91,12 +93,12 @@ public class SearchServlet extends HttpServlet {
 	      System.out.println(urls);
       }
       String url = urls.get(iteratorNum);
+      //iterator = Integer.toString(Integer.parseInt(iterator)+1);
+      //System.out.println("After iteration: " + iterator);
+      entity.setProperty(iteratorName, iterator);      
       String info = "<iframe src=\"" + url + "\" style=\"height:600px;width:80%;\"></iframe>"; 
       topicsInfo.add(0, info);
       topicsInfo.add(0, "<h1>"+topic.toUpperCase()+"</h1>");
-
-      //Increment iterator so that the next day they get new info 
-      entity.setProperty(iteratorName, iterator);
     }
     datastore.put(entity);
     Gson gson = new Gson();
@@ -104,44 +106,45 @@ public class SearchServlet extends HttpServlet {
 
   }
 
-  public void changeIterator() {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    UserService userService = UserServiceFactory.getUserService();
-    User user = userService.getCurrentUser();
-    String userId = user.getUserId();
-    Query query = 
-      new Query("UserInfo")
-      .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
-    PreparedQuery results = datastore.prepare(query);
-    Entity entity = results.asSingleEntity();
+ // public void changeIterator() {
+ //   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+ //   UserService userService = UserServiceFactory.getUserService();
+ //   User user = userService.getCurrentUser();
+ //   String userId = user.getUserId();
+ //   Query query = 
+ //     new Query("UserInfo")
+ //     .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+  //  PreparedQuery results = datastore.prepare(query);
+  //  Entity entity = results.asSingleEntity();
 
-    String topics = (String) entity.getProperty("topics");
-    String[] topicsArray = topics.split(",");
-    for(String topic : topicsArray) {
-      String iteratorName = topic+"iterator";
-      String iterator = (String) entity.getProperty(iteratorName);
-      int iteratorNum = Integer.parseInt(iterator);
-      iterator = Integer.toString(Integer.parseInt(iterator)+1);
-      entity.setProperty(iteratorName, iterator);
-    }
-    datastore.put(entity);
-  }
+ //   String topics = (String) entity.getProperty("topics");
+ //   String[] topicsArray = topics.split(",");
+ //   for(String topic : topicsArray) {
+ //     String iteratorName = topic+"iterator";
+ //     String iterator = (String) entity.getProperty(iteratorName);
+ //     System.out.println(topic + " iterator in change iterator: " + iterator);
+//      iterator = Integer.toString(Integer.parseInt(iterator)+1);
+ //     System.out.println("After iteration: " + iterator);
+ //     entity.setProperty(iteratorName, iterator);
+//    }
+ //   datastore.put(entity);
+ // }
   
   //Gets the info off a page for a given url 
-  private String getInfo(ArrayList<String> urls, String currentUrl) throws IOException {
-    String info = "";
-    int currentUrlNum = Integer.parseInt(currentUrl);
-    String url = urls.get(currentUrlNum);
-    System.out.println(url);
+ // private String getInfo(ArrayList<String> urls, String currentUrl) throws IOException {
+ //   String info = "";
+ //   int currentUrlNum = Integer.parseInt(currentUrl);
+ //   String url = urls.get(currentUrlNum);
+ //   System.out.println(url);
 
-    Document doc = Jsoup.connect(url).get();
-    Elements results = doc.select("p, a");
+ //   Document doc = Jsoup.connect(url).get();
+ //   Elements results = doc.select("p, a");
 
-    for(Element result : results) {
-      info = info + result.toString();
-    }
-    return info;
-  }
+ //   for(Element result : results) {
+ //     info = info + result.toString();
+ //   }
+ //   return info;
+ // }
 
   public ArrayList<String> getSearch(String topic) throws IOException {
     String google = "https://www.google.com/search";
