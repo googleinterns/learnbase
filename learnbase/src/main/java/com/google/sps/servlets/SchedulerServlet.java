@@ -22,7 +22,11 @@ import java.util.*;
 
 @WebServlet("/scheduler")
 public class SchedulerServlet extends HttpServlet{
+  @Override 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
+      
+      //This servlet controls the user's chosen time to recieve emails 
+
       TimeZone timeZone = TimeZone.getDefault();
       int offset = -(int) ((timeZone.getOffset( System.currentTimeMillis())/(1000*60*60)));
 
