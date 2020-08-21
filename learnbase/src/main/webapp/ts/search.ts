@@ -12,10 +12,14 @@ if (location.pathname === "/search.html") {
 window.onload = function getTopics() : void {
   var loggedIn = userStatus();
   var showSelectedTopicBox : number;
+  var selectedTopics = new Set<string>();
 
   fetch('/topics').then(response => response.json()).then((response) =>{
-    console.log(response);
-
+    if (JSON.stringify(response) !== "{}") {
+      response.forEach((topic: string) => {
+        selectedTopics.add(topic.toLowerCase().replace(" ", "_"));
+      });
+    }
     if (location.pathname === "/search.html" || location.pathname === "/recommendations.html") {
       showSelectedTopicBox = topicManager(response);
     }
@@ -33,7 +37,7 @@ window.onload = function getTopics() : void {
         } else {
           document.getElementById("loader").style.display = "block";
           document.getElementById("recommended-topics").style.display = "none";
-          displayRecommendedTopics(result);
+          displayRecommendedTopics(result, selectedTopics);
         }
       }
     });
@@ -51,11 +55,11 @@ window.onload = function getTopics() : void {
 }
 
 // Display recommended topics
-function displayRecommendedTopics(recommended : string[]) {
+function displayRecommendedTopics(recommended : string[], selectedTopics : Set<string>) {
   var table = document.getElementById('recommended-topics') as HTMLTableElement;
   var setOfTopics = new Set<string>();
   recommended.forEach((topic: string) => {
-    if (!setOfTopics.has(topic)) {
+    if (!setOfTopics.has(topic) && !selectedTopics.has(topic)) {
       setOfTopics.add(topic);
       var newRow = table.insertRow();
       var cell = newRow.insertCell(); 

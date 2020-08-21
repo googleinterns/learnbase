@@ -17,8 +17,13 @@ if (location.pathname === "/search.html") {
 window.onload = function getTopics() {
     var loggedIn = userStatus();
     var showSelectedTopicBox;
+    var selectedTopics = new Set();
     fetch('/topics').then(response => response.json()).then((response) => {
-        console.log(response);
+        if (JSON.stringify(response) !== "{}") {
+            response.forEach((topic) => {
+                selectedTopics.add(topic.toLowerCase().replace(" ", "_"));
+            });
+        }
         if (location.pathname === "/search.html" || location.pathname === "/recommendations.html") {
             showSelectedTopicBox = topicManager(response);
         }
@@ -35,7 +40,7 @@ window.onload = function getTopics() {
                 else {
                     document.getElementById("loader").style.display = "block";
                     document.getElementById("recommended-topics").style.display = "none";
-                    displayRecommendedTopics(result);
+                    displayRecommendedTopics(result, selectedTopics);
                 }
             }
         });
@@ -50,11 +55,11 @@ window.onload = function getTopics() {
     }
 };
 // Display recommended topics
-function displayRecommendedTopics(recommended) {
+function displayRecommendedTopics(recommended, selectedTopics) {
     var table = document.getElementById('recommended-topics');
     var setOfTopics = new Set();
     recommended.forEach((topic) => {
-        if (!setOfTopics.has(topic)) {
+        if (!setOfTopics.has(topic) && !selectedTopics.has(topic)) {
             setOfTopics.add(topic);
             var newRow = table.insertRow();
             var cell = newRow.insertCell();
