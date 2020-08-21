@@ -77,6 +77,8 @@ function displayRecommendedTopics(recommended : string[], selectedTopics : Set<s
         params.append("topic", topic)
         fetch('/topics', {method: 'POST', body: params});
         createSelectedTopic(topic, document.getElementById('subjectTable') as HTMLTableElement);
+        location.reload();
+        location.reload();
       });
       
       cell.style.fontSize = "18px";
@@ -216,6 +218,7 @@ function topicManager(topics: string[]) : number {
   return 1;
 }
 
+// Creates cell for a topic to display under "Selected Topics".
 function createSelectedTopic(topic: string, table: HTMLTableElement) {
   var newRow = table.insertRow(0);
   var cell = newRow.insertCell(); 
@@ -230,6 +233,7 @@ function createSelectedTopic(topic: string, table: HTMLTableElement) {
   deleteCell.appendChild(deleteButtonElement);
 }
 
+// Capitalizes first letter of each word in str.
 function capital_letter(str) 
 {
     str = str.split(" ");
