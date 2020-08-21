@@ -11,14 +11,18 @@ if (location.pathname === "/search.html") {
 // them on the webpage.
 window.onload = function getTopics() : void {
   var loggedIn = userStatus();
+  var showSelectedTopicBox : number;
+
   fetch('/topics').then(response => response.json()).then((response) =>{
     console.log(response);
 
     if (location.pathname === "/search.html" || location.pathname === "/recommendations.html") {
-      topicManager(response);
+      showSelectedTopicBox = topicManager(response);
     }
-    document.getElementById("subjectTableContainer").style.display = "block";
-
+    if (showSelectedTopicBox === 1) {
+      document.getElementById("subjectTableContainer").style.display = "block";
+    }
+    
     getRecommendedTopics(response).then((result: string[]) => {
 
       if (location.pathname === "/recommendations.html") {
@@ -193,17 +197,19 @@ function getRandomNumbersNoRepetition(min: number, max: number) : number[] {
 
 // Displays list of selected topics to the screen.
 // Will only display the 8 most recently searched topics.
-function topicManager(topics: string[]) : void {
+function topicManager(topics: string[]) : number {
   var table = document.getElementById('subjectTable') as HTMLTableElement;
   var i = 0 ; 
   var size = topics.length;
-  if (size === 0) {
-    return;
+ 
+  if (size === undefined) {
+    return 0;
   }
   topics.forEach((topic: string) => {
     createSelectedTopic(topic, table);
     i++;
   });
+  return 1;
 }
 
 function createSelectedTopic(topic: string, table: HTMLTableElement) {

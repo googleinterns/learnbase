@@ -16,12 +16,15 @@ if (location.pathname === "/search.html") {
 // them on the webpage.
 window.onload = function getTopics() {
     var loggedIn = userStatus();
+    var showSelectedTopicBox;
     fetch('/topics').then(response => response.json()).then((response) => {
         console.log(response);
         if (location.pathname === "/search.html" || location.pathname === "/recommendations.html") {
-            topicManager(response);
+            showSelectedTopicBox = topicManager(response);
         }
-        document.getElementById("subjectTableContainer").style.display = "block";
+        if (showSelectedTopicBox === 1) {
+            document.getElementById("subjectTableContainer").style.display = "block";
+        }
         getRecommendedTopics(response).then((result) => {
             if (location.pathname === "/recommendations.html") {
                 if (result.length === 0) {
@@ -178,13 +181,14 @@ function topicManager(topics) {
     var table = document.getElementById('subjectTable');
     var i = 0;
     var size = topics.length;
-    if (size === 0) {
-        return;
+    if (size === undefined) {
+        return 0;
     }
     topics.forEach((topic) => {
         createSelectedTopic(topic, table);
         i++;
     });
+    return 1;
 }
 function createSelectedTopic(topic, table) {
     var newRow = table.insertRow(0);
