@@ -48,6 +48,7 @@ public class TopicServlet extends HttpServlet{
         }
 
         while (topics.length() > 0 && topics.substring(0,1).equals(",")){
+          //Clears commas from the beginning of the topics string to avoid blank topics
             try{
                 if (topics.length() > 1){
                     topics = topics.substring(1);
@@ -59,7 +60,7 @@ public class TopicServlet extends HttpServlet{
                     response.getWriter().println("{}");
                     return;
                 }
-            } catch (Exception e){
+            } catch (Exception e){ 
                 topics = "";
                 entity.setProperty("topics", topics);
                 datastore.put(entity); 
@@ -94,12 +95,12 @@ public class TopicServlet extends HttpServlet{
         }
 
         String topic = request.getParameter("topic").trim().replaceAll(" +", " ").toLowerCase();
-	String topicName = topic+"topic";
+	      String topicName = topic+"topic";
         String iteratorName = topic+"iterator";
-	String advanced = "advanced"+topic;
+	      String advanced = "advanced"+topic;
 
         String topics = (String) entity.getProperty("topics"); 
-	if (topics.contains(topic)) {
+	      if (topics.contains(topic)) {
           List<String> listOfTopics = new ArrayList<String>();
           String str[] = topics.split(",");
           for (int i = 0; i < str.length; i++) {
@@ -119,7 +120,7 @@ public class TopicServlet extends HttpServlet{
             topics += topic;
           }
           entity.setProperty("topics", topics);
-	  datastore.put(entity);
+	        datastore.put(entity);
           response.sendRedirect("/search.html");
           return;
        }
