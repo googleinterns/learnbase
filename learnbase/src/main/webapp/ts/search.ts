@@ -74,11 +74,12 @@ function displayRecommendedTopics(recommended : string[], selectedTopics : Set<s
       cell.addEventListener('click', () => {
         topic = topic.replace("_", " ")
         const params = new URLSearchParams(); 
-        params.append("topic", topic)
-        fetch('/topics', {method: 'POST', body: params});
-        createSelectedTopic(topic, document.getElementById('subjectTable') as HTMLTableElement);
-        location.reload();
-        location.reload();
+        params.append("topic", topic);
+        fetch('/topics', {method: 'POST', body: params}).then(() => {
+          createSelectedTopic(topic, document.getElementById('subjectTable') as HTMLTableElement);
+          location.reload();
+        });
+      
       });
       
       cell.style.fontSize = "18px";

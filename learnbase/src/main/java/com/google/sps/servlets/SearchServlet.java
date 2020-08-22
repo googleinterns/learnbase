@@ -80,7 +80,7 @@ public class SearchServlet extends HttpServlet {
           urls = getSearch(advancedTopic);
           if(urls.isEmpty()) {
                   topicsInfo.add(0, "No more info for this topic!");
-            topicsInfo.add(0, "<h1>"+topic+":</h1>");
+            topicsInfo.add(0, "<h1>"+topic.toUpperCase()+":</h1>");
             continue;
                 }
           iterator = "0";

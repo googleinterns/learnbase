@@ -74,10 +74,10 @@ function displayRecommendedTopics(recommended, selectedTopics) {
                 topic = topic.replace("_", " ");
                 const params = new URLSearchParams();
                 params.append("topic", topic);
-                fetch('/topics', { method: 'POST', body: params });
-                createSelectedTopic(topic, document.getElementById('subjectTable'));
-                location.reload();
-                location.reload();
+                fetch('/topics', { method: 'POST', body: params }).then(() => {
+                    createSelectedTopic(topic, document.getElementById('subjectTable'));
+                    location.reload();
+                });
             });
             cell.style.fontSize = "18px";
             cell.innerHTML = capital_letter(topic.toLowerCase().replace("_", " "));
