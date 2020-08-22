@@ -29,12 +29,16 @@ public class EmailController extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    //This doGet is called once every 10 minutes 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Date d = new Date(); 
     int hour = d.getHours();
     int minute = d.getMinutes();
+    //Current time frame 
+
     Query q;
-    if (minute < 5){
+
+    if (minute < 5){ //If current time is less than 5, check the previous hour 
       if (hour == 0){
         q = new Query("UserInfo")
           .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, 23));
@@ -50,10 +54,12 @@ public class EmailController extends HttpServlet {
         int entityMinute = em.intValue();
         if (entityMinute >= 55){
           sendEmail((String) entity.getProperty("mail"), entity);
+	        SearchServlet searchServlet = new SearchServlet();
+	        searchServlet.changeIterator();
         }
       }
     }
-    else{
+    else{ 
       q = new Query("UserInfo")
         .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, hour));
       PreparedQuery pq = datastore.prepare(q);
@@ -61,7 +67,8 @@ public class EmailController extends HttpServlet {
         Long em = (Long) entity.getProperty("minute");
         int entityMinute = em.intValue();
         if (minute-5 <= entityMinute && entityMinute < minute){
-          sendEmail((String) entity.getProperty("mail"), entity); 
+          SearchServlet searchServlet = new SearchServlet();
+          searchServlet.changeIterator();
         }
       }
     }
@@ -98,9 +105,9 @@ public class EmailController extends HttpServlet {
   private String buildHTML (Entity entity){   
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
+    //Replaced arraylist of topic urls with a string to be served at html
     String html = "You can either visit the sites listed below or you can visit the " +
       " <a href=\"learnbase-step-2020.appspot.com/info.html\"> Learnbase Info Page</a>";
-    
     String topics = (String) entity.getProperty("topics");
     
 
