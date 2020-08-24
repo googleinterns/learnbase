@@ -74,6 +74,8 @@ function displayRecommendedTopics(recommended, selectedTopics) {
                 topic = topic.replace("_", " ");
                 const params = new URLSearchParams();
                 params.append("topic", topic);
+                document.getElementById("loader").style.display = "block";
+                document.getElementById("recommended-topics").style.display = "none";
                 fetch('/topics', { method: 'POST', body: params }).then(() => {
                     createSelectedTopic(topic, document.getElementById('subjectTable'));
                     location.reload();
