@@ -71,7 +71,7 @@ public class SearchServlet extends HttpServlet {
       //Move to an advanced search
       //If there are no more urls in the advanced search 
       //print that there is no more info for the topic 
-      if (iteratorNum > urls.size()) {
+      if (iteratorNum >= urls.size()) {
         if (advanced) {
           topicsInfo.add(0, "No more info for this topic!");
           topicsInfo.add(0, "<h1>"+topic.toUpperCase()+"</h1>");
