@@ -106,29 +106,29 @@ public class SearchServlet extends HttpServlet {
 
   }
 
- // public void changeIterator() {
- //   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
- //   UserService userService = UserServiceFactory.getUserService();
- //   User user = userService.getCurrentUser();
- //   String userId = user.getUserId();
- //   Query query = 
- //     new Query("UserInfo")
- //     .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
-  //  PreparedQuery results = datastore.prepare(query);
-  //  Entity entity = results.asSingleEntity();
+ public void changeIterator() {
+   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+   UserService userService = UserServiceFactory.getUserService();
+   User user = userService.getCurrentUser();
+   String userId = user.getUserId();
+   Query query = 
+     new Query("UserInfo")
+     .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+   PreparedQuery results = datastore.prepare(query);
+   Entity entity = results.asSingleEntity();
 
- //   String topics = (String) entity.getProperty("topics");
- //   String[] topicsArray = topics.split(",");
- //   for(String topic : topicsArray) {
- //     String iteratorName = topic+"iterator";
- //     String iterator = (String) entity.getProperty(iteratorName);
- //     System.out.println(topic + " iterator in change iterator: " + iterator);
-//      iterator = Integer.toString(Integer.parseInt(iterator)+1);
- //     System.out.println("After iteration: " + iterator);
- //     entity.setProperty(iteratorName, iterator);
-//    }
- //   datastore.put(entity);
- // }
+   String topics = (String) entity.getProperty("topics");
+   String[] topicsArray = topics.split(",");
+   for(String topic : topicsArray) {
+     String iteratorName = topic+"iterator";
+     String iterator = (String) entity.getProperty(iteratorName);
+     System.out.println(topic + " iterator in change iterator: " + iterator);
+     iterator = Integer.toString(Integer.parseInt(iterator)+1);
+     System.out.println("After iteration: " + iterator);
+     entity.setProperty(iteratorName, iterator);
+   }
+   datastore.put(entity);
+ }
   
   //Gets the info off a page for a given url 
  // private String getInfo(ArrayList<String> urls, String currentUrl) throws IOException {
