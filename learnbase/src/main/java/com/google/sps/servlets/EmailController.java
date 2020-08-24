@@ -54,8 +54,8 @@ public class EmailController extends HttpServlet {
         int entityMinute = em.intValue();
         if (entityMinute >= 55){
           sendEmail((String) entity.getProperty("mail"), entity);
-	        SearchServlet searchServlet = new SearchServlet();
-	        searchServlet.changeIterator();
+	       // SearchServlet searchServlet = new SearchServlet();
+	        //searchServlet.changeIterator();
         }
       }
     }
@@ -67,8 +67,9 @@ public class EmailController extends HttpServlet {
         Long em = (Long) entity.getProperty("minute");
         int entityMinute = em.intValue();
         if (minute-5 <= entityMinute && entityMinute < minute){
-          SearchServlet searchServlet = new SearchServlet();
-          searchServlet.changeIterator();
+	  sendEmail((String) entity.getProperty("mail"), entity);
+          //SearchServlet searchServlet = new SearchServlet();
+          //searchServlet.changeIterator();
         }
       }
     }
