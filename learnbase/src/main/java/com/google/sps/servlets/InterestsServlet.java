@@ -32,8 +32,8 @@ public class InterestsServlet extends HttpServlet{
       User user = userService.getCurrentUser();
       String userId = user.getUserId();
       Query query = 
-      new Query("UserInfo")
-      .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+        new Query("UserInfo")
+          .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
       PreparedQuery results = datastore.prepare(query);
       Entity entity = results.asSingleEntity();
       String topics = (String) entity.getProperty("topics");
@@ -41,7 +41,7 @@ public class InterestsServlet extends HttpServlet{
       String[] topicsArray = topics.split(",");
       for (String topic : topicsArray) {
         String topicOutput = "<p>" + topic + "</p>";
-	topicsOutput.add(topicOutput);
+	      topicsOutput.add(topicOutput);
       }
 
       response.setContentType("application/json;");
@@ -49,5 +49,4 @@ public class InterestsServlet extends HttpServlet{
       response.getWriter().println(gson.toJson(topicsOutput));
     }
   }
-
 }

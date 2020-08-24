@@ -35,8 +35,8 @@ public class SearchServlet extends HttpServlet {
     User user = userService.getCurrentUser();
     String userId = user.getUserId();
     Query query = 
-      new Query("UserInfo")
-      .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+        new Query("UserInfo")
+        .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
    
@@ -77,14 +77,14 @@ public class SearchServlet extends HttpServlet {
           topicsInfo.add(0, "<h1>"+topic.toUpperCase()+"</h1>");
           continue;
         } else {
-                System.out.println("advanced");
-                String advancedTopic = "advanced"+topic;
+          System.out.println("advanced");
+          String advancedTopic = "advanced"+topic;
           urls = getSearch(advancedTopic);
           if(urls.isEmpty()) {
-                  topicsInfo.add(0, "No more info for this topic!");
+            topicsInfo.add(0, "No more info for this topic!");
             topicsInfo.add(0, "<h1>"+topic.toUpperCase()+":</h1>");
             continue;
-                }
+          }
           iterator = "0";
           iteratorNum = 0;
           entity.setProperty(advancedTopic, true);
@@ -112,8 +112,8 @@ public class SearchServlet extends HttpServlet {
    User user = userService.getCurrentUser();
    String userId = user.getUserId();
    Query query = 
-     new Query("UserInfo")
-     .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+        new Query("UserInfo")
+        .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
    PreparedQuery results = datastore.prepare(query);
    Entity entity = results.asSingleEntity();
 
@@ -130,7 +130,7 @@ public class SearchServlet extends HttpServlet {
    datastore.put(entity);
  }
   
-  //Gets the info off a page for a given url 
+//Gets the info off a page for a given url 
  // private String getInfo(ArrayList<String> urls, String currentUrl) throws IOException {
  //   String info = "";
  //   int currentUrlNum = Integer.parseInt(currentUrl);
@@ -157,27 +157,27 @@ public class SearchServlet extends HttpServlet {
     Elements results = doc.select("a[href]:has(span)").select("a[href]:not(:has(div))");
 
     for (Element result : results) {
-        String linkHref = result.attr("href");
-        String linkText = result.text();
-        if (linkHref.contains("https")) {
-          String url = linkHref.substring(7, linkHref.indexOf("&"));
-	  System.out.println(url);
-	  if("/www.google.com/search?num=20".equals(url)) {
-            continue;
-	  }
-	  URL obj = new URL(url);
-	  URLConnection conn = obj.openConnection();
-	  Map<String, List<String>> map = conn.getHeaderFields();
-	  boolean noIFrame = false;
-	  for(Map.Entry<String, List<String>> entry : map.entrySet()) {
- 	    String key = entry.getKey();
-	    if("X-Frame-Options".equals(key)) { 
-              noIFrame = true;
-	    }
+      String linkHref = result.attr("href");
+      String linkText = result.text();
+      if (linkHref.contains("https")) {
+        String url = linkHref.substring(7, linkHref.indexOf("&"));
+    	  System.out.println(url);
+	      if("/www.google.com/search?num=20".equals(url)) {
+          continue;
+	      }
+        URL obj = new URL(url);
+        URLConnection conn = obj.openConnection();
+        Map<String, List<String>> map = conn.getHeaderFields();
+        boolean noIFrame = false;
+        for(Map.Entry<String, List<String>> entry : map.entrySet()) {
+          String key = entry.getKey();
+          if("X-Frame-Options".equals(key)) { 
+            noIFrame = true;
           }
-	  if(!noIFrame) {
-            urls.add(url);
-	  }
+        }
+        if(!noIFrame) {
+          urls.add(url);
+        }
       } 
     }
     return urls; 

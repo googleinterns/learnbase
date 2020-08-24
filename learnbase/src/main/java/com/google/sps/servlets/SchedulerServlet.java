@@ -25,61 +25,61 @@ public class SchedulerServlet extends HttpServlet{
   @Override 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
       
-      //This servlet controls the user's chosen time to recieve emails 
+    //This servlet controls the user's chosen time to recieve emails 
 
-      TimeZone timeZone = TimeZone.getDefault();
-      int offset = -(int) ((timeZone.getOffset( System.currentTimeMillis())/(1000*60*60)));
+    TimeZone timeZone = TimeZone.getDefault();
+    int offset = -(int) ((timeZone.getOffset( System.currentTimeMillis())/(1000*60*60)));
 
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      UserService userService = UserServiceFactory.getUserService(); 
-      User user = userService.getCurrentUser();
-      String userId = user.getUserId(); 
-      Query query = 
-      new Query("UserInfo")
-      .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
-      PreparedQuery results = datastore.prepare(query); 
-      Entity entity = results.asSingleEntity();     
-      String hour = entity.getProperty("hour").toString();
-      String minute = entity.getProperty("minute").toString();
-      if (minute.equals("0")){
-        minute += "0";
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    UserService userService = UserServiceFactory.getUserService(); 
+    User user = userService.getCurrentUser();
+    String userId = user.getUserId(); 
+    Query query = 
+    new Query("UserInfo")
+    .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+    PreparedQuery results = datastore.prepare(query); 
+    Entity entity = results.asSingleEntity();     
+    String hour = entity.getProperty("hour").toString();
+    String minute = entity.getProperty("minute").toString();
+    if (minute.equals("0")){
+      minute += "0";
+    }
+    else if(Integer.parseInt(minute) <10){
+      minute = "0" + minute; 
+    }
+    String recordedTime = hour + ":" + minute;
+    System.out.println("Time recorded: " + recordedTime);
+    String newTime = "";
+    newTime = request.getParameter("time");
+    if (newTime != null && !newTime.isEmpty()){
+      String[] time = newTime.split(":");
+      System.out.println("Offset: " + offset);
+      int newHour = Integer.parseInt(time[0])+offset;
+      if (newHour >= 24){
+        newHour -=24;
       }
-      else if(Integer.parseInt(minute) <10){
-        minute = "0" + minute; 
+      if (newHour < 0){
+        newHour += 24;
       }
-      String recordedTime = hour + ":" + minute;
-      System.out.println("Time recorded: " + recordedTime);
-      String newTime = "";
-      newTime = request.getParameter("time");
-      if (newTime != null && !newTime.isEmpty()){
-        String[] time = newTime.split(":");
-        System.out.println("Offset: " + offset);
-        int newHour = Integer.parseInt(time[0])+offset;
-        if (newHour >= 24){
-          newHour -=24;
-        }
-        if (newHour < 0){
-          newHour += 24;
-        }
-        entity.setProperty("hour", newHour);
-        entity.setProperty("minute", Integer.parseInt(time[1]));
-        entity.setProperty("offset", offset); 
-        datastore.put(entity); 
+      entity.setProperty("hour", newHour);
+      entity.setProperty("minute", Integer.parseInt(time[1]));
+      entity.setProperty("offset", offset); 
+      datastore.put(entity); 
 
-      } else {
-        String[] time = recordedTime.split(":");
-        int newHour = (Integer.parseInt(time[0]) - offset); 
-          if (newHour >= 24){
-          newHour -=24;
-        }
-        if (newHour < 0){
-          newHour += 24;
-        }
-        newTime = newHour + ":"+time[1];
+    } else {
+      String[] time = recordedTime.split(":");
+      int newHour = (Integer.parseInt(time[0]) - offset); 
+      if (newHour >= 24){
+        newHour -=24;
       }
-    
-      response.getWriter().println(newTime);
-      System.out.println("Printed " + newTime);
+      if (newHour < 0){
+        newHour += 24;
+      }
+      newTime = newHour + ":"+time[1];
+    }
+  
+    response.getWriter().println(newTime);
+    System.out.println("Printed " + newTime);
   }
 
 
