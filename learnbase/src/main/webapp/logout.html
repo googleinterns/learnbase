@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnBase</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script> 
+  <script type="module" src="js/main.js"></script>
+</head>
+
+<body>
+  <div class="topnav" id="myTopnav">
+    <a href="index.html">Login</a>
+    <a href="search.html">Search</a>
+    <a href="info.html">Info</a>
+    <a href="recommendations.html">Recommendations</a>
+    <a href="javascript:void(0);" class="icon" onclick="pageChanger()">
+	    <i class="fa fa-bars"></i>
+    </a> 
+  </div>
+  <div class="mainInfo">
+    <div class="loginArea">
+      <div id="user-page-content">
+        <h1>Here is the page to delete your account</h1>
+        <p>We're sad to see you go, but we hope you enjoyed Learnbase while you here here! Click the button below to confirm account deletion.</p>
+        <form action="/userLogin" method="POST">
+          <label for="deleteButton">Once clicked, there is no going back:</label>
+          <button type="submit" id="deleteButton">Delete?</button>    
+        </form>
+      </div>
+    </div>
+</div>
+</body>
+
+</html>
