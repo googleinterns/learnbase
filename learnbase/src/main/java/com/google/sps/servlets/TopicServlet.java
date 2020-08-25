@@ -27,16 +27,17 @@ import java.net.URLConnection;
 public class TopicServlet extends HttpServlet{
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{      
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    
     response.setContentType("application/json;");
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserService userService = UserServiceFactory.getUserService(); 
     User user = userService.getCurrentUser();
     String userId = user.getUserId(); 
-    Query query = 
-    new Query("UserInfo")
-    .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+
+    Query query =  new Query("UserInfo")
+        .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
     PreparedQuery results = datastore.prepare(query); 
     Entity entity = results.asSingleEntity(); 
     String topics = (String) entity.getProperty("topics"); 
@@ -46,9 +47,9 @@ public class TopicServlet extends HttpServlet{
       return;
     }
 
-    while (topics.length() > 0 && topics.substring(0,1).equals(",")){
-    //Clears commas from the beginning of the topics string to avoid blank topics
-      try{
+    while (topics.length() > 0 && topics.substring(0,1).equals(",")) {
+      //Clears commas from the beginning of the topics string to avoid blank topics
+      try {
         if (topics.length() > 1){
           topics = topics.substring(1);
         }
@@ -59,7 +60,7 @@ public class TopicServlet extends HttpServlet{
           response.getWriter().println("{}");
           return;
         }
-      } catch (Exception e){ 
+      } catch (Exception e) { 
         topics = "";
         entity.setProperty("topics", topics);
         datastore.put(entity); 
@@ -67,6 +68,7 @@ public class TopicServlet extends HttpServlet{
         response.getWriter().println("{}");
         return;
       }
+
     }
     String [] listedTopics = topics.split(",");
     for (int i = 0; i < listedTopics.length; i++){
@@ -123,10 +125,9 @@ public class TopicServlet extends HttpServlet{
       return;
     }
     ArrayList<String> urls = getSearch(topic);
-        
     if (topics.equals("")){
       entity.setProperty("topics", topic);
-    }  else {
+    } else {
       topics += ",";
       topics += topic;
       entity.setProperty("topics", topics);
@@ -166,7 +167,7 @@ public class TopicServlet extends HttpServlet{
         String url = linkHref.substring(7, linkHref.indexOf("&"));
         if("/www.google.com/search?num=20".equals(url)) {
           continue;
-        }
+	      }
         URL obj = new URL(url);
         URLConnection conn = obj.openConnection();
         Map<String, List<String>> map = conn.getHeaderFields();
