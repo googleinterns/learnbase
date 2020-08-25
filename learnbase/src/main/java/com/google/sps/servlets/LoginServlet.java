@@ -44,8 +44,8 @@ public class LoginServlet extends HttpServlet {
     User user = userService.getCurrentUser();
     String userId = user.getUserId();
     Query query = 
-    new Query("UserInfo")
-    .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+      new Query("UserInfo")
+      .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
     String topics = (String) entity.getProperty("topics");
@@ -55,11 +55,11 @@ public class LoginServlet extends HttpServlet {
       String[] words_topic = topic.split(" ");
       String topicOutput = "<p>";
       for (String word : words_topic) {
-	if(word.length() == 1) {
+        if(word.length() == 1) {
           topicOutput += word.substring(0,1).toUpperCase();
-	  continue;
-	}
-	if(word.length() == 0) {
+          continue;
+        }
+        if(word.length() == 0) {
           continue;
         }
         topicOutput+= word.substring(0,1).toUpperCase() + word.substring(1) + " ";
@@ -86,7 +86,7 @@ public class LoginServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
     if(entity == null) {
- 	return null;
+     	return null;
     }
     String nickname = (String) entity.getProperty("nickname");
     return nickname;

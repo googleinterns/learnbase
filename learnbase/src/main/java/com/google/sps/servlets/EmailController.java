@@ -44,7 +44,6 @@ public class EmailController extends HttpServlet {
           .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, 23));
       }
       else{
-
         q = new Query("UserInfo")
           .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, hour-1));
       }
@@ -67,7 +66,7 @@ public class EmailController extends HttpServlet {
         Long em = (Long) entity.getProperty("minute");
         int entityMinute = em.intValue();
         if (minute-5 <= entityMinute && entityMinute < minute){
-	  sendEmail((String) entity.getProperty("mail"), entity);
+      	  sendEmail((String) entity.getProperty("mail"), entity);
           //SearchServlet searchServlet = new SearchServlet();
           //searchServlet.changeIterator();
         }

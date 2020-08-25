@@ -44,8 +44,21 @@ public class RecommendationsServlet extends HttpServlet {
     if (!wordCache.containsKey(topic)) {
       words2vecs = (HashMap<String, ArrayList<Double>>) gson.fromJson(new FileReader("model/word_embedding.json"), words2vecs.getClass());
       HashSet<String> omittedWords = new HashSet<String>(
-          Arrays.asList("lecture_notes", "tutorial", "introductory", "textbook", "mathematical", 
-          "scientific", "study", "algorithmic", "interdisciplinary", "massachusetts_institute", "analytical", "theoretical", "logical"));
+          Arrays.asList(
+            "lecture_notes", 
+            "tutorial", 
+            "introductory", 
+            "textbook", 
+            "mathematical",
+            "scientific", 
+            "study", 
+            "algorithmic", 
+            "interdisciplinary", 
+            "massachusetts_institute", 
+            "analytical", 
+            "theoretical", 
+            "logical")
+        );
       
       for (String word : omittedWords) {
         words2vecs.remove(word);

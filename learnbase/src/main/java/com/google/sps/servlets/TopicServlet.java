@@ -35,6 +35,7 @@ public class TopicServlet extends HttpServlet{
     UserService userService = UserServiceFactory.getUserService(); 
     User user = userService.getCurrentUser();
     String userId = user.getUserId(); 
+
     Query query =  new Query("UserInfo")
         .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
     PreparedQuery results = datastore.prepare(query); 
@@ -124,7 +125,6 @@ public class TopicServlet extends HttpServlet{
       return;
     }
     ArrayList<String> urls = getSearch(topic);
-          
     if (topics.equals("")){
       entity.setProperty("topics", topic);
     } else {
