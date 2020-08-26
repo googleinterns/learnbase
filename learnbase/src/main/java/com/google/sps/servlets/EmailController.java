@@ -35,49 +35,41 @@ public class EmailController extends HttpServlet {
     int hour = d.getHours();
     int minute = d.getMinutes();
     //Current time frame 
-
     Query q;
 
-    if (minute < 5){ //If current time is less than 5, check the previous hour 
-      if (hour == 0){
+    if (minute < 5) { //If current time is less than 5, check the previous hour 
+      if (hour == 0) {
         q = new Query("UserInfo")
-          .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, 23));
-      }
-      else{
-
+            .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, 23));
+      } else {
         q = new Query("UserInfo")
-          .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, hour-1));
+            .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, hour-1));
       }
       PreparedQuery pq = datastore.prepare(q);
-      for (Entity entity: pq.asIterable()){
+      for (Entity entity: pq.asIterable()) {
         Long em = (Long) entity.getProperty("minute");
         int entityMinute = em.intValue();
-        if (entityMinute >= 55){
+        if (entityMinute >= 55) {
           sendEmail((String) entity.getProperty("mail"), entity);
-	       // SearchServlet searchServlet = new SearchServlet();
-	        //searchServlet.changeIterator();
         }
       }
-    }
-    else{ 
+    } else { 
       q = new Query("UserInfo")
-        .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, hour));
+          .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, hour));
       PreparedQuery pq = datastore.prepare(q);
-      for (Entity entity: pq.asIterable()){
+      for (Entity entity: pq.asIterable()) {
         Long em = (Long) entity.getProperty("minute");
         int entityMinute = em.intValue();
-        if (minute-5 <= entityMinute && entityMinute < minute){
+        if (minute-5 <= entityMinute && entityMinute < minute) {
 	  sendEmail((String) entity.getProperty("mail"), entity);
-          //SearchServlet searchServlet = new SearchServlet();
-          //searchServlet.changeIterator();
         }
       }
     }
     response.getWriter().println(200);
   }
 
-  private String decryptEmail (String email){
-    try{
+  private String decryptEmail (String email) {
+    try {
       Signature sign = Signature.getInstance("SHA256withRSA");
       KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
       keyPairGen.initialize(2048);
@@ -85,32 +77,30 @@ public class EmailController extends HttpServlet {
       PublicKey publicKey = pair.getPublic();  
       Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
       byte[] cipherText = email.getBytes();
-
       cipher.init(Cipher.DECRYPT_MODE, pair.getPrivate());
       byte[] decipheredText = cipher.doFinal(cipherText);
       return new String (decipheredText); 
-    } catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
       return "failed";
     }
-  
   }
 
-  private void sendEmail(String email, Entity entity){
+  private void sendEmail(String email, Entity entity) {
     EmailHandler handler = new EmailHandler();
-    String plaintext = "Welcome to your daily Learnbase email! Look below to find info on topics you've selected! ";
+    String plaintext = 
+        "Welcome to your daily Learnbase email! Look below to find info on topics you've selected! ";
     String html = buildHTML(entity);
     handler.sendPlainAndHTML(email, plaintext, html);
   }
 
-  private String buildHTML (Entity entity){   
+  private String buildHTML (Entity entity) {   
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     //Replaced arraylist of topic urls with a string to be served at html
     String html = "You can either visit the sites listed below or you can visit the " +
       " <a href=\"learnbase-step-2020.appspot.com/info.html\"> Learnbase Info Page</a>";
     String topics = (String) entity.getProperty("topics");
-    
 
     if (topics.trim().equals("")) {
       ArrayList<String> topicsInfo = new ArrayList<>();
@@ -139,13 +129,13 @@ public class EmailController extends HttpServlet {
           System.out.println("advanced");
           String advancedTopic = "advanced"+topic;
           SearchServlet searcher= new SearchServlet();
-          try{
+          try {
             urls = searcher.getSearch(advancedTopic);
             if(urls.isEmpty()) {
               html += "<br>" + "<h2>"+topic.toUpperCase()+"</h2>" + "<br> No more info for this topic!";
               continue;
             }
-          } catch (Exception e){
+          } catch (Exception e) {
             e.printStackTrace();
           }
           iterator = "0";
@@ -153,11 +143,12 @@ public class EmailController extends HttpServlet {
           entity.setProperty(advancedTopic, true);
           entity.setProperty(topicName, urls);
         }
-	      System.out.println(urls);
+	System.out.println(urls);
       }
       String url = urls.get(iteratorNum);
       String info = "<iframe src=\"" + url + "\" style=\"height:600px;width:80%;\"></iframe>"; 
-      html += "<br>" + "<h2>"+topic.toUpperCase()+"</h2>" + "<br> <a href=\"" + url + "\">Daily info</a>";
+      html += 
+          "<br>" + "<h2>"+topic.toUpperCase()+"</h2>" + "<br> <a href=\"" + url + "\">Daily info</a>";
 
       //Increment iterator so that the next day they get new info 
       iterator = Integer.toString(Integer.parseInt(iterator)+1);
@@ -166,5 +157,4 @@ public class EmailController extends HttpServlet {
     datastore.put(entity);
     return html;
   }
-
 }

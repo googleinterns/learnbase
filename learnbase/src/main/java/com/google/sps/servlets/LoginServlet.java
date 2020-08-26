@@ -21,8 +21,9 @@ public class LoginServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
     response.setContentType("text/html");
-
-    if(!userService.isUserLoggedIn()){
+    
+    // If user is not logged in, return the login button 
+    if (!userService.isUserLoggedIn()) {
       String urlRedirectLogin = "/index.html";
       String loginUrl = userService.createLoginURL(urlRedirectLogin);
 
@@ -32,34 +33,37 @@ public class LoginServlet extends HttpServlet {
     }
 
     String nickname = getUserNickname(userService.getCurrentUser().getUserId());
-    if(nickname == null) {
+    
+    // Check if user has a nickname, and if not, redirect to the nickname page
+    if (nickname == null) {
       response.sendRedirect("/nickname");
       return;
     }
 
-    //String userEmail = userService.getCurrentUser().getEmail();
     String urlRedirectLogout = "/index.html";
     String logoutUrl = userService.createLogoutURL(urlRedirectLogout);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     User user = userService.getCurrentUser();
     String userId = user.getUserId();
     Query query = 
-    new Query("UserInfo")
-    .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+        new Query("UserInfo")
+        .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
     String topics = (String) entity.getProperty("topics");
     String topicsOutput = "";
     String[] topicsArray = topics.split(",");
+    
+    // For each topic the user already has, print add them to the list of things to print
     for (String topic : topicsArray) {
       String[] words_topic = topic.split(" ");
       String topicOutput = "<p>";
       for (String word : words_topic) {
-	if(word.length() == 1) {
+	if (word.length() == 1) {
           topicOutput += word.substring(0,1).toUpperCase();
 	  continue;
-	}
-	if(word.length() == 0) {
+	} 
+	if (word.length() == 0) {
           continue;
         }
         topicOutput+= word.substring(0,1).toUpperCase() + word.substring(1) + " ";
@@ -68,6 +72,7 @@ public class LoginServlet extends HttpServlet {
       topicsOutput += topicOutput;
     }
     
+    // Print to the screen a welcome message, logout button, and the users topics 
     response.getWriter().println("<h1>Welcome " + nickname  + "!</h1>");
     response.getWriter().println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
     if (topicsOutput.equals("") || topicsOutput.equals("<p></p>")) {
@@ -78,14 +83,15 @@ public class LoginServlet extends HttpServlet {
     }
   }
 
+  // Gets the users chosen nickname 
   private String getUserNickname(String id) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = 
-	    new Query("UserInfo")
-	    .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
+        new Query("UserInfo")
+	.setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
-    if(entity == null) {
+    if (entity == null) {
  	return null;
     }
     String nickname = (String) entity.getProperty("nickname");
