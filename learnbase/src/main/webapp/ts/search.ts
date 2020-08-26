@@ -272,8 +272,10 @@ function timeChangeReveal() {
 function timeChange(){
   console.log("Button clicked");
   var timeContainer = document.getElementById("appt") as HTMLInputElement;
+  var emailOption = document.getElementById("yn") as HTMLSelectElement;
   var time = timeContainer.value; 
-  var url = "/scheduler?time=" + time; 
+  var choice = emailOption.options[emailOption.selectedIndex].value;
+  var url = "/scheduler?time=" + time +"&optIn="+choice; 
   console.log(url);
   fetch(url).then(response => response.text()).then((response) =>{
     console.log(response);
