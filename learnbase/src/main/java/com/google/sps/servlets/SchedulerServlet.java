@@ -51,6 +51,8 @@ public class SchedulerServlet extends HttpServlet{
     System.out.println("Time recorded: " + recordedTime);
     String newTime = "";
     newTime = request.getParameter("time");
+    String option = request.getParameter("optIn");
+    entity.setProperty("optIn", option);
     if (newTime != null && !newTime.isEmpty()){
       String[] time = newTime.split(":");
       System.out.println("Offset: " + offset);
