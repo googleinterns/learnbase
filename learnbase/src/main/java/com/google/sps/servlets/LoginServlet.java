@@ -92,9 +92,27 @@ public class LoginServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
     if (entity == null) {
- 	return null;
+      return null;
     }
     String nickname = (String) entity.getProperty("nickname");
     return nickname;
+  }
+
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    UserService userService = UserServiceFactory.getUserService();
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    User user = userService.getCurrentUser();
+    String userId = user.getUserId();
+    Query query = 
+	    new Query("UserInfo")
+	    .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+    datastore.delete(entity.getKey());
+    String urlRedirectLogout = "/index.html";
+    String logoutUrl = userService.createLogoutURL(urlRedirectLogout);
+    response.sendRedirect(logoutUrl);
   }
 }

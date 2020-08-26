@@ -2,64 +2,69 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LearnBase</title>
-    <link rel="stylesheet" href="css/style.css">
-    <script type="module" src="js/main.js"></script>
-    <script type="module" src="js/search.js"></script>
-    <!--<script type="module" src="js/time.js"></script>-->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnBase</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/search.js"></script>
+  <!--<script type="module" src="js/time.js"></script>-->
 </head>
 
 <body id="body">
-    <div class="topnav" id="myTopnav">
-      <a href="index.html">Login</a>
-      <a class="active" href="search.html">Search</a>
-      <a href="info.html">Info</a>
-      <a href="recommendations.html">Recommendations</a>
-      <a href="javascript:void(0);" class="icon" onlick="pageChanger()">
-        <i class="fa fa-bars"></i>
-      </a>
+  <div class="topnav" id="myTopnav">
+    <a href="index.html">Login</a>
+    <a class="active" href="search.html">Search</a>
+    <a href="info.html">Info</a>
+    <a href="recommendations.html">Recommendations</a>
+    <a href="javascript:void(0);" class="icon" onlick="pageChanger()">
+      <i class="fa fa-bars"></i>
+    </a>
+  </div>
+  <div id="mainContent">
+    <div class="mainInfo">
+      <div class = "title">
+        <h1> Search </h1>
+          <p class="byline">Welcome to the LearnBase search page. In the search bar below, please insert
+                a word or phrase detailing a subject in which you are interested in learning about!
+          </p>
+      </div>
+      <div class="searchContainer">
+        <form action="/topics" method="POST">
+          <input type="text" id="topic" name="topic" class="balloon" placeholder="Search..">
+          <button type="submit" id="searchButton">Submit</button>    
+        </form>
+      </div>
+      <form id="currentTime">
+        <p>Your currently selected time (GMT) is: </p>
+        <p id="timeDisplay"></p>
+        <button id="timeChange" type="button">Change Time</button>
+      </form>
+
+      <div id = "selectTime">
+        <label for="appt">Select a time to recieve daily emails (GMT):</label>
+        <input type="time" id="appt" name="appt">
+        <br>
+        <label for="yn">Would you still like to recieve daily emails?</label>
+        <select name="yn" id="yn">
+          <option value="y">Yes</option>
+          <option value="n">No</option>
+        </select>
+        <br>
+        
+        <input id="submitButton" type="submit">
+      </div>
     </div>
-    <div id="mainContent">
-        <div class="mainInfo">
-            <div class = "title">
-                <h1> Search </h1>
-                <p class="byline">Welcome to the LearnBase search page. In the search bar below, please insert
-                    a word or phrase detailing a subject in which you are interested in learning about!
-                </p>
-            </div>
-            <div class="searchContainer">
-                <form action="/topics" method="POST">
-                    <input type="text" id="topic" name="topic" class="balloon" placeholder="Search..">
-                    <button type="submit" id="searchButton">Submit</button>    
-                </form>
-            </div>
-            
-            <form id="currentTime">
-                <p>Your currently selected time (GMT) is: </p>
-                <p id="timeDisplay"></p>
-                <button id="timeChange" type="button">Change Time</button>
-            </form>
-
-            <div id = "selectTime">
-                <label for="appt">Select a time to recieve daily emails (GMT):</label>
-                <input type="time" id="appt" name="appt">
-                <input id="submitButton" type="submit">
-            </div>
-        </div>
-        <div class="selectedSubjects">
-            <h2>Selected Topics</h2>
-            <br />
-            <div id="subjectTableContainer">
-                <table id="subjectTable" style="width:100%">
-                    <tr>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-
+    <div class="selectedSubjects">
+      <h2>Selected Topics</h2>
+      <br />
+      <div id="subjectTableContainer">
+        <table id="subjectTable" style="width:100%">
+          <tr>
+          </tr>
+        </table>
+      </div>
     </div>
+  </div>
 </body>
 </html>

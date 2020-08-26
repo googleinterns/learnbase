@@ -42,7 +42,7 @@ public class InterestsServlet extends HttpServlet{
       String[] topicsArray = topics.split(",");
       for (String topic : topicsArray) {
         String topicOutput = "<p>" + topic + "</p>";
-	topicsOutput.add(topicOutput);
+	      topicsOutput.add(topicOutput);
       }
 
       response.setContentType("application/json;");

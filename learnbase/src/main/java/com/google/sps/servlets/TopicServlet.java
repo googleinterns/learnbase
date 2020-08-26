@@ -27,7 +27,7 @@ import java.net.URLConnection;
 public class TopicServlet extends HttpServlet{
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -119,19 +119,19 @@ public class TopicServlet extends HttpServlet{
       return;
     }
     ArrayList<String> urls = getSearch(topic);
-    if (topics.equals("")) {
+    if (topics.equals("")){
       entity.setProperty("topics", topic);
     } else {
       topics += ",";
       topics += topic;
       entity.setProperty("topics", topics);
     }
-    datastore.put(entity); 
+    datastore.put(entity);
     entity.setProperty(topicName, urls);
     entity.setProperty(iteratorName, "0");
-    System.out.println(topicName + ": " + urls); 
+    System.out.println(topicName + ": " + urls);
     entity.setProperty(advanced, false);
-    String[] values = topics.split(",");
+    String[] values = topic.split(",");
     datastore.put(entity);
     String[] topicsArray = topics.split(",");
     for (String thisTopic : topicsArray) { 
