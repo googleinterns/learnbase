@@ -39,14 +39,14 @@ public class SearchServlet extends HttpServlet {
         .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
-   
     String topics = (String) entity.getProperty("topics");
     
     //If the user has not searched any topics yet, print that they have no topics
     if (topics.trim().equals("")) {
       Gson gson = new Gson();
       ArrayList<String> topicsInfo = new ArrayList<>();
-      topicsInfo.add("<h2>No topics yet! Search something you want to know more about to get info.</h2>");
+      topicsInfo
+          .add("<h2>No topics yet! Search something you want to know more about to get info.</h2>");
       response.getWriter().println(gson.toJson(topicsInfo));
       return;
     }
@@ -65,7 +65,6 @@ public class SearchServlet extends HttpServlet {
       Boolean advanced = (Boolean)entity.getProperty("advanced"+topic);
       System.out.println(advanced);
       System.out.println(topic + " iterator in search: " + iterator);
-
       
       //If there are no more urls for this topic, 
       //Move to an advanced search
@@ -90,11 +89,9 @@ public class SearchServlet extends HttpServlet {
           entity.setProperty(advancedTopic, true);
           entity.setProperty(topicName, urls);
         }
-	      System.out.println(urls);
+	System.out.println(urls);
       }
       String url = urls.get(iteratorNum);
-      //iterator = Integer.toString(Integer.parseInt(iterator)+1);
-      //System.out.println("After iteration: " + iterator);
       entity.setProperty(iteratorName, iterator);      
       String info = "<iframe src=\"" + url + "\" style=\"height:600px;width:80%;\"></iframe>"; 
       topicsInfo.add(0, info);
@@ -103,49 +100,9 @@ public class SearchServlet extends HttpServlet {
     datastore.put(entity);
     Gson gson = new Gson();
     response.getWriter().println(gson.toJson(topicsInfo));
-
   }
 
- public void changeIterator() {
-   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-   UserService userService = UserServiceFactory.getUserService();
-   User user = userService.getCurrentUser();
-   String userId = user.getUserId();
-   Query query = 
-        new Query("UserInfo")
-        .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
-   PreparedQuery results = datastore.prepare(query);
-   Entity entity = results.asSingleEntity();
-
-   String topics = (String) entity.getProperty("topics");
-   String[] topicsArray = topics.split(",");
-   for(String topic : topicsArray) {
-     String iteratorName = topic+"iterator";
-     String iterator = (String) entity.getProperty(iteratorName);
-     System.out.println(topic + " iterator in change iterator: " + iterator);
-     iterator = Integer.toString(Integer.parseInt(iterator)+1);
-     System.out.println("After iteration: " + iterator);
-     entity.setProperty(iteratorName, iterator);
-   }
-   datastore.put(entity);
- }
-  
-//Gets the info off a page for a given url 
- // private String getInfo(ArrayList<String> urls, String currentUrl) throws IOException {
- //   String info = "";
- //   int currentUrlNum = Integer.parseInt(currentUrl);
- //   String url = urls.get(currentUrlNum);
- //   System.out.println(url);
-
- //   Document doc = Jsoup.connect(url).get();
- //   Elements results = doc.select("p, a");
-
- //   for(Element result : results) {
- //     info = info + result.toString();
- //   }
- //   return info;
- // }
-
+  // Get the urls for a topic
   public ArrayList<String> getSearch(String topic) throws IOException {
     String google = "https://www.google.com/search";
     int num = 20;
@@ -161,23 +118,25 @@ public class SearchServlet extends HttpServlet {
       String linkText = result.text();
       if (linkHref.contains("https")) {
         String url = linkHref.substring(7, linkHref.indexOf("&"));
-    	  System.out.println(url);
-	      if("/www.google.com/search?num=20".equals(url)) {
+	System.out.println(url);
+	if ("/www.google.com/search?num=20".equals(url)) {
           continue;
-	      }
-        URL obj = new URL(url);
-        URLConnection conn = obj.openConnection();
-        Map<String, List<String>> map = conn.getHeaderFields();
-        boolean noIFrame = false;
-        for(Map.Entry<String, List<String>> entry : map.entrySet()) {
-          String key = entry.getKey();
-          if("X-Frame-Options".equals(key)) { 
+	}
+	URL obj = new URL(url);
+	URLConnection conn = obj.openConnection();
+	Map<String, List<String>> map = conn.getHeaderFields();
+	boolean noIFrame = false;
+	
+	//If the url does not allow for iframe, it is skipped 
+	for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+ 	  String key = entry.getKey();
+	  if ("X-Frame-Options".equals(key)) { 
             noIFrame = true;
-          }
+	  }
         }
-        if(!noIFrame) {
+	if (!noIFrame) {
           urls.add(url);
-        }
+	}
       } 
     }
     return urls; 

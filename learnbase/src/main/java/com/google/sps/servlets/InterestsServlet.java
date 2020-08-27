@@ -25,14 +25,15 @@ import java.util.*;
 public class InterestsServlet extends HttpServlet{
   
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserService userService =  UserServiceFactory.getUserService();
+    // If user is logged in, prints out their topics
     if (userService.isUserLoggedIn()) {
       User user = userService.getCurrentUser();
       String userId = user.getUserId();
       Query query = 
-        new Query("UserInfo")
+          new Query("UserInfo")
           .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
       PreparedQuery results = datastore.prepare(query);
       Entity entity = results.asSingleEntity();

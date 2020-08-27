@@ -31,8 +31,10 @@ public class NicknameServlet extends HttpServlet {
     response.setContentType("text/html");
     PrintWriter out = response.getWriter();
     out.println("<h1>Set Nicknames</h1>");
-
     UserService userService = UserServiceFactory.getUserService();
+
+    // If the user is logged in, give them a nickname form
+    // If the user is logged out, give them a login button 
     if (userService.isUserLoggedIn()) {
       String nickname = getUserNickname(userService.getCurrentUser().getUserId());
       out.println("<p>Set your nickname here:</p>");

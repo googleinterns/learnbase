@@ -27,51 +27,47 @@ import java.net.URLConnection;
 public class TopicServlet extends HttpServlet{
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
-    
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserService userService = UserServiceFactory.getUserService(); 
     User user = userService.getCurrentUser();
     String userId = user.getUserId(); 
-
-    Query query =  new Query("UserInfo")
+    Query query = 
+        new Query("UserInfo")
         .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
     PreparedQuery results = datastore.prepare(query); 
     Entity entity = results.asSingleEntity(); 
     String topics = (String) entity.getProperty("topics"); 
     System.out.println(topics);
-    if (topics.equals("")){
+    if (topics.equals("")) {
       response.getWriter().println("{}");
       return;
     }
 
     while (topics.length() > 0 && topics.substring(0,1).equals(",")) {
-      //Clears commas from the beginning of the topics string to avoid blank topics
+    //Clears commas from the beginning of the topics string to avoid blank topics
       try {
-        if (topics.length() > 1){
+        if (topics.length() > 1) {
           topics = topics.substring(1);
-        }
-        else{
-          topics = "";
-          entity.setProperty("topics", topics);
-          datastore.put(entity); 
-          response.getWriter().println("{}");
-          return;
+        } else {
+           topics = "";
+           entity.setProperty("topics", topics);
+           datastore.put(entity); 
+           response.getWriter().println("{}");
+           return;
         }
       } catch (Exception e) { 
         topics = "";
         entity.setProperty("topics", topics);
         datastore.put(entity); 
-
         response.getWriter().println("{}");
         return;
       }
-
-    }
+    }  
     String [] listedTopics = topics.split(",");
-    for (int i = 0; i < listedTopics.length; i++){
+    for (int i = 0; i < listedTopics.length; i++) {
       listedTopics[i] = listedTopics[i].substring(0,1).toUpperCase() + listedTopics[i].substring(1);
     }
     System.out.println(Arrays.toString(listedTopics));
@@ -85,20 +81,19 @@ public class TopicServlet extends HttpServlet{
     UserService userService = UserServiceFactory.getUserService(); 
     User user = userService.getCurrentUser();
     String userId = user.getUserId(); 
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("UserInfo").setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+    Query query = 
+        new Query("UserInfo")
+	.setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
     PreparedQuery results = datastore.prepare(query); 
     Entity entity = results.asSingleEntity(); 
-    if (entity == null){
+    if (entity == null) {
       response.sendRedirect("/search.html");
     }
-
     String topic = request.getParameter("topic").trim().replaceAll(" +", " ").toLowerCase();
     String topicName = topic+"topic";
     String iteratorName = topic+"iterator";
     String advanced = "advanced"+topic;
-
     String topics = (String) entity.getProperty("topics"); 
     if (topics.contains(topic)) {
       List<String> listOfTopics = new ArrayList<String>();
@@ -106,7 +101,6 @@ public class TopicServlet extends HttpServlet{
       for (int i = 0; i < str.length; i++) {
         listOfTopics.add(str[i]);
       }
-
       if (!listOfTopics.contains(topic)) {
         topics += ",";
         topics += topic;
@@ -114,8 +108,8 @@ public class TopicServlet extends HttpServlet{
         listOfTopics.remove(topic);
         topics = "";
         for (int i = 0; i < listOfTopics.size(); i++) {
-          topics += listOfTopics.get(i);
-          topics += ",";
+        topics += listOfTopics.get(i);
+        topics += ",";
         }
         topics += topic;
       }
@@ -132,12 +126,12 @@ public class TopicServlet extends HttpServlet{
       topics += topic;
       entity.setProperty("topics", topics);
     }
-    datastore.put(entity); 
+    datastore.put(entity);
     entity.setProperty(topicName, urls);
     entity.setProperty(iteratorName, "0");
-    System.out.println(topicName + ": " + urls); 
+    System.out.println(topicName + ": " + urls);
     entity.setProperty(advanced, false);
-    String[] values = topics.split(",");
+    String[] values = topic.split(",");
     datastore.put(entity);
     String[] topicsArray = topics.split(",");
     for (String thisTopic : topicsArray) { 
@@ -146,7 +140,6 @@ public class TopicServlet extends HttpServlet{
       System.out.println(thisTopic+ ": ");
       System.out.println(topicUrls);
     }
-
     response.sendRedirect("/search.html");
   }
  
@@ -164,26 +157,27 @@ public class TopicServlet extends HttpServlet{
       String linkHref = result.attr("href");
       String linkText = result.text();
       if (linkHref.contains("https")) {
-        String url = linkHref.substring(7, linkHref.indexOf("&"));
-        if("/www.google.com/search?num=20".equals(url)) {
+	String url = linkHref.substring(7, linkHref.indexOf("&"));
+	if ("/www.google.com/search?num=20".equals(url)) {
           continue;
-	      }
-        URL obj = new URL(url);
-        URLConnection conn = obj.openConnection();
-        Map<String, List<String>> map = conn.getHeaderFields();
-        boolean noIFrame = false;
-        for(Map.Entry<String, List<String>> entry : map.entrySet()) {
-          String key = entry.getKey();
-          if("X-Frame-Options".equals(key)) { 
+	}
+	URL obj = new URL(url);
+	URLConnection conn = obj.openConnection();
+	Map<String, List<String>> map = conn.getHeaderFields();
+	boolean noIFrame = false;
+
+	// If the url does not allow for iframe, it is skipped 
+	for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+ 	  String key = entry.getKey();
+	  if ("X-Frame-Options".equals(key)) { 
             noIFrame = true;
-          }
+	  }
         }
-        if(!noIFrame) {
+	if (!noIFrame) {
           urls.add(url);
         }
       } 
     }
     return urls;  
   }
-
 }
