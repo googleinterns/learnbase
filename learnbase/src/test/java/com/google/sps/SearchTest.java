@@ -21,12 +21,8 @@ public final class SearchTest {
   @Test
   public void getSearchURLs() throws IOException {
     ArrayList<String> actual = search.getSearch("javascript");
-    ArrayList<String> expected = new ArrayList<String>();
 
-    expected.add("https://en.wikipedia.org/wiki/JavaScript");
-
-    Assert.assertEquals(expected, actual);
-
+    Assert.assertTrue(actual.contains("https://en.wikipedia.org/wiki/JavaScript"));
   }
   
   @Test 
