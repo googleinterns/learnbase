@@ -21,6 +21,8 @@ import org.jsoup.select.Elements;
 @WebServlet("/deleteTopic")
 public class DeleteTopicServlet extends HttpServlet{
 
+  DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
 
@@ -28,34 +30,16 @@ public class DeleteTopicServlet extends HttpServlet{
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService(); 
-    User user = userService.getCurrentUser();
-    String userId = user.getUserId(); 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = 
-      new Query("UserInfo")
-      .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
-    PreparedQuery results = datastore.prepare(query); 
-    Entity entity = results.asSingleEntity(); 
+    Entity entity = retrieveEntity();
     String topics = (String) entity.getProperty("topics"); 
-    //ArrayList<String> urls = (ArrayList<String>) entity.getProperty("urls");
     String [] listedTopics = topics.split(",");
-    //System.out.println("Listed topics from datastore: " +Arrays.toString(listedTopics));
-    
     String removedTopic = request.getParameter("topic");
-    //System.out.println("Topic to be removed:" + removedTopic);
-    String removedTopicCopy = removedTopic;
-
     String editedTopics = "";
-    //System.out.println("Edited Topics:");
     for (int i = 0; i < listedTopics.length; i++){
-      //System.out.println("Removed  topic: " + removedTopic);
-      //System.out.println("Listedtopic[i]: " + listedTopics[i]);
       if (!listedTopics[i].equals(removedTopic)){
         editedTopics += listedTopics[i]; 
         if (i+1 < listedTopics.length){
           editedTopics+=",";
-          //System.out.println(editedTopics);
         }
       } else {
         removedTopic="";
@@ -70,11 +54,19 @@ public class DeleteTopicServlet extends HttpServlet{
     entity.setProperty("topics", editedTopics);
     datastore.put(entity);
     response.sendRedirect("/search.html");
-    //response.sendRedirect("/search.html");
-    //urls = deleteUrls(editedTopics);
-    //entity.setProperty("urls", urls);
-    //datastore.put(entity);
-    //response.sendRedirect("/search.html");
+  }
+
+  private Entity retrieveEntity(){
+    UserService userService = UserServiceFactory.getUserService(); 
+    User user = userService.getCurrentUser();
+    String userId = user.getUserId(); 
+
+    Query query = 
+      new Query("UserInfo")
+      .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+    PreparedQuery results = datastore.prepare(query); 
+    Entity entity = results.asSingleEntity(); 
+    return entity;
   }
 
   private ArrayList<String> deleteUrls(String topics) throws IOException {
@@ -84,10 +76,8 @@ public class DeleteTopicServlet extends HttpServlet{
       String google = "https://www.google.com/search";
       int num = 5;
       String searchURL = google + "?q=" + topic + "&num=" + num;
-
       Document doc  = Jsoup.connect(searchURL).userAgent("Chrome").get();
       Elements results = doc.select("a[href]:has(span)").select("a[href]:not(:has(div))");
-
       for (Element result : results) {
         String linkHref = result.attr("href");
         String linkText = result.text();
