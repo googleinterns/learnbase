@@ -25,7 +25,7 @@ import java.net.URLConnection;
 
 @WebServlet("/search")
 public class SearchServlet extends HttpServlet {
-  
+
   //Gets the current days information for each topic 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -34,85 +34,86 @@ public class SearchServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     User user = userService.getCurrentUser();
     String userId = user.getUserId();
-    Query query = 
-        new Query("UserInfo")
+    Query query = new Query("UserInfo")
         .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
     String topics = (String) entity.getProperty("topics");
-    
+    Gson gson = new Gson();
     //If the user has not searched any topics yet, print that they have no topics
     if (topics.trim().equals("")) {
-      Gson gson = new Gson();
       ArrayList<String> topicsInfo = new ArrayList<>();
       topicsInfo
           .add("<h2>No topics yet! Search something you want to know more about to get info.</h2>");
       response.getWriter().println(gson.toJson(topicsInfo));
       return;
     }
-
-    ArrayList<String> topicsInfo = new ArrayList<>();
     String[] topicsArray = topics.split(",");
+    ArrayList<String> topicsInfo = getInfo(topicsArray, entity);
+    datastore.put(entity);
+    response.getWriter().println(gson.toJson(topicsInfo));
+  }
 
-    //Goes through each topic and gets that days info, 
-    //then adds it to the arraylist that stores the info to print
+  // Go through each topic the user has and get the daily urls info 
+  public ArrayList<String> getInfo (String[] topicsArray, Entity entity) throws IOException {
+    ArrayList<String> topicsInfo = new ArrayList<String>();
     for (String topic : topicsArray) {
       String topicName = topic+"topic";
       String iteratorName = topic+"iterator";
       String iterator = (String) entity.getProperty(iteratorName);
       ArrayList<String> urls = (ArrayList<String>) entity.getProperty(topicName);
       int iteratorNum = Integer.parseInt(iterator);
-      Boolean advanced = (Boolean)entity.getProperty("advanced"+topic);
-      System.out.println(advanced);
-      System.out.println(topic + " iterator in search: " + iterator);
-      
-      //If there are no more urls for this topic, 
-      //Move to an advanced search
-      //If there are no more urls in the advanced search 
-      //print that there is no more info for the topic 
+      boolean advanced = (Boolean)entity.getProperty("advanced"+topic);
       if (iteratorNum >= urls.size()) {
-        if (advanced) {
-          topicsInfo.add(0, "No more info for this topic!");
-          topicsInfo.add(0, "<h1>"+topic.toUpperCase()+"</h1>");
-          continue;
-        } else {
-          System.out.println("advanced");
-          String advancedTopic = "advanced"+topic;
-          urls = getSearch(advancedTopic);
-          if(urls.isEmpty()) {
-            topicsInfo.add(0, "No more info for this topic!");
-            topicsInfo.add(0, "<h1>"+topic.toUpperCase()+":</h1>");
-            continue;
-          }
-          iterator = "0";
-          iteratorNum = 0;
-          entity.setProperty(advancedTopic, true);
-          entity.setProperty(topicName, urls);
-        }
-	System.out.println(urls);
+        topicsInfo = iteratorEnd(advanced, entity, topicsInfo, urls, topic);
+	continue;
       }
       String url = urls.get(iteratorNum);
-      entity.setProperty(iteratorName, iterator);      
-      String info = "<iframe src=\"" + url + "\" style=\"height:600px;width:80%;\"></iframe>"; 
+      String info = "<iframe src=\"" + url + "\" style=\"height:600px;width:80%;\"></iframe>";
       topicsInfo.add(0, info);
       topicsInfo.add(0, "<h1>"+topic.toUpperCase()+"</h1>");
     }
-    datastore.put(entity);
-    Gson gson = new Gson();
-    response.getWriter().println(gson.toJson(topicsInfo));
+    return topicsInfo; 
   }
 
-  // Get the urls for a topic
-  public ArrayList<String> getSearch(String topic) throws IOException {
+  // If the iterator has reached the end of the url list, either go to advanced or tell the user 
+  // they are at the end of the topic 
+  public ArrayList<String> iteratorEnd (boolean advanced, Entity entity, 
+       ArrayList<String> topicsInfo, ArrayList<String> urls, String topic) 
+       throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    if (advanced) {
+      topicsInfo.add(0, "No more info for this topic!");
+      topicsInfo.add(0, "<h1>"+topic.toUpperCase()+":</h1>");
+    } else {
+      String advancedTopic = "advanced"+topic;
+      urls = getSearch(advancedTopic);
+      if (urls.isEmpty()) {
+        topicsInfo.add(0, "No more info for this topic!");
+        topicsInfo.add(0, "<h1>"+topic.toUpperCase()+":</h1>");	
+      } else { 
+        entity.setProperty(topic+"iterator", "1");
+        entity.setProperty(topic+"topic", urls);
+        entity.setProperty(advancedTopic, true);
+        datastore.put(entity);
+	String url = urls.get(0);
+	String info = "<iframe src=\"" + url + "\" style=\"height:600px;width:80%;\"></iframe>"; 
+        topicsInfo.add(0, info);
+        topicsInfo.add(0, "<h1>"+topic.toUpperCase()+"</h1>");
+      }
+    }
+    return topicsInfo;
+  }
+
+  // Get the lsit of urls for a topic
+  public ArrayList<String> getSearch (String topic) throws IOException {
     String google = "https://www.google.com/search";
     int num = 20;
     String searchURL = google + "?q=" + topic + "&num=" + num;
     ArrayList<String> urls = new ArrayList<>();
     System.out.println(searchURL);
-
     Document doc  = Jsoup.connect(searchURL).userAgent("Chrome").get();
     Elements results = doc.select("a[href]:has(span)").select("a[href]:not(:has(div))");
-
     for (Element result : results) {
       String linkHref = result.attr("href");
       String linkText = result.text();
@@ -122,24 +123,28 @@ public class SearchServlet extends HttpServlet {
 	if ("/www.google.com/search?num=20".equals(url)) {
           continue;
 	}
-	URL obj = new URL(url);
-	URLConnection conn = obj.openConnection();
-	Map<String, List<String>> map = conn.getHeaderFields();
-	boolean noIFrame = false;
-	
-	//If the url does not allow for iframe, it is skipped 
-	for (Map.Entry<String, List<String>> entry : map.entrySet()) {
- 	  String key = entry.getKey();
-	  if ("X-Frame-Options".equals(key)) { 
-            noIFrame = true;
-	  }
-        }
-	if (!noIFrame) {
+        boolean noIframe = checkIframe(url);
+	if (!noIframe) {
           urls.add(url);
 	}
       } 
     }
     return urls; 
+  }
+
+  // Make sure each url allows iframe 
+  public boolean checkIframe (String url) throws IOException {
+    URL obj = new URL(url); 
+    URLConnection conn = obj.openConnection();
+    Map<String, List<String>> map = conn.getHeaderFields();
+    boolean noIframe = false;
+    for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+      String key = entry.getKey();
+      if ("X-Frame-Options".equals(key)) {
+        noIframe = true;
+      }
+    }
+    return noIframe;
   }
 }
 

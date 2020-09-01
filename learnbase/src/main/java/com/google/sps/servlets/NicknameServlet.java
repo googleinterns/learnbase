@@ -52,7 +52,6 @@ public class NicknameServlet extends HttpServlet {
 
   @Override 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
-
     TimeZone timeZone = TimeZone.getDefault();
     int offset = (int) ((timeZone.getOffset( System.currentTimeMillis())/(1000*60*60)));
     UserService userService = UserServiceFactory.getUserService();
@@ -60,7 +59,6 @@ public class NicknameServlet extends HttpServlet {
       response.sendRedirect("/nickname");
       return;
     }
-
     String nickname = request.getParameter("nickname");
     String id = userService.getCurrentUser().getUserId();
     EmailHandler handler = new EmailHandler();
@@ -69,7 +67,12 @@ public class NicknameServlet extends HttpServlet {
     } catch (Exception e){
       System.out.println(e);
     }
-    
+    createEntity(userService, id, nickname, offset);
+    response.sendRedirect("/index.html");
+  }
+  
+  //Create the user entity 
+  private void createEntity(UserService userService, String id, String nickname, int offset) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity entity = new Entity("UserInfo", id);
     entity.setProperty("id", id);
@@ -81,10 +84,9 @@ public class NicknameServlet extends HttpServlet {
     entity.setProperty("optIn", "y");
     entity.setProperty("mail", (String) userService.getCurrentUser().getEmail());
     datastore.put(entity);
-
-    response.sendRedirect("/index.html");
   }
-
+  
+  // Get the nickname the user has set 
   private String getUserNickname(String id) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = 

@@ -47,10 +47,6 @@ p
 {
   line-height: 180%;
 }
-/* 
-strong
-{
-} */
 
 a
 {
@@ -692,42 +688,6 @@ baloon .label::after {
 .baloon:active label::after {
   border-top: 4px solid rgba(122,184,147,1);
 }
-/* 
-button {
-  position: relative;
-  display: inline-block;
-  margin: 0;
-  width: 100%;
-  vertical-align: top;
-  font-family: "fira-sans", "Helvetica Neue", Arial, Helvetica, sans-serif;
-  font-size: 16px;
-  line-height: 20px;
-  border: 0;
-  border-radius: 0;
-  cursor: pointer;
-  text-decoration: none;
-}
-button::-moz-focus-inner {
-  padding: 0;
-  border: 0;
-}
-button:focus, button:active {
-  text-decoration: none;
-  outline: 0;
-}
-button {
-  width: auto;
-  vertical-align: middle;
-  font: inherit;
-  text-align: center;
-  background: none;
-  white-space: nowrap;
-  -webkit-appearance: none;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-} */
 
 /*
 O L D   C S S   B E L O W 
@@ -775,7 +735,6 @@ O L D   C S S   B E L O W
 }
 
 .topnav {
-  /*background-color: #186E27;*/
   overflow: hidden;
   background-color: rgb(6, 39, 12);
 }
