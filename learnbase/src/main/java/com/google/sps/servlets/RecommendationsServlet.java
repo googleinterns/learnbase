@@ -100,6 +100,7 @@ public class RecommendationsServlet extends HttpServlet {
     return closestWords;
   } 
 
+  // Gets top ten words from word2vec model.
   public void getTopTenWords(HashMap<String, ArrayList<Double>> words2vecs, String topic,
       String[] currentTopTenWords, Double[] currentTopTenDistances) { 
 
