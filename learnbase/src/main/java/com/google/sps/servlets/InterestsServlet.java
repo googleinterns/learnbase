@@ -28,26 +28,30 @@ public class InterestsServlet extends HttpServlet{
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserService userService =  UserServiceFactory.getUserService();
-    // If user is logged in, prints out their topics
+    ArrayList<String> topicsOutput;
     if (userService.isUserLoggedIn()) {
-      User user = userService.getCurrentUser();
-      String userId = user.getUserId();
-      Query query = 
-          new Query("UserInfo")
-          .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
-      PreparedQuery results = datastore.prepare(query);
-      Entity entity = results.asSingleEntity();
-      String topics = (String) entity.getProperty("topics");
-      ArrayList<String> topicsOutput = new ArrayList<>();
-      String[] topicsArray = topics.split(",");
-      for (String topic : topicsArray) {
-        String topicOutput = "<p>" + topic + "</p>";
-	      topicsOutput.add(topicOutput);
-      }
-
+      topicsOutput = getTopics(userService, datastore);
       response.setContentType("application/json;");
       Gson gson = new Gson();
       response.getWriter().println(gson.toJson(topicsOutput));
     }
+  }
+
+  // If user is logged in, returns list of their topics to be printed
+  public ArrayList<String> getTopics(UserService userService, DatastoreService datastore) {
+    User user = userService.getCurrentUser();
+    String userId = user.getUserId();
+    Query query = new Query("UserInfo")
+        .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+    String topics = (String) entity.getProperty("topics");
+    ArrayList<String> topicsOutput = new ArrayList<>();
+    String[] topicsArray = topics.split(",");
+    for (String topic : topicsArray) {
+      String topicOutput = "<p>" + topic + "</p>";
+      topicsOutput.add(topicOutput);
+    }
+    return topicsOutput;
   }
 }
