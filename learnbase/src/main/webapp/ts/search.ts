@@ -11,7 +11,7 @@ if (location.pathname === "/search.html") {
 // them on the webpage.
 window.onload = function getTopics() : void {
   var loggedIn = userStatus();
-  var showSelectedTopicBox : number;
+  var showSelectedTopicsBox : number;
   var selectedTopics = new Set<string>();
 
   fetch('/topics').then(response => response.json()).then((response) =>{
@@ -20,37 +20,41 @@ window.onload = function getTopics() : void {
         selectedTopics.add(topic.toLowerCase().replace(" ", "_"));
       });
     }
-    if (location.pathname === "/search.html" || location.pathname === "/recommendations.html") {
-      showSelectedTopicBox = topicManager(response);
-    }
-    if (showSelectedTopicBox === 1) {
-      document.getElementById("subjectTableContainer").style.display = "block";
-    }
+    showSelectedTopics(showSelectedTopicsBox, response);
     
     getRecommendedTopics(response).then((result: string[]) => {
-
-      if (location.pathname === "/recommendations.html") {
-        if (result.length === 0) {
-          document.getElementById("no-recs").style.display = "block";
-          document.getElementById("loader").style.display = "none";
-          document.getElementById("recommended-topics").style.display = "none";
-        } else {
-          document.getElementById("loader").style.display = "block";
-          document.getElementById("recommended-topics").style.display = "none";
-          displayRecommendedTopics(result, selectedTopics);
-        }
-      }
+      loaderDisplay(result, selectedTopics);
     });
     
   });
   
-  console.log("First fetch complete");
   if (location.pathname === "/search.html") {
     fetch('/scheduler').then(response => response.text()).then((response) =>{
-      console.log(response);
       document.getElementById("timeDisplay").innerHTML = response; 
     });   
-    console.log("second fetch complete");
+  }
+}
+
+function showSelectedTopics(showSelectedTopicsBox: number, response: any) {
+  if (location.pathname === "/search.html" || location.pathname === "/recommendations.html") {
+    showSelectedTopicsBox = topicManager(response);
+  }
+  if (showSelectedTopicsBox === 1) {
+    document.getElementById("subjectTableContainer").style.display = "block";
+  }
+}
+
+function loaderDisplay(result: string[], selectedTopics: Set<string>) {
+  if (location.pathname === "/recommendations.html") {
+    if (result.length === 0) {
+      document.getElementById("no-recs").style.display = "block";
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("recommended-topics").style.display = "none";
+    } else {
+      document.getElementById("loader").style.display = "block";
+      document.getElementById("recommended-topics").style.display = "none";
+      displayRecommendedTopics(result, selectedTopics);
+    }
   }
 }
 
@@ -270,15 +274,12 @@ function timeChangeReveal() {
 }
 
 function timeChange(){
-  console.log("Button clicked");
   var timeContainer = document.getElementById("appt") as HTMLInputElement;
   var emailOption = document.getElementById("yn") as HTMLSelectElement;
   var time = timeContainer.value; 
   var choice = emailOption.options[emailOption.selectedIndex].value;
   var url = "/scheduler?time=" + time +"&optIn="+choice; 
-  console.log(url);
   fetch(url).then(response => response.text()).then((response) =>{
-    console.log(response);
     document.getElementById("timeDisplay").innerHTML = response; 
     document.getElementById("selectTime").style.display = "none"; 
     document.getElementById("currentTime").style.direction = "block";
