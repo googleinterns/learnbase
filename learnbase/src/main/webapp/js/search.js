@@ -103,20 +103,11 @@ function createRecTopicCell(table, topic) {
  */
 function getRecommendedTopics(response) {
     return __awaiter(this, void 0, void 0, function* () {
-        // Stores each topic with its corresponding list of recommended topics.
         var topicInfoList = [];
-        // Keeps track of number of recommendations for each topic that will be displayed.
-        var recsPerTopic = [];
-        // List of recommendations that will be returned.
-        var recommendations = [];
-        // Boolean for whether or not recommendations exist.
-        var recsExist = false;
-        if (JSON.stringify(response) === "{}") {
-            return recommendations;
-        }
-        // For each topic the user has selected,
-        // get all the similar topics. Also initialize
-        // recsPerTopic list.
+        var doRecsExist = false;
+        if (JSON.stringify(response) === "{}")
+            return [];
+        // For each topic the user has selected, get all ofthe similar topics. Also initialize recsPerTopic list.
         for (let i = response.length - 1; i >= 0; i--) {
             let topic = response[i];
             let similarTopics;
@@ -127,59 +118,66 @@ function getRecommendedTopics(response) {
             });
             if (topicInfo[1].length !== 0) {
                 topicInfoList.push(topicInfo);
-                recsExist = true;
+                doRecsExist = true;
             }
             else {
                 continue;
             }
-            recsPerTopic.push(0);
         }
-        if (!recsExist) {
-            return recommendations;
-        }
-        // First topic has 3 automatic recommendations from most recent choice.
-        // Other 7 are drawn from random distribution of all topics.
-        // Counts are stored in the recsPerTopic list.
-        for (let i = 0; i < 7; i++) {
-            let rand = Math.random() * 10000;
-            let j = 1;
-            if (rand < 10000 / Math.pow(2, topicInfoList.length - 1)) {
-                recsPerTopic[0] += 1;
-            }
-            while (j < topicInfoList.length) {
-                if (rand > 10000 / Math.pow(2, j)) {
-                    recsPerTopic[j] += 1;
-                    break;
-                }
-                j++;
-            }
-        }
-        // Gets list of indices in a random order, and pulls
-        // each index based off of the results of the 
-        // random distribution above.
-        var rangeForFirstTopic = getRandomNumbersNoRepetition(3, 10);
-        var rangeForAllOtherTopics = getRandomNumbersNoRepetition(0, 10);
-        var currIndex = 0;
-        for (let i = 0; i < 10; i++) {
-            if (i < 3) {
-                recommendations.push(topicInfoList[0][1][i]);
-            }
-            else {
-                if (recsPerTopic[currIndex] === 0) {
-                    currIndex += 1;
-                }
-                else {
-                    recsPerTopic[currIndex] -= 1;
-                }
-                let rand = (currIndex === 0) ? rangeForFirstTopic[i - 3] : rangeForAllOtherTopics[i];
-                let nextTopic = topicInfoList[currIndex][1][rand];
-                recommendations.push(nextTopic);
-            }
-        }
-        return recommendations;
+        if (!doRecsExist)
+            return [];
+        var recsPerTopic = pickTenRandomTopics(topicInfoList, response);
+        return createRecsList(topicInfoList, recsPerTopic);
     });
 }
-// min inclusive, max exclusive
+// First topic has 3 automatic recommendations from most recent choice.
+// Other 7 are drawn from random distribution of all topics.
+// Counts are stored in the recsPerTopic list.
+function pickTenRandomTopics(topicInfoList, response) {
+    // Keeps track of number of recommendations for each topic that will be displayed.
+    var recsPerTopic = Array(response.length).fill(0);
+    for (let i = 0; i < 7; i++) {
+        let rand = Math.random() * 10000;
+        let j = 1;
+        if (rand < 10000 / Math.pow(2, topicInfoList.length - 1)) {
+            recsPerTopic[0] += 1;
+        }
+        while (j < topicInfoList.length) {
+            if (rand > 10000 / Math.pow(2, j)) {
+                recsPerTopic[j] += 1;
+                break;
+            }
+            j++;
+        }
+    }
+    return recsPerTopic;
+}
+function createRecsList(topicInfoList, recsPerTopic) {
+    var rangeForFirstTopic = getRandomNumbersNoRepetition(3, 10);
+    var rangeForAllOtherTopics = getRandomNumbersNoRepetition(0, 10);
+    var recommendations = [];
+    var currIndex = 0;
+    for (let i = 0; i < 10; i++) {
+        if (i < 3) {
+            recommendations.push(topicInfoList[0][1][i]);
+        }
+        else {
+            if (recsPerTopic[currIndex] === 0) {
+                currIndex += 1;
+            }
+            else {
+                recsPerTopic[currIndex] -= 1;
+            }
+            let rand = (currIndex === 0) ? rangeForFirstTopic[i - 3] : rangeForAllOtherTopics[i];
+            let nextTopic = topicInfoList[currIndex][1][rand];
+            recommendations.push(nextTopic);
+        }
+    }
+    return recommendations;
+}
+// Gets list of indices in a random order, and pulls
+// each index based off of the results of the 
+// random distribution above.
 function getRandomNumbersNoRepetition(min, max) {
     var numbers = [];
     for (let i = min; i < max; i++) {
