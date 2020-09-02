@@ -11,7 +11,7 @@ if (location.pathname === "/search.html") {
 // them on the webpage.
 window.onload = function getTopics() : void {
   var loggedIn = userStatus();
-  var showSelectedTopicBox : number;
+  var showSelectedTopicsBox : number;
   var selectedTopics = new Set<string>();
 
   fetch('/topics').then(response => response.json()).then((response) =>{
@@ -20,37 +20,40 @@ window.onload = function getTopics() : void {
         selectedTopics.add(topic.toLowerCase().replace(" ", "_"));
       });
     }
-    if (location.pathname === "/search.html" || location.pathname === "/recommendations.html") {
-      showSelectedTopicBox = topicManager(response);
-    }
-    if (showSelectedTopicBox === 1) {
-      document.getElementById("subjectTableContainer").style.display = "block";
-    }
-    
+    showSelectedTopics(showSelectedTopicsBox, response);   
     getRecommendedTopics(response).then((result: string[]) => {
-
-      if (location.pathname === "/recommendations.html") {
-        if (result.length === 0) {
-          document.getElementById("no-recs").style.display = "block";
-          document.getElementById("loader").style.display = "none";
-          document.getElementById("recommended-topics").style.display = "none";
-        } else {
-          document.getElementById("loader").style.display = "block";
-          document.getElementById("recommended-topics").style.display = "none";
-          displayRecommendedTopics(result, selectedTopics);
-        }
-      }
+      loaderDisplay(result, selectedTopics);
     });
     
   });
   
-  console.log("First fetch complete");
   if (location.pathname === "/search.html") {
     fetch('/scheduler').then(response => response.text()).then((response) =>{
-      console.log(response);
       document.getElementById("timeDisplay").innerHTML = response; 
     });   
-    console.log("second fetch complete");
+  }
+}
+
+function showSelectedTopics(showSelectedTopicsBox: number, response: any) {
+  if (location.pathname === "/search.html" || location.pathname === "/recommendations.html") {
+    showSelectedTopicsBox = topicManager(response);
+  }
+  if (showSelectedTopicsBox === 1) {
+    document.getElementById("subjectTableContainer").style.display = "block";
+  }
+}
+
+function loaderDisplay(result: string[], selectedTopics: Set<string>) {
+  if (location.pathname === "/recommendations.html") {
+    if (result.length === 0) {
+      document.getElementById("no-recs").style.display = "block";
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("recommended-topics").style.display = "none";
+    } else {
+      document.getElementById("loader").style.display = "block";
+      document.getElementById("recommended-topics").style.display = "none";
+      displayRecommendedTopics(result, selectedTopics);
+    }
   }
 }
 
@@ -61,28 +64,8 @@ function displayRecommendedTopics(recommended : string[], selectedTopics : Set<s
   recommended.forEach((topic: string) => {
     if (!setOfTopics.has(topic) && !selectedTopics.has(topic)) {
       setOfTopics.add(topic);
-      var newRow = table.insertRow();
-      var cell = newRow.insertCell(); 
-      cell.setAttribute('class', 'rec');
-      cell.addEventListener('mouseover', () => {
-        cell.style.color = "#009900";
-      });
-      cell.addEventListener('mouseout', () => {
-        cell.style.color = "#656565";
-      });
-
-      cell.addEventListener('click', () => {
-        topic = topic.replace("_", " ")
-        const params = new URLSearchParams(); 
-        params.append("topic", topic);
-        document.getElementById("loader").style.display = "block";
-        document.getElementById("recommended-topics").style.display = "none";
-        fetch('/topics', {method: 'POST', body: params}).then(() => {
-          createSelectedTopic(topic, document.getElementById('subjectTable') as HTMLTableElement);
-          location.reload();
-        });
-       
-      });
+      
+      var cell = createRecTopicCell(table, topic);
       
       cell.style.fontSize = "18px";
       cell.innerHTML = capital_letter(topic.toLowerCase().replace("_", " "));
@@ -93,6 +76,31 @@ function displayRecommendedTopics(recommended : string[], selectedTopics : Set<s
   
 }
 
+function createRecTopicCell(table: HTMLTableElement, topic: string) {
+  var newRow = table.insertRow();
+  var cell = newRow.insertCell(); 
+  cell.setAttribute('class', 'rec');
+  cell.addEventListener('mouseover', () => {
+    cell.style.color = "#009900";
+  });
+  cell.addEventListener('mouseout', () => {
+    cell.style.color = "#656565";
+  });
+  
+  cell.addEventListener('click', () => {
+    topic = topic.replace("_", " ")
+    const params = new URLSearchParams(); 
+    params.append("topic", topic);
+    document.getElementById("loader").style.display = "block";
+    document.getElementById("recommended-topics").style.display = "none";
+    fetch('/topics', {method: 'POST', body: params}).then(() => {
+      createSelectedTopic(topic, document.getElementById('subjectTable') as HTMLTableElement);
+      location.reload();
+    });  
+  });
+  return cell;
+}
+
 /*
  * Get top 10 recommended topics. The first 3 are 
  * the most similar topics to the most recently queried
@@ -100,23 +108,12 @@ function displayRecommendedTopics(recommended : string[], selectedTopics : Set<s
  * distribution. 
  */
 async function getRecommendedTopics(response: string) : Promise<string[]> {
-
-  // Stores each topic with its corresponding list of recommended topics.
   var topicInfoList : TopicInfo[] = []; 
-  // Keeps track of number of recommendations for each topic that will be displayed.
-  var recsPerTopic : number[] = [];
-  // List of recommendations that will be returned.
-  var recommendations : string[] = [];
-  // Boolean for whether or not recommendations exist.
-  var recsExist : boolean = false;
+  var doRecsExist : boolean = false;
 
-  if (JSON.stringify(response) === "{}") {
-    return recommendations;
-  }
+  if (JSON.stringify(response) === "{}") return [];
 
-  // For each topic the user has selected,
-  // get all the similar topics. Also initialize
-  // recsPerTopic list.
+  // For each topic the user has selected, get all ofthe similar topics. Also initialize recsPerTopic list.
   for (let i = response.length-1; i >= 0; i--) {
     let topic : string = response[i];
     let similarTopics : string[];
@@ -130,20 +127,25 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
 
     if (topicInfo[1].length !== 0) {
       topicInfoList.push(topicInfo);
-      recsExist = true;
+      doRecsExist = true;
     } else {
       continue;
     }
-    recsPerTopic.push(0);  
+      
   }
 
-  if (!recsExist) {
-    return recommendations;
-  }
+  if (!doRecsExist) return [];
 
-  // First topic has 3 automatic recommendations from most recent choice.
-  // Other 7 are drawn from random distribution of all topics.
-  // Counts are stored in the recsPerTopic list.
+  var recsPerTopic = pickTenRandomTopics(topicInfoList, response);
+  return createRecsList(topicInfoList, recsPerTopic);
+}
+
+// First topic has 3 automatic recommendations from most recent choice.
+// Other 7 are drawn from random distribution of all topics.
+// Counts are stored in the recsPerTopic list.
+function pickTenRandomTopics(topicInfoList: TopicInfo[], response: string) {
+  // Keeps track of number of recommendations for each topic that will be displayed.
+  var recsPerTopic : number[] = Array(response.length).fill(0);
   for (let i = 0; i < 7; i++) {
     let rand : number = Math.random()*10000;
     let j = 1;
@@ -158,15 +160,15 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
       }
       j++;
     }
-
   }
-  
-  // Gets list of indices in a random order, and pulls
-  // each index based off of the results of the 
-  // random distribution above.
+  return recsPerTopic;
+}
+
+// Creates final recommendations list
+function createRecsList(topicInfoList: TopicInfo[], recsPerTopic: number[] ) {
   var rangeForFirstTopic : number[] = getRandomNumbersNoRepetition(3, 10);
   var rangeForAllOtherTopics : number[] = getRandomNumbersNoRepetition(0, 10);
-
+  var recommendations = [];
   var currIndex : number = 0;
   for (let i = 0; i < 10; i++) {
     if (i < 3) {
@@ -185,11 +187,12 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
       recommendations.push(nextTopic);
     }
   }
-
   return recommendations;
 }
 
-// min inclusive, max exclusive
+// Gets list of indices in a random order, and pulls
+// each index based off of the results of the 
+// random distribution above.
 function getRandomNumbersNoRepetition(min: number, max: number) : number[] {
   var numbers : number[] = [];
   for (let i = min; i < max; i++) {
@@ -239,13 +242,13 @@ function createSelectedTopic(topic: string, table: HTMLTableElement) {
 // Capitalizes first letter of each word in str.
 function capital_letter(str) 
 {
-    str = str.split(" ");
+  str = str.split(" ");
 
-    for (var i = 0, x = str.length; i < x; i++) {
-        str[i] = str[i][0].toUpperCase() + str[i].substr(1);
-    }
+  for (var i = 0, x = str.length; i < x; i++) {
+    str[i] = str[i][0].toUpperCase() + str[i].substr(1);
+  }
 
-    return str.join(" ");
+  return str.join(" ");
 }
 
 // Deletes topic.
@@ -270,22 +273,18 @@ function timeChangeReveal() {
 }
 
 function timeChange(){
-  console.log("Button clicked");
   var timeContainer = document.getElementById("appt") as HTMLInputElement;
   var emailOption = document.getElementById("yn") as HTMLSelectElement;
   var time = timeContainer.value; 
   var choice = emailOption.options[emailOption.selectedIndex].value;
   var url = "/scheduler?time=" + time +"&optIn="+choice; 
-  console.log(url);
   fetch(url).then(response => response.text()).then((response) =>{
-    console.log(response);
     document.getElementById("timeDisplay").innerHTML = response; 
     document.getElementById("selectTime").style.display = "none"; 
     document.getElementById("currentTime").style.direction = "block";
   });
 
 }
-
 
 function userStatus() {
   fetch('/status').then(response => response.text()).then((loginStatus) => {

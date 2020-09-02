@@ -34,32 +34,32 @@ public class RecommendationsServlet extends HttpServlet {
   HashMap<String, ArrayList<Double>> words2vecs = new HashMap<String, ArrayList<Double>>();
   HashMap<String, ArrayList<String>> wordCache = new HashMap<String, ArrayList<String>>();
   
+  final HashSet<String> omittedWords = new HashSet<String>(
+      Arrays.asList(
+        "lecture_notes", 
+        "tutorial", 
+        "introductory", 
+        "textbook", 
+        "mathematical",
+        "scientific", 
+        "study", 
+        "algorithmic", 
+        "interdisciplinary", 
+        "massachusetts_institute", 
+        "analytical", 
+        "theoretical", 
+        "logical")
+    );
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
     response.setContentType("application/json;");
 
     String topic = request.getParameter("topic").trim().replaceAll(" +", " ").replace(" ", "_").toLowerCase();
-    
     if (!wordCache.containsKey(topic)) {
-      words2vecs = (HashMap<String, ArrayList<Double>>) gson.fromJson(new FileReader("model/word_embedding.json"), words2vecs.getClass());
-      HashSet<String> omittedWords = new HashSet<String>(
-          Arrays.asList(
-            "lecture_notes", 
-            "tutorial", 
-            "introductory", 
-            "textbook", 
-            "mathematical",
-            "scientific", 
-            "study", 
-            "algorithmic", 
-            "interdisciplinary", 
-            "massachusetts_institute", 
-            "analytical", 
-            "theoretical", 
-            "logical")
-        );
-      
+      words2vecs = (HashMap<String, ArrayList<Double>>) gson.fromJson(
+        new FileReader("model/word_embedding.json"), words2vecs.getClass());
       for (String word : omittedWords) {
         words2vecs.remove(word);
       }
@@ -67,11 +67,10 @@ public class RecommendationsServlet extends HttpServlet {
       if (!words2vecs.containsKey(topic)) {
         response.getWriter().println("[]");
         wordCache.put(topic, new ArrayList<String>());
-
         return;
       }
+
       ArrayList<String> closestWords = getClosestWords(words2vecs, topic);
-      
       wordCache.put(topic, closestWords);
     }
     
@@ -92,6 +91,19 @@ public class RecommendationsServlet extends HttpServlet {
 
     ArrayList<String> closestWords = new ArrayList<String>();
 
+    getTopTenWords(words2vecs, topic, currentTopTenWords, currentTopTenDistances);
+
+    for (String word : currentTopTenWords) {
+      closestWords.add(word);
+    }
+
+    return closestWords;
+  } 
+
+  // Gets top ten words from word2vec model.
+  public void getTopTenWords(HashMap<String, ArrayList<Double>> words2vecs, String topic,
+      String[] currentTopTenWords, Double[] currentTopTenDistances) { 
+
     words2vecs.forEach((word, vec) -> {
       if (!topic.equals(word)) {
         double distance = getCosineDistance(words2vecs, topic, word);
@@ -108,13 +120,7 @@ public class RecommendationsServlet extends HttpServlet {
         }
       }
     });
-
-    for (String word : currentTopTenWords) {
-      closestWords.add(word);
-    }
-
-    return closestWords;
-  } 
+  }
 
   /**
    * Takes two word vectors and multiplies them together 

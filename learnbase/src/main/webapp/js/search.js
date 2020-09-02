@@ -16,7 +16,7 @@ if (location.pathname === "/search.html") {
 // them on the webpage.
 window.onload = function getTopics() {
     var loggedIn = userStatus();
-    var showSelectedTopicBox;
+    var showSelectedTopicsBox;
     var selectedTopics = new Set();
     fetch('/topics').then(response => response.json()).then((response) => {
         if (JSON.stringify(response) !== "{}") {
@@ -24,36 +24,39 @@ window.onload = function getTopics() {
                 selectedTopics.add(topic.toLowerCase().replace(" ", "_"));
             });
         }
-        if (location.pathname === "/search.html" || location.pathname === "/recommendations.html") {
-            showSelectedTopicBox = topicManager(response);
-        }
-        if (showSelectedTopicBox === 1) {
-            document.getElementById("subjectTableContainer").style.display = "block";
-        }
+        showSelectedTopics(showSelectedTopicsBox, response);
         getRecommendedTopics(response).then((result) => {
-            if (location.pathname === "/recommendations.html") {
-                if (result.length === 0) {
-                    document.getElementById("no-recs").style.display = "block";
-                    document.getElementById("loader").style.display = "none";
-                    document.getElementById("recommended-topics").style.display = "none";
-                }
-                else {
-                    document.getElementById("loader").style.display = "block";
-                    document.getElementById("recommended-topics").style.display = "none";
-                    displayRecommendedTopics(result, selectedTopics);
-                }
-            }
+            loaderDisplay(result, selectedTopics);
         });
     });
-    console.log("First fetch complete");
     if (location.pathname === "/search.html") {
         fetch('/scheduler').then(response => response.text()).then((response) => {
-            console.log(response);
             document.getElementById("timeDisplay").innerHTML = response;
         });
-        console.log("second fetch complete");
     }
 };
+function showSelectedTopics(showSelectedTopicsBox, response) {
+    if (location.pathname === "/search.html" || location.pathname === "/recommendations.html") {
+        showSelectedTopicsBox = topicManager(response);
+    }
+    if (showSelectedTopicsBox === 1) {
+        document.getElementById("subjectTableContainer").style.display = "block";
+    }
+}
+function loaderDisplay(result, selectedTopics) {
+    if (location.pathname === "/recommendations.html") {
+        if (result.length === 0) {
+            document.getElementById("no-recs").style.display = "block";
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("recommended-topics").style.display = "none";
+        }
+        else {
+            document.getElementById("loader").style.display = "block";
+            document.getElementById("recommended-topics").style.display = "none";
+            displayRecommendedTopics(result, selectedTopics);
+        }
+    }
+}
 // Display recommended topics
 function displayRecommendedTopics(recommended, selectedTopics) {
     var table = document.getElementById('recommended-topics');
@@ -61,32 +64,36 @@ function displayRecommendedTopics(recommended, selectedTopics) {
     recommended.forEach((topic) => {
         if (!setOfTopics.has(topic) && !selectedTopics.has(topic)) {
             setOfTopics.add(topic);
-            var newRow = table.insertRow();
-            var cell = newRow.insertCell();
-            cell.setAttribute('class', 'rec');
-            cell.addEventListener('mouseover', () => {
-                cell.style.color = "#009900";
-            });
-            cell.addEventListener('mouseout', () => {
-                cell.style.color = "#656565";
-            });
-            cell.addEventListener('click', () => {
-                topic = topic.replace("_", " ");
-                const params = new URLSearchParams();
-                params.append("topic", topic);
-                document.getElementById("loader").style.display = "block";
-                document.getElementById("recommended-topics").style.display = "none";
-                fetch('/topics', { method: 'POST', body: params }).then(() => {
-                    createSelectedTopic(topic, document.getElementById('subjectTable'));
-                    location.reload();
-                });
-            });
+            var cell = createRecTopicCell(table, topic);
             cell.style.fontSize = "18px";
             cell.innerHTML = capital_letter(topic.toLowerCase().replace("_", " "));
             document.getElementById("loader").style.display = "none";
             document.getElementById("recommended-topics").style.display = "table";
         }
     });
+}
+function createRecTopicCell(table, topic) {
+    var newRow = table.insertRow();
+    var cell = newRow.insertCell();
+    cell.setAttribute('class', 'rec');
+    cell.addEventListener('mouseover', () => {
+        cell.style.color = "#009900";
+    });
+    cell.addEventListener('mouseout', () => {
+        cell.style.color = "#656565";
+    });
+    cell.addEventListener('click', () => {
+        topic = topic.replace("_", " ");
+        const params = new URLSearchParams();
+        params.append("topic", topic);
+        document.getElementById("loader").style.display = "block";
+        document.getElementById("recommended-topics").style.display = "none";
+        fetch('/topics', { method: 'POST', body: params }).then(() => {
+            createSelectedTopic(topic, document.getElementById('subjectTable'));
+            location.reload();
+        });
+    });
+    return cell;
 }
 /*
  * Get top 10 recommended topics. The first 3 are
@@ -96,20 +103,11 @@ function displayRecommendedTopics(recommended, selectedTopics) {
  */
 function getRecommendedTopics(response) {
     return __awaiter(this, void 0, void 0, function* () {
-        // Stores each topic with its corresponding list of recommended topics.
         var topicInfoList = [];
-        // Keeps track of number of recommendations for each topic that will be displayed.
-        var recsPerTopic = [];
-        // List of recommendations that will be returned.
-        var recommendations = [];
-        // Boolean for whether or not recommendations exist.
-        var recsExist = false;
-        if (JSON.stringify(response) === "{}") {
-            return recommendations;
-        }
-        // For each topic the user has selected,
-        // get all the similar topics. Also initialize
-        // recsPerTopic list.
+        var doRecsExist = false;
+        if (JSON.stringify(response) === "{}")
+            return [];
+        // For each topic the user has selected, get all ofthe similar topics. Also initialize recsPerTopic list.
         for (let i = response.length - 1; i >= 0; i--) {
             let topic = response[i];
             let similarTopics;
@@ -120,59 +118,67 @@ function getRecommendedTopics(response) {
             });
             if (topicInfo[1].length !== 0) {
                 topicInfoList.push(topicInfo);
-                recsExist = true;
+                doRecsExist = true;
             }
             else {
                 continue;
             }
-            recsPerTopic.push(0);
         }
-        if (!recsExist) {
-            return recommendations;
-        }
-        // First topic has 3 automatic recommendations from most recent choice.
-        // Other 7 are drawn from random distribution of all topics.
-        // Counts are stored in the recsPerTopic list.
-        for (let i = 0; i < 7; i++) {
-            let rand = Math.random() * 10000;
-            let j = 1;
-            if (rand < 10000 / Math.pow(2, topicInfoList.length - 1)) {
-                recsPerTopic[0] += 1;
-            }
-            while (j < topicInfoList.length) {
-                if (rand > 10000 / Math.pow(2, j)) {
-                    recsPerTopic[j] += 1;
-                    break;
-                }
-                j++;
-            }
-        }
-        // Gets list of indices in a random order, and pulls
-        // each index based off of the results of the 
-        // random distribution above.
-        var rangeForFirstTopic = getRandomNumbersNoRepetition(3, 10);
-        var rangeForAllOtherTopics = getRandomNumbersNoRepetition(0, 10);
-        var currIndex = 0;
-        for (let i = 0; i < 10; i++) {
-            if (i < 3) {
-                recommendations.push(topicInfoList[0][1][i]);
-            }
-            else {
-                if (recsPerTopic[currIndex] === 0) {
-                    currIndex += 1;
-                }
-                else {
-                    recsPerTopic[currIndex] -= 1;
-                }
-                let rand = (currIndex === 0) ? rangeForFirstTopic[i - 3] : rangeForAllOtherTopics[i];
-                let nextTopic = topicInfoList[currIndex][1][rand];
-                recommendations.push(nextTopic);
-            }
-        }
-        return recommendations;
+        if (!doRecsExist)
+            return [];
+        var recsPerTopic = pickTenRandomTopics(topicInfoList, response);
+        return createRecsList(topicInfoList, recsPerTopic);
     });
 }
-// min inclusive, max exclusive
+// First topic has 3 automatic recommendations from most recent choice.
+// Other 7 are drawn from random distribution of all topics.
+// Counts are stored in the recsPerTopic list.
+function pickTenRandomTopics(topicInfoList, response) {
+    // Keeps track of number of recommendations for each topic that will be displayed.
+    var recsPerTopic = Array(response.length).fill(0);
+    for (let i = 0; i < 7; i++) {
+        let rand = Math.random() * 10000;
+        let j = 1;
+        if (rand < 10000 / Math.pow(2, topicInfoList.length - 1)) {
+            recsPerTopic[0] += 1;
+        }
+        while (j < topicInfoList.length) {
+            if (rand > 10000 / Math.pow(2, j)) {
+                recsPerTopic[j] += 1;
+                break;
+            }
+            j++;
+        }
+    }
+    return recsPerTopic;
+}
+// Creates final recommendations list
+function createRecsList(topicInfoList, recsPerTopic) {
+    var rangeForFirstTopic = getRandomNumbersNoRepetition(3, 10);
+    var rangeForAllOtherTopics = getRandomNumbersNoRepetition(0, 10);
+    var recommendations = [];
+    var currIndex = 0;
+    for (let i = 0; i < 10; i++) {
+        if (i < 3) {
+            recommendations.push(topicInfoList[0][1][i]);
+        }
+        else {
+            if (recsPerTopic[currIndex] === 0) {
+                currIndex += 1;
+            }
+            else {
+                recsPerTopic[currIndex] -= 1;
+            }
+            let rand = (currIndex === 0) ? rangeForFirstTopic[i - 3] : rangeForAllOtherTopics[i];
+            let nextTopic = topicInfoList[currIndex][1][rand];
+            recommendations.push(nextTopic);
+        }
+    }
+    return recommendations;
+}
+// Gets list of indices in a random order, and pulls
+// each index based off of the results of the 
+// random distribution above.
 function getRandomNumbersNoRepetition(min, max) {
     var numbers = [];
     for (let i = min; i < max; i++) {
@@ -240,15 +246,12 @@ function timeChangeReveal() {
     document.getElementById("currentTime").style.direction = "none";
 }
 function timeChange() {
-    console.log("Button clicked");
     var timeContainer = document.getElementById("appt");
     var emailOption = document.getElementById("yn");
     var time = timeContainer.value;
     var choice = emailOption.options[emailOption.selectedIndex].value;
     var url = "/scheduler?time=" + time + "&optIn=" + choice;
-    console.log(url);
     fetch(url).then(response => response.text()).then((response) => {
-        console.log(response);
         document.getElementById("timeDisplay").innerHTML = response;
         document.getElementById("selectTime").style.display = "none";
         document.getElementById("currentTime").style.direction = "block";
