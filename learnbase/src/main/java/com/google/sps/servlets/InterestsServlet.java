@@ -55,3 +55,4 @@ public class InterestsServlet extends HttpServlet{
     return topicsOutput;
   }
 }
+

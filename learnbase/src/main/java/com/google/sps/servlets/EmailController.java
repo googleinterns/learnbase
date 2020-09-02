@@ -26,48 +26,54 @@ import java.util.*;
 
 @WebServlet("/emails")
 public class EmailController extends HttpServlet {
-  
+  DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     //This doGet is called once every 10 minutes 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Date d = new Date(); 
     int hour = d.getHours();
     int minute = d.getMinutes();
     //Current time frame 
-    Query q;
-
     if (minute < 5) { //If current time is less than 5, check the previous hour 
-      if (hour == 0) {
-        q = new Query("UserInfo")
-            .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, 23));
-      } else {
-        q = new Query("UserInfo")
-            .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, hour-1));
-      }
-      PreparedQuery pq = datastore.prepare(q);
-      for (Entity entity: pq.asIterable()) {
-        Long em = (Long) entity.getProperty("minute");
-        int entityMinute = em.intValue();
-        if (entityMinute >= 55 && ((String) entity.getProperty("optIn")).equals("y")){
-          sendEmail((String) entity.getProperty("mail"), entity);
-        }
-      }
+      prevHourQuery(hour, minute);
     } else { 
-      q = new Query("UserInfo")
-          .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, hour));
-      PreparedQuery pq = datastore.prepare(q);
-      for (Entity entity: pq.asIterable()) {
-        Long em = (Long) entity.getProperty("minute");
-        int entityMinute = em.intValue();
-        if (minute-5 <= entityMinute && entityMinute < minute && ((String) entity.getProperty("optIn")).equals("y")){
-      	  sendEmail((String) entity.getProperty("mail"), entity);
-        }
-      }
+      currentHourQuery(hour, minute);
     }
     response.getWriter().println(200);
   }
 
+  private void currentHourQuery(int hour, int minute){
+    Query q = new Query("UserInfo")
+        .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, hour));
+    PreparedQuery pq = datastore.prepare(q);
+    for (Entity entity: pq.asIterable()) {
+      Long em = (Long) entity.getProperty("minute");
+      int entityMinute = em.intValue();
+      if (minute-5 <= entityMinute && entityMinute < minute && ((String) entity.getProperty("optIn")).equals("y")){
+        sendEmail((String) entity.getProperty("mail"), entity);
+      }
+    }
+  }
+
+  private void prevHourQuery(int hour, int minute){
+    Query q;
+    if (hour == 0) {
+      q = new Query("UserInfo")
+          .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, 23));
+    } else {
+      q = new Query("UserInfo")
+          .setFilter(new FilterPredicate("hour", FilterOperator.EQUAL, hour-1));
+    }
+    PreparedQuery pq = datastore.prepare(q);
+    for (Entity entity: pq.asIterable()) {
+      Long em = (Long) entity.getProperty("minute");
+      int entityMinute = em.intValue();
+      if (entityMinute >= 55 && ((String) entity.getProperty("optIn")).equals("y")){
+        sendEmail((String) entity.getProperty("mail"), entity);
+      }
+    }
+  }
   private String decryptEmail (String email) {
     try {
       Signature sign = Signature.getInstance("SHA256withRSA");
@@ -95,9 +101,6 @@ public class EmailController extends HttpServlet {
   }
 
   private String buildHTML (Entity entity) {   
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-    //Replaced arraylist of topic urls with a string to be served at html
     String html = "You can either visit the sites listed below or you can visit the " +
       " <a href=\"learnbase-step-2020.appspot.com/info.html\"> Learnbase Info Page</a>";
     String topics = (String) entity.getProperty("topics");
@@ -143,7 +146,7 @@ public class EmailController extends HttpServlet {
           entity.setProperty(advancedTopic, true);
           entity.setProperty(topicName, urls);
         }
-	System.out.println(urls);
+        System.out.println(urls);
       }
       String url = urls.get(iteratorNum);
       String info = "<iframe src=\"" + url + "\" style=\"height:600px;width:80%;\"></iframe>"; 
@@ -158,3 +161,4 @@ public class EmailController extends HttpServlet {
     return html;
   }
 }
+
