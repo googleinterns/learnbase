@@ -143,7 +143,6 @@ async function getRecommendedTopics(response: string) : Promise<string[]> {
 // First topic has 3 automatic recommendations from most recent choice.
 // Other 7 are drawn from random distribution of all topics.
 // Counts are stored in the recsPerTopic list.
-
 function pickTenRandomTopics(topicInfoList: TopicInfo[], response: string) {
   // Keeps track of number of recommendations for each topic that will be displayed.
   var recsPerTopic : number[] = Array(response.length).fill(0);
@@ -165,6 +164,7 @@ function pickTenRandomTopics(topicInfoList: TopicInfo[], response: string) {
   return recsPerTopic;
 }
 
+// Creates final recommendations list
 function createRecsList(topicInfoList: TopicInfo[], recsPerTopic: number[] ) {
   var rangeForFirstTopic : number[] = getRandomNumbersNoRepetition(3, 10);
   var rangeForAllOtherTopics : number[] = getRandomNumbersNoRepetition(0, 10);
@@ -285,7 +285,6 @@ function timeChange(){
   });
 
 }
-
 
 function userStatus() {
   fetch('/status').then(response => response.text()).then((loginStatus) => {

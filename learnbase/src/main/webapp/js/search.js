@@ -152,6 +152,7 @@ function pickTenRandomTopics(topicInfoList, response) {
     }
     return recsPerTopic;
 }
+// Creates final recommendations list
 function createRecsList(topicInfoList, recsPerTopic) {
     var rangeForFirstTopic = getRandomNumbersNoRepetition(3, 10);
     var rangeForAllOtherTopics = getRandomNumbersNoRepetition(0, 10);
