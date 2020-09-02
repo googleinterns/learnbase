@@ -86,7 +86,7 @@ function createRecTopicCell(table: HTMLTableElement, topic: string) {
   cell.addEventListener('mouseout', () => {
     cell.style.color = "#656565";
   });
-
+  
   cell.addEventListener('click', () => {
     topic = topic.replace("_", " ")
     const params = new URLSearchParams(); 
@@ -98,7 +98,6 @@ function createRecTopicCell(table: HTMLTableElement, topic: string) {
       location.reload();
     });  
   });
-
   return cell;
 }
 
@@ -248,13 +247,13 @@ function createSelectedTopic(topic: string, table: HTMLTableElement) {
 // Capitalizes first letter of each word in str.
 function capital_letter(str) 
 {
-    str = str.split(" ");
+  str = str.split(" ");
 
-    for (var i = 0, x = str.length; i < x; i++) {
-        str[i] = str[i][0].toUpperCase() + str[i].substr(1);
-    }
+  for (var i = 0, x = str.length; i < x; i++) {
+    str[i] = str[i][0].toUpperCase() + str[i].substr(1);
+  }
 
-    return str.join(" ");
+  return str.join(" ");
 }
 
 // Deletes topic.
