@@ -98,6 +98,8 @@ function createRecTopicCell(table: HTMLTableElement, topic: string) {
       location.reload();
     });  
   });
+
+  return cell;
 }
 
 /*

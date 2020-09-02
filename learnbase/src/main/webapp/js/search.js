@@ -93,6 +93,7 @@ function createRecTopicCell(table, topic) {
             location.reload();
         });
     });
+    return cell;
 }
 /*
  * Get top 10 recommended topics. The first 3 are
