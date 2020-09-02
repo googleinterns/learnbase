@@ -20,8 +20,7 @@ window.onload = function getTopics() : void {
         selectedTopics.add(topic.toLowerCase().replace(" ", "_"));
       });
     }
-    showSelectedTopics(showSelectedTopicsBox, response);
-    
+    showSelectedTopics(showSelectedTopicsBox, response);   
     getRecommendedTopics(response).then((result: string[]) => {
       loaderDisplay(result, selectedTopics);
     });
@@ -65,28 +64,8 @@ function displayRecommendedTopics(recommended : string[], selectedTopics : Set<s
   recommended.forEach((topic: string) => {
     if (!setOfTopics.has(topic) && !selectedTopics.has(topic)) {
       setOfTopics.add(topic);
-      var newRow = table.insertRow();
-      var cell = newRow.insertCell(); 
-      cell.setAttribute('class', 'rec');
-      cell.addEventListener('mouseover', () => {
-        cell.style.color = "#009900";
-      });
-      cell.addEventListener('mouseout', () => {
-        cell.style.color = "#656565";
-      });
-
-      cell.addEventListener('click', () => {
-        topic = topic.replace("_", " ")
-        const params = new URLSearchParams(); 
-        params.append("topic", topic);
-        document.getElementById("loader").style.display = "block";
-        document.getElementById("recommended-topics").style.display = "none";
-        fetch('/topics', {method: 'POST', body: params}).then(() => {
-          createSelectedTopic(topic, document.getElementById('subjectTable') as HTMLTableElement);
-          location.reload();
-        });
-       
-      });
+      
+      createRecTopicCell(table, topic);
       
       cell.style.fontSize = "18px";
       cell.innerHTML = capital_letter(topic.toLowerCase().replace("_", " "));
@@ -95,6 +74,30 @@ function displayRecommendedTopics(recommended : string[], selectedTopics : Set<s
     }
   });
   
+}
+
+function createRecTopicCell(table: HTMLTableElement, topic: string) {
+  var newRow = table.insertRow();
+  var cell = newRow.insertCell(); 
+  cell.setAttribute('class', 'rec');
+  cell.addEventListener('mouseover', () => {
+    cell.style.color = "#009900";
+  });
+  cell.addEventListener('mouseout', () => {
+    cell.style.color = "#656565";
+  });
+
+  cell.addEventListener('click', () => {
+    topic = topic.replace("_", " ")
+    const params = new URLSearchParams(); 
+    params.append("topic", topic);
+    document.getElementById("loader").style.display = "block";
+    document.getElementById("recommended-topics").style.display = "none";
+    fetch('/topics', {method: 'POST', body: params}).then(() => {
+      createSelectedTopic(topic, document.getElementById('subjectTable') as HTMLTableElement);
+      location.reload();
+    });  
+  });
 }
 
 /*

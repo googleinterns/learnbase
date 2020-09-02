@@ -64,31 +64,34 @@ function displayRecommendedTopics(recommended, selectedTopics) {
     recommended.forEach((topic) => {
         if (!setOfTopics.has(topic) && !selectedTopics.has(topic)) {
             setOfTopics.add(topic);
-            var newRow = table.insertRow();
-            var cell = newRow.insertCell();
-            cell.setAttribute('class', 'rec');
-            cell.addEventListener('mouseover', () => {
-                cell.style.color = "#009900";
-            });
-            cell.addEventListener('mouseout', () => {
-                cell.style.color = "#656565";
-            });
-            cell.addEventListener('click', () => {
-                topic = topic.replace("_", " ");
-                const params = new URLSearchParams();
-                params.append("topic", topic);
-                document.getElementById("loader").style.display = "block";
-                document.getElementById("recommended-topics").style.display = "none";
-                fetch('/topics', { method: 'POST', body: params }).then(() => {
-                    createSelectedTopic(topic, document.getElementById('subjectTable'));
-                    location.reload();
-                });
-            });
+            createRecTopicCell(table, topic);
             cell.style.fontSize = "18px";
             cell.innerHTML = capital_letter(topic.toLowerCase().replace("_", " "));
             document.getElementById("loader").style.display = "none";
             document.getElementById("recommended-topics").style.display = "table";
         }
+    });
+}
+function createRecTopicCell(table, topic) {
+    var newRow = table.insertRow();
+    var cell = newRow.insertCell();
+    cell.setAttribute('class', 'rec');
+    cell.addEventListener('mouseover', () => {
+        cell.style.color = "#009900";
+    });
+    cell.addEventListener('mouseout', () => {
+        cell.style.color = "#656565";
+    });
+    cell.addEventListener('click', () => {
+        topic = topic.replace("_", " ");
+        const params = new URLSearchParams();
+        params.append("topic", topic);
+        document.getElementById("loader").style.display = "block";
+        document.getElementById("recommended-topics").style.display = "none";
+        fetch('/topics', { method: 'POST', body: params }).then(() => {
+            createSelectedTopic(topic, document.getElementById('subjectTable'));
+            location.reload();
+        });
     });
 }
 /*
