@@ -64,7 +64,7 @@ function displayRecommendedTopics(recommended, selectedTopics) {
     recommended.forEach((topic) => {
         if (!setOfTopics.has(topic) && !selectedTopics.has(topic)) {
             setOfTopics.add(topic);
-            createRecTopicCell(table, topic);
+            var cell = createRecTopicCell(table, topic);
             cell.style.fontSize = "18px";
             cell.innerHTML = capital_letter(topic.toLowerCase().replace("_", " "));
             document.getElementById("loader").style.display = "none";
