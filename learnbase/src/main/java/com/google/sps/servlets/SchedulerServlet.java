@@ -22,35 +22,27 @@ import java.util.*;
 
 @WebServlet("/scheduler")
 public class SchedulerServlet extends HttpServlet{
+  
+  
+  DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
   @Override 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
       
     //This servlet controls the user's chosen time to recieve emails 
-
     TimeZone timeZone = TimeZone.getDefault();
     int offset = -(int) ((timeZone.getOffset( System.currentTimeMillis())/(1000*60*60)));
 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    UserService userService = UserServiceFactory.getUserService(); 
-    User user = userService.getCurrentUser();
-    String userId = user.getUserId(); 
-    Query query = 
-    new Query("UserInfo")
-    .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
-    PreparedQuery results = datastore.prepare(query); 
-    Entity entity = results.asSingleEntity();     
+    Entity entity = retrieveEntity();     
     String hour = entity.getProperty("hour").toString();
     String minute = entity.getProperty("minute").toString();
     if (minute.equals("0")){
       minute += "0";
-    }
-    else if(Integer.parseInt(minute) <10){
+    } else if(Integer.parseInt(minute) <10){
       minute = "0" + minute; 
     }
     String recordedTime = hour + ":" + minute;
-    System.out.println("Time recorded: " + recordedTime);
-    String newTime = "";
-    newTime = request.getParameter("time");
+    String newTime = request.getParameter("time");
     String option = request.getParameter("optIn");
     entity.setProperty("optIn", option);
     if (newTime != null && !newTime.isEmpty()){
@@ -59,8 +51,7 @@ public class SchedulerServlet extends HttpServlet{
       int newHour = Integer.parseInt(time[0])+offset;
       if (newHour >= 24){
         newHour -=24;
-      }
-      if (newHour < 0){
+      } else if (newHour < 0){
         newHour += 24;
       }
       entity.setProperty("hour", newHour);
@@ -73,8 +64,7 @@ public class SchedulerServlet extends HttpServlet{
       int newHour = (Integer.parseInt(time[0]) - offset); 
       if (newHour >= 24){
         newHour -=24;
-      }
-      if (newHour < 0){
+      } else if (newHour < 0){
         newHour += 24;
       }
       newTime = newHour + ":"+time[1];
@@ -83,6 +73,21 @@ public class SchedulerServlet extends HttpServlet{
     response.getWriter().println(newTime);
     System.out.println("Printed " + newTime);
   }
+
+
+  private Entity retrieveEntity(){
+    UserService userService = UserServiceFactory.getUserService(); 
+    User user = userService.getCurrentUser();
+    String userId = user.getUserId(); 
+
+    Query query = 
+      new Query("UserInfo")
+      .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+    PreparedQuery results = datastore.prepare(query); 
+    Entity entity = results.asSingleEntity(); 
+    return entity;
+  }
+
 
 
 }
